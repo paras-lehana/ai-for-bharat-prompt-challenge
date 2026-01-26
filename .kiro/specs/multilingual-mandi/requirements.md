@@ -249,3 +249,94 @@ The Multilingual Mandi is a real-time linguistic bridge for local trade in India
 6. THE Mandi_System SHALL provide buyer demographics including location distribution and repeat customer rates
 7. WHERE sufficient data exists, THE Mandi_System SHALL generate predictive insights for optimal pricing and timing
 8. THE Mandi_System SHALL allow vendors to export transaction data in CSV format for external analysis
+
+### Requirement 16: Unified Voice Assistant (Kisaan Bot)
+
+**User Story:** As a farmer with low literacy, I want a single voice assistant that can help me with all tasks (checking prices, creating listings, making offers, searching products) through natural conversation, so that I don't need to navigate complex menus or forms.
+
+#### Acceptance Criteria
+
+1. WHEN a user activates the Kisaan Bot, THE Mandi_System SHALL capture voice input using the device microphone
+2. WHEN voice input is captured, THE Voice_Interface SHALL transcribe the audio to text using SARVAM STT API
+3. WHEN transcribed text is received, THE Mandi_System SHALL send it to OpenRouter AI to determine user intent and extract parameters
+4. THE Mandi_System SHALL support intents: price_query, create_listing, make_offer, search_listings, general_help
+5. WHEN intent and parameters are extracted, THE Mandi_System SHALL display the parsed information to the user in business-friendly language (not technical terms)
+6. WHEN the user confirms the parsed information, THE Mandi_System SHALL execute the appropriate API call with extracted parameters
+7. WHEN the API call completes successfully, THE Mandi_System SHALL redirect the user to the relevant page (listing detail, search results, etc.)
+8. WHEN the API call fails, THE Mandi_System SHALL explain the error in the user's language and offer alternatives
+9. THE Mandi_System SHALL handle microphone permission errors gracefully with clear instructions
+10. THE Mandi_System SHALL provide detailed logging for debugging voice processing issues
+
+### Requirement 17: Accessible and Discoverable User Guide
+
+**User Story:** As a new user, I want easy access to a comprehensive guide that explains all features in my language, so that I can learn how to use the platform effectively.
+
+#### Acceptance Criteria
+
+1. WHEN a user navigates to the Guide page, THE Mandi_System SHALL display comprehensive feature documentation without routing errors
+2. THE Mandi_System SHALL automatically translate guide content based on the user's language preference
+3. THE Mandi_System SHALL NOT display "use google translate" messages - translation SHALL be automatic
+4. THE Mandi_System SHALL display Guide highlights and call-to-action on the Home page
+5. THE Mandi_System SHALL display a Guide link in the footer on all pages
+6. THE Mandi_System SHALL provide a floating Guide button accessible from any page
+7. WHEN guide content is translated, THE Mandi_System SHALL cache translations for performance
+8. THE Mandi_System SHALL organize guide content into clear sections: Getting Started, Features, Troubleshooting
+
+### Requirement 18: Business-Focused Login Experience
+
+**User Story:** As a potential user viewing the login page, I want to see compelling business benefits and value propositions, so that I understand why I should use this platform.
+
+#### Acceptance Criteria
+
+1. THE Mandi_System SHALL display at least 6 business benefits on the login page
+2. THE Mandi_System SHALL focus on farmer value propositions, NOT technical implementation details
+3. THE Mandi_System SHALL NOT mention technical terms like "Qwen", "BHASHINI", "API" on the login page
+4. THE Mandi_System SHALL use clear, farmer-friendly language for all feature descriptions
+5. THE Mandi_System SHALL include visual icons for each business benefit
+6. THE Mandi_System SHALL highlight benefits such as: fair pricing, voice assistance, local language support, trust system, market intelligence, easy negotiation
+7. THE Mandi_System SHALL use an engaging visual design with good color contrast and spacing
+
+### Requirement 19: Modern and Engaging User Interface
+
+**User Story:** As a user, I want a modern, colorful, and animated interface that is pleasant to use and makes the platform feel professional and trustworthy.
+
+#### Acceptance Criteria
+
+1. THE Mandi_System SHALL use a vibrant, farmer-friendly color scheme throughout the application
+2. THE Mandi_System SHALL apply smooth transitions between pages and states
+3. THE Mandi_System SHALL include hover effects on interactive elements (cards, buttons)
+4. THE Mandi_System SHALL display loading animations during data fetching
+5. THE Mandi_System SHALL use micro-interactions to provide feedback for user actions
+6. THE Mandi_System SHALL implement a consistent card-based design with shadows and depth
+7. THE Mandi_System SHALL use proper typography hierarchy with readable fonts
+8. THE Mandi_System SHALL include consistent iconography across all pages
+9. THE Mandi_System SHALL ensure all animations and effects work smoothly on mobile devices
+10. THE Mandi_System SHALL maintain good accessibility (contrast ratios, focus indicators)
+
+### Requirement 20: Reliable Image Management
+
+**User Story:** As a user browsing listings, I want to see product images consistently across all pages, so that I can visually identify crops and make informed decisions.
+
+#### Acceptance Criteria
+
+1. THE Mandi_System SHALL store all crop images locally in the frontend/public/images/crops/ directory
+2. THE Mandi_System SHALL download and store images for all major crops (wheat, rice, maize, cotton, groundnut, sugarcane, soybean, onion, potato, tomato)
+3. WHEN displaying a listing, THE Mandi_System SHALL use local image paths, NOT external URLs
+4. WHEN a crop image is missing, THE Mandi_System SHALL display a generic crop placeholder image
+5. THE Mandi_System SHALL ensure images load correctly on Home page, Browse Listings page, and Listing Detail page
+6. THE Mandi_System SHALL update seed data to reference local image paths
+7. THE Mandi_System SHALL handle image loading errors gracefully without breaking the UI
+
+### Requirement 21: Functional Negotiations Management
+
+**User Story:** As a buyer or vendor, I want to view negotiation details and manage my negotiations (view details, withdraw offers), so that I can track and control my trading activities.
+
+#### Acceptance Criteria
+
+1. WHEN a user clicks "View Details" on a negotiation, THE Mandi_System SHALL navigate to the negotiation detail page
+2. WHEN a user clicks "Withdraw" on a negotiation, THE Mandi_System SHALL call the appropriate API to cancel the negotiation
+3. THE Mandi_System SHALL display loading states while fetching negotiation data
+4. THE Mandi_System SHALL handle API errors gracefully with user-friendly error messages
+5. THE Mandi_System SHALL update the negotiations list after a withdrawal action
+6. THE Mandi_System SHALL display all negotiation details including: listing info, offer history, time remaining, status
+7. THE Mandi_System SHALL prevent browser console errors related to message channel closures

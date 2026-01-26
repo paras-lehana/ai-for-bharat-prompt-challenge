@@ -1,30 +1,57 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { negotiationsAPI } from '../utils/api';
 import { FiClock, FiCheck, FiX } from 'react-icons/fi';
 
 export default function MyNegotiations() {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [negotiations, setNegotiations] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock data for MVP
   useEffect(() => {
-    setNegotiations([
-      {
-        id: '1',
-        listing: { cropType: 'Tomato', finalPrice: 30 },
-        status: 'active',
-        lastOffer: 28,
-        expiresAt: new Date(Date.now() + 12 * 60 * 60 * 1000)
-      },
-      {
-        id: '2',
-        listing: { cropType: 'Onion', finalPrice: 40 },
-        status: 'accepted',
-        lastOffer: 38,
-        expiresAt: new Date()
-      }
-    ]);
+    loadNegotiations();
   }, []);
+
+  const loadNegotiations = async () => {
+    try {
+      const response = await negotiationsAPI.getMyNegotiations();
+      setNegotiations(response.data.negotiations || []);
+    } catch (error) {
+      console.error('Error loading negotiations:', error);
+      setNegotiations([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleViewDetails = (negotiation) => {
+    navigate(`/listing/${negotiation.listing.id}`);
+  };
+
+  const handleWithdraw = async (negotiationId) => {
+    if (!window.confirm('Are you sure you want to withdraw this offer?')) return;
+    
+    try {
+      await negotiationsAPI.withdraw(negotiationId);
+      alert('Offer withdrawn successfully');
+      loadNegotiations();
+    } catch (error) {
+      console.error('Error withdrawing offer:', error);
+      alert('Failed to withdraw offer: ' + (error.response?.data?.error || error.message));
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-primary-600 mx-auto"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
@@ -66,8 +93,18 @@ export default function MyNegotiations() {
             {negotiation.status === 'active' && (
               <div className="mt-4 pt-4 border-t">
                 <div className="flex space-x-3">
-                  <button className="btn-primary flex-1">View Details</button>
-                  <button className="btn-secondary flex-1">Withdraw</button>
+                  <button 
+                    onClick={() => handleViewDetails(negotiation)}
+                    className="btn-primary flex-1"
+                  >
+                    View Details
+                  </button>
+                  <button 
+                    onClick={() => handleWithdraw(negotiation.id)}
+                    className="btn-secondary flex-1"
+                  >
+                    Withdraw
+                  </button>
                 </div>
               </div>
             )}

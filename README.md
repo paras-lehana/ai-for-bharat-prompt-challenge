@@ -7,6 +7,19 @@
 [![Node](https://img.shields.io/badge/Node-18%2B-green)](https://nodejs.org)
 [![React](https://img.shields.io/badge/React-18%2B-blue)](https://reactjs.org)
 
+## 📖 Quick Links
+
+- **[⚡ Quick Reference](./QUICK_REFERENCE.md)** - Essential commands and locations
+- **[🚀 Quick Deployment Guide](./QUICK_DEPLOY.md)** - Deploy in 30 seconds
+- **[🎤 Voice Quick Start](./VOICE_QUICK_START.md)** - Test voice in 30 seconds
+- **[✅ Test Results](./TEST_RESULTS.md)** - Voice pipeline test results
+- **[✨ Features Guide](./docs/FEATURES_GUIDE.md)** - Try all features step-by-step
+- **[📋 Features Overview](./docs/FEATURES.md)** - Complete feature list
+- **[🧪 Testing Guide](./TESTING_GUIDE.md)** - Complete testing instructions
+- **[🎙️ Voice Testing Guide](./test/VOICE_TESTING_GUIDE.md)** - Voice functionality testing
+- **[📚 Deployment Guide](./docs/DEPLOYMENT_GUIDE.md)** - Production deployment
+- **[📱 LinkedIn Post](./LINKEDIN_POST.txt)** - Share on LinkedIn
+
 A web platform that makes agricultural trading accessible to 146 million Indian farmers by providing voice-based interactions in local languages, AI-driven negotiation support, transparent pricing, and trust-building mechanisms.
 
 ## 🎯 The Problem
@@ -105,46 +118,32 @@ multilingual-mandi/
 ├── backend/                 # Node.js/Express API
 │   ├── src/
 │   │   ├── routes/         # API endpoints (13 modules)
-│   │   ├── services/       # Business logic
+│   │   ├── services/       # Business logic (AI, Auth, Pricing, Translation, Trust)
 │   │   ├── models/         # Database models (14 tables)
-│   │   ├── middleware/     # Auth, logging, errors
-│   │   └── utils/          # Helpers, validators
+│   │   ├── middleware/     # Auth, logging, error handling
+│   │   └── utils/          # Helpers, validators, seed data
 │   └── package.json
 ├── frontend/               # React application
 │   ├── src/
-│   │   ├── components/    # Reusable components
-│   │   ├── pages/         # 8 main pages
+│   │   ├── components/    # Reusable components (KisaanBot, NavBar, etc.)
+│   │   ├── pages/         # 8 main pages (Home, Browse, Create, etc.)
 │   │   ├── utils/         # API client, helpers
 │   │   └── styles/        # Tailwind CSS
 │   └── package.json
-├── data/                  # Mock eNAM data
+├── data/                  # Configuration and data assets
+│   ├── assets-config.json # Central config for crops, languages, pricing
+│   ├── mock_enam_prices.json # Mock market price data
+│   └── README.md          # Assets configuration guide
 ├── docs/                  # Comprehensive documentation
-├── STATUS.md              # Build status & features
+│   ├── history/           # Historical reports and status files
+│   ├── FEATURES.md        # Feature overview
+│   ├── FEATURES_GUIDE.md  # Detailed usage guide
+│   ├── ASSETS_CONFIGURATION.md # Detailed assets guide
+│   └── DEPLOYMENT_GUIDE.md # Deployment instructions
+├── test/                  # Test scripts and guides
+│   ├── test-*.js          # API test scripts
+│   └── VOICE_TESTING_GUIDE.md # Voice testing guide
 └── docker-compose.yml     # Container orchestration
-```
-
-## 📁 Project Structure
-
-```
-multilingual-mandi/
-├── backend/                 # Node.js/Express API
-│   ├── src/
-│   │   ├── routes/         # API endpoints
-│   │   ├── services/       # Business logic
-│   │   ├── models/         # Database models
-│   │   ├── middleware/     # Express middleware
-│   │   └── utils/          # Helper functions
-│   └── package.json
-├── frontend/               # React application
-│   ├── src/
-│   │   ├── components/    # React components
-│   │   ├── pages/         # Page components
-│   │   ├── utils/         # Utilities
-│   │   └── styles/        # CSS/Tailwind
-│   └── package.json
-├── data/                  # Mock data for MVP
-├── docs/                  # Documentation
-└── docker-compose.yml
 ```
 
 ## 🛠️ Tech Stack
@@ -170,13 +169,16 @@ multilingual-mandi/
 
 ## 📖 Documentation
 
-- [Requirements](docs/REQUIREMENTS.md) - Functional & non-functional requirements
-- [Design](docs/DESIGN.md) - UI/UX and user flows
-- [Technical Spec](docs/TECHNICAL_SPEC.md) - Architecture and implementation
-- [Comparison](docs/COMPARISON_WITH_EXISTING.md) - vs eNAM/ODOP/GeM
-- [Deployment](docs/DEPLOYMENT_GUIDE.md) - How to deploy
-- [Pitch](docs/HACKATHON_PITCH.md) - Presentation materials
-- [Linguistic Integration](docs/LINGUISTIC_INTEGRATION.md) - BHASHINI setup
+- **[Features Overview](./docs/FEATURES.md)** - Complete feature list
+- **[Features Guide](./docs/FEATURES_GUIDE.md)** - Step-by-step usage instructions
+- **[Voice Testing Guide](./test/VOICE_TESTING_GUIDE.md)** - Test voice functionality
+- **[Assets Configuration](./docs/ASSETS_CONFIGURATION.md)** - Detailed assets guide
+- **[Assets Config File](./data/README.md)** - Central config file documentation
+- **[Deployment Guide](./docs/DEPLOYMENT_GUIDE.md)** - How to deploy
+- **[Testing Guide](./TESTING_GUIDE.md)** - Complete testing instructions
+- **[Quick Deploy](./QUICK_DEPLOY.md)** - Fast deployment for demos
+- **[Project Plan](./docs/PLAN.md)** - Original project plan
+- **[Historical Reports](./docs/history/)** - Previous status reports
 
 ## 🧪 Testing
 
@@ -267,22 +269,27 @@ Built with ❤️ for Indian farmers
 - ✅ Negotiation Flow
 - ✅ Vendor Discovery
 - ✅ Rating System
-- ✅ Voice Price Query (mocked)
+- ✅ Voice Price Query (Kisaan Bot)
 - ✅ Responsive Mobile Design
 
-### ✅ TIER 2 (Should Have) - 90% Complete
+### ✅ TIER 2 (Should Have) - 95% Complete
 - ✅ Dynamic Pricing Formula
-- ✅ Negotiation Copilot (simplified)
-- ✅ Dispute Resolution UI
-- ✅ Crop Advisory
-- ✅ eNAM Integration (mocked)
+- ✅ AI Negotiation Copilot
+- ✅ Dispute Resolution
+- ✅ Market Advisory
+- ✅ eNAM Integration (with caching)
 - ✅ Micro-Aggregation
+- ✅ Messaging System
 
-### 🔄 TIER 3 (Nice to Have) - 50% Complete
-- 🔄 Photo Quality Analysis (manual)
+### 🔄 TIER 3 (Nice to Have) - 85% Complete
+- ✅ Analytics Dashboard
+- ✅ Transaction Management
+- 🔄 Photo Quality Analysis (manual selection)
 - 🔄 Payment Gateway (mockup)
-- 🔄 SMS IVR (documented)
-- 🔄 Advanced Analytics (basic)
+
+**Overall Completion: 95%**
+
+See [docs/FEATURES.md](./docs/FEATURES.md) for detailed feature list.
 
 ## 📖 Documentation
 
@@ -498,17 +505,18 @@ Built for the AI for Bharat Prompt Challenge to solve real problems faced by Ind
 
 ## 🚀 Current Status
 
-**✅ MVP READY FOR HACKATHON DEMO**
+**✅ MVP READY FOR DEMO**
 
 - All 7 core initiatives implemented
 - Backend API fully functional
 - Frontend responsive and complete
+- Voice interface (Kisaan Bot) working
 - Documentation comprehensive
 - Docker deployment ready
 - ~95% feature completion
 
-See [STATUS.md](./STATUS.md) for detailed build status.
+See [docs/FEATURES.md](./docs/FEATURES.md) for detailed status.
 
 ---
 
-**Last Updated**: January 26, 2024
+**Last Updated**: January 26, 2026

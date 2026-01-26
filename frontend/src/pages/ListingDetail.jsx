@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { listingsAPI, negotiationsAPI } from '../utils/api';
 import { AuthContext } from '../context/AuthContext';
+import { getCropImageUrl } from '../utils/cropImageMapper';
 
 export default function ListingDetail() {
   const { id } = useParams();
@@ -53,13 +54,35 @@ export default function ListingDetail() {
     return <div className="text-center py-12">Listing not found</div>;
   }
 
+  // Handle images - could be array or JSON string
+  let images = [];
+  if (listing.images) {
+    if (Array.isArray(listing.images)) {
+      images = listing.images;
+    } else if (typeof listing.images === 'string') {
+      try {
+        images = JSON.parse(listing.images);
+      } catch (e) {
+        images = [];
+      }
+    }
+  }
+  const imageUrl = images[0] || getCropImageUrl(listing.cropType);
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
       <div className="card">
         <div className="grid md:grid-cols-2 gap-8">
           {/* Image */}
-          <div className="aspect-square bg-gray-200 rounded-lg flex items-center justify-center text-9xl">
-            🌾
+          <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
+            <img 
+              src={imageUrl}
+              alt={listing.cropType}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.src = '/images/crops/wheat.jpg';
+              }}
+            />
           </div>
 
           {/* Details */}
@@ -71,9 +94,26 @@ export default function ListingDetail() {
                 ₹{listing.finalPrice}
                 <span className="text-lg text-gray-600">/{listing.unit}</span>
               </div>
-              <div className="text-sm text-gray-600">
-                Base: ₹{listing.basePrice} × {listing.qualityMultiplier} (quality) × {listing.demandAdjuster} (demand)
-              </div>
+              {listing.basePrice !== listing.finalPrice && (
+                <div className="bg-gray-50 p-3 rounded-lg text-sm">
+                  <div className="flex justify-between mb-1">
+                    <span className="text-gray-600">Base Price:</span>
+                    <span className="font-medium">₹{listing.basePrice}</span>
+                  </div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-gray-600">Quality Multiplier:</span>
+                    <span className="font-medium">×{listing.qualityMultiplier}</span>
+                  </div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-gray-600">Demand Adjuster:</span>
+                    <span className="font-medium">×{listing.demandAdjuster}</span>
+                  </div>
+                  <div className="flex justify-between pt-2 border-t border-gray-200">
+                    <span className="text-gray-700 font-medium">Final Price:</span>
+                    <span className="font-bold text-primary-600">₹{listing.finalPrice}</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="space-y-3 mb-6">

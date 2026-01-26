@@ -7,7 +7,7 @@
 
 class TranslationService {
   /**
-   * Supported languages
+   * Supported languages (22 Indian languages + English)
    */
   static SUPPORTED_LANGUAGES = {
     hi: 'Hindi',
@@ -16,6 +16,22 @@ class TranslationService {
     te: 'Telugu',
     kn: 'Kannada',
     pa: 'Punjabi',
+    gu: 'Gujarati',
+    ml: 'Malayalam',
+    or: 'Odia',
+    bn: 'Bengali',
+    as: 'Assamese',
+    bho: 'Bhojpuri',
+    mai: 'Maithili',
+    sat: 'Santali',
+    ks: 'Kashmiri',
+    ne: 'Nepali',
+    kok: 'Konkani',
+    sd: 'Sindhi',
+    doi: 'Dogri',
+    mni: 'Manipuri',
+    brx: 'Bodo',
+    sa: 'Sanskrit',
     en: 'English'
   };
 
@@ -120,6 +136,66 @@ class TranslationService {
   };
 
   /**
+   * Translate text to target language using OpenRouter AI
+   * @param {string} text - Text to translate
+   * @param {string} sourceLang - Source language code (default: 'en')
+   * @param {string} targetLang - Target language code
+   * @returns {Promise<string>} Translated text
+   */
+  static async translateText(text, sourceLang = 'en', targetLang) {
+    try {
+      // If source and target are same, return original
+      if (sourceLang === targetLang) {
+        return text;
+      }
+
+      // Use OpenRouter for better translation
+      const axios = require('axios');
+      
+      if (!process.env.OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY.includes('your-')) {
+        console.log('OpenRouter API not configured, using mock translation');
+        return this.mockTranslate(text, targetLang);
+      }
+
+      const targetLangName = this.SUPPORTED_LANGUAGES[targetLang] || targetLang;
+      
+      const response = await axios.post(
+        'https://openrouter.ai/api/v1/chat/completions',
+        {
+          model: process.env.OPENROUTER_MODEL || 'google/gemini-flash-1.5',
+          messages: [
+            {
+              role: 'system',
+              content: `You are a professional translator. Translate the following text from English to ${targetLangName}. Only return the translated text, nothing else. Preserve markdown formatting if present.`
+            },
+            {
+              role: 'user',
+              content: text
+            }
+          ],
+          temperature: 0.3,
+          max_tokens: 2000
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://multilingualmandi.in',
+            'X-Title': 'Multilingual Mandi'
+          },
+          timeout: 15000
+        }
+      );
+
+      const translatedText = response.data.choices[0]?.message?.content?.trim();
+      return translatedText || text;
+    } catch (error) {
+      console.error('Translation error:', error.message);
+      return this.mockTranslate(text, targetLang);
+    }
+  }
+
+  /**
    * Translate text to target language
    * @param {string} text - Text to translate
    * @param {string} targetLang - Target language code
@@ -186,6 +262,132 @@ class TranslationService {
     // return response.data.translated_text;
 
     return this.mockTranslate(text, targetLang);
+  }
+
+  /**
+   * Transcribe audio using SARVAM AI
+   * @param {Buffer|string} audioData - Audio file buffer or base64 string
+   * @param {string} language - Language code
+   * @returns {Promise<string>} Transcribed text
+   */
+  static async transcribeAudio(audioData, language = 'hi') {
+    try {
+      const axios = require('axios');
+      const FormData = require('form-data');
+      
+      // Check if SARVAM API key is configured
+      if (!process.env.SARVAM_API_KEY || process.env.SARVAM_API_KEY.includes('your-')) {
+        console.log('SARVAM API not configured, using mock transcription');
+        return this.mockTranscribe(language);
+      }
+
+      // Create form data
+      const formData = new FormData();
+      
+      // Convert base64 to buffer if needed
+      let audioBuffer = audioData;
+      if (typeof audioData === 'string') {
+        // Remove data URL prefix if present
+        const base64Data = audioData.replace(/^data:audio\/\w+;base64,/, '');
+        audioBuffer = Buffer.from(base64Data, 'base64');
+      }
+      
+      formData.append('file', audioBuffer, {
+        filename: 'audio.wav',
+        contentType: 'audio/wav'
+      });
+      
+      // Convert language code to SARVAM format (hi -> hi-IN)
+      const sarvamLangCode = language.includes('-') ? language : `${language}-IN`;
+      formData.append('language_code', sarvamLangCode);
+      formData.append('model', 'saaras:v3');
+
+      const response = await axios.post(
+        `${process.env.SARVAM_API_URL}/speech-to-text`,
+        formData,
+        {
+          headers: {
+            'api-subscription-key': process.env.SARVAM_API_KEY,
+            ...formData.getHeaders()
+          },
+          timeout: 15000
+        }
+      );
+
+      return response.data.transcript || response.data.text;
+    } catch (error) {
+      console.error('SARVAM transcription error:', error.message);
+      if (error.response) {
+        console.error('Response:', error.response.data);
+      }
+      return this.mockTranscribe(language);
+    }
+  }
+
+  /**
+   * Mock transcription for development
+   */
+  static mockTranscribe(language) {
+    const mockTranscriptions = {
+      hi: 'टमाटर का भाव क्या है?',
+      mr: 'टोमॅटोची किंमत काय आहे?',
+      ta: 'தக்காளி விலை என்ன?',
+      te: 'టమాటా ధర ఎంత?',
+      kn: 'ಟೊಮೇಟೊ ಬೆಲೆ ಎಷ್ಟು?',
+      pa: 'ਟਮਾਟਰ ਦੀ ਕੀਮਤ ਕੀ ਹੈ?',
+      gu: 'ટામેટાની કિંમત શું છે?',
+      ml: 'തക്കാളിയുടെ വില എന്താണ്?',
+      bn: 'টমেটোর দাম কত?',
+      en: 'What is the price of tomato?'
+    };
+
+    return mockTranscriptions[language] || mockTranscriptions.en;
+  }
+
+  /**
+   * Synthesize text to speech using SARVAM AI
+   * @param {string} text - Text to synthesize
+   * @param {string} language - Language code
+   * @returns {Promise<string>} Base64 audio
+   */
+  static async synthesizeSpeech(text, language = 'hi') {
+    try {
+      const axios = require('axios');
+      
+      if (!process.env.SARVAM_API_KEY || process.env.SARVAM_API_KEY.includes('your-')) {
+        return 'mock-audio-base64';
+      }
+
+      const response = await axios.post(
+        `${process.env.SARVAM_API_URL}/text-to-speech`,
+        {
+          inputs: [text],
+          target_language_code: language,
+          speaker: 'meera',
+          pitch: 0,
+          pace: 1.0,
+          loudness: 1.5,
+          speech_sample_rate: 8000,
+          enable_preprocessing: true,
+          model: 'bulbul:v1'
+        },
+        {
+          headers: {
+            'api-subscription-key': process.env.SARVAM_API_KEY,
+            'Content-Type': 'application/json'
+          },
+          timeout: 15000
+        }
+      );
+
+      return response.data.audios?.[0] || 'mock-audio-base64';
+    } catch (error) {
+      console.error('SARVAM TTS error:', error.message);
+      if (error.response) {
+        console.error('Response:', error.response.data);
+      }
+      return 'mock-audio-base64';
+    }
   }
 
   /**

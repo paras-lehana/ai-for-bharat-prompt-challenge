@@ -929,3 +929,153 @@ Given the hackathon context, we focus on breadth of features to demonstrate all 
 - Focus on TIER 1 features first, then TIER 2, then TIER 3 as time permits
 - Some features (photo quality analysis, payment gateway) can be mocked or simplified for hackathon
 - Prioritize breadth (showing all 7 initiatives) over depth (production-ready implementation)
+
+
+## CRITICAL FIXES AND ENHANCEMENTS (Added from User Feedback)
+
+- [x] 48. Fix Kisaan Bot Voice Functionality
+  - [x] 48.1 Debug microphone recording and audio processing
+    - Verify MediaRecorder is capturing audio correctly
+    - Check audio blob conversion to base64
+    - Test SARVAM STT API with real audio data
+    - Add detailed logging for debugging
+    - Handle browser permission errors gracefully
+  
+  - [x] 48.2 Implement complete voice-to-API workflow
+    - Voice input → SARVAM STT → OpenRouter (determines API + params) → Show confirmation → Call API → Redirect
+    - Create prompt for OpenRouter to identify intent and extract parameters
+    - Support actions: price query, create listing, make offer, search listings
+    - Show parsed intent and parameters to user for confirmation
+    - Execute API call after user confirms
+    - Redirect to appropriate page after action completes
+  
+  - [x] 48.3 Test SARVAM and OpenRouter individually
+    - Create modular test functions for SARVAM STT
+    - Create modular test functions for OpenRouter
+    - Test with real audio samples
+    - Verify API responses before integration
+    - Document working examples
+
+- [x] 49. Fix Guide Page Routing and Content
+  - [x] 49.1 Fix markdown file routing
+    - Create proper React routes for guide sections
+    - OR serve markdown files as static assets
+    - OR embed guide content directly in Guide component
+    - Remove "use google translate" text
+  
+  - [x] 49.2 Implement automatic translation for guides
+    - Translate guide content based on user's language preference
+    - Use BHASHINI or mock translation for MVP
+    - Cache translated content
+  
+  - [x] 49.3 Add Guide highlights on main pages
+    - Add Guide CTA on Home page
+    - Add Guide link in footer
+    - Add floating Guide button
+    - Make Guide more discoverable
+
+- [x] 50. Enhance Login Page with Business Features
+  - [x] 50.1 Add comprehensive feature highlights
+    - Showcase 6 business benefits for farmers
+    - Focus on value proposition, not technical details
+    - Use clear, farmer-friendly language
+    - Add icons and visual appeal
+  
+  - [x] 50.2 Improve visual design
+    - Better color scheme
+    - Add animations
+    - Improve spacing and layout
+    - Make it more engaging
+
+- [x] 51. UI/UX Modernization
+  - [x] 51.1 Implement modern color scheme
+    - Choose vibrant, farmer-friendly colors
+    - Update primary and secondary colors
+    - Ensure good contrast and accessibility
+    - Apply consistently across all pages
+  
+  - [x] 51.2 Add animations and transitions
+    - Smooth page transitions
+    - Hover effects on cards and buttons
+    - Loading animations
+    - Micro-interactions for better UX
+  
+  - [x] 51.3 Create modular, card-based design
+    - Consistent card components
+    - Better spacing and padding
+    - Shadow and depth effects
+    - Grid layouts for better organization
+  
+  - [x] 51.4 Improve typography and iconography
+    - Better font hierarchy
+    - Consistent icon usage
+    - Improved readability
+    - Better mobile typography
+
+- [x] 52. Documentation Consolidation
+  - [x] 52.1 Merge redundant documentation files
+    - Keep: README.md, QUICK_DEPLOY.md, TESTING_GUIDE.md
+    - Merge into docs/: FINAL_FIX_SUMMARY.md, DEPLOYMENT_COMPLETE.md, IMAGES_ADDED.md, FINAL_REPORT.md, HACKATHON_READY.md, DEPLOYMENT_SUCCESS.md, FEATURES_IMPLEMENTED.md, STATUS.md, FEATURES_GUIDE.md
+    - Create docs/history/ folder for old reports
+  
+  - [x] 52.2 Create comprehensive documentation
+    - Single source of truth for features
+    - Clear setup instructions
+    - API documentation
+    - Troubleshooting guide
+  
+  - [x] 52.3 Clean up root directory
+    - Minimize files in root
+    - Organize into appropriate folders
+    - Remove duplicate content
+
+- [ ] 53. Image Integration Fixes
+  - [x] 53.1 Download images from image_link.json
+    - Download maize, cotton, groundnut, sugarcane images
+    - Store in frontend/public/images/crops/
+    - Create placeholders for other crops
+  
+  - [x] 53.2 Update all image references
+    - Update Home.jsx to use local images
+    - Update BrowseListings.jsx to use local images
+    - Update ListingDetail.jsx to use local images
+    - Update seed script to use local image paths
+  
+  - [x] 53.3 Fix image fallbacks
+    - Use local fallback images instead of external URLs
+    - Handle missing images gracefully
+    - Ensure images load on all pages
+
+- [ ] 54. Fix Negotiations Page Functionality
+  - [x] 54.1 Fix button click handlers
+    - Add proper onClick handlers for "View Details"
+    - Add proper onClick handlers for "Withdraw"
+    - Navigate to correct pages
+    - Call appropriate APIs
+  
+  - [x] 54.2 Integrate with backend API
+    - Fetch real negotiations data
+    - Handle loading states
+    - Handle errors gracefully
+    - Update UI after actions
+
+## TESTING PRIORITIES
+
+1. **CRITICAL**: Test SARVAM STT with real audio
+2. **CRITICAL**: Test OpenRouter with voice-to-API workflow
+3. **HIGH**: Test Kisaan Bot end-to-end
+4. **HIGH**: Test Guide page routing
+5. **MEDIUM**: Test all image loading
+6. **MEDIUM**: Test negotiations functionality
+7. **LOW**: Test UI/UX improvements
+
+## SUCCESS CRITERIA
+
+- [ ] Kisaan Bot successfully records voice, transcribes, and executes actions
+- [ ] Guide pages load correctly without routing errors
+- [ ] All images load from local storage
+- [ ] Negotiations page buttons work correctly
+- [ ] Login page showcases business value
+- [ ] UI is modern, colorful, and animated
+- [ ] Documentation is consolidated and minimal
+- [ ] All APIs (SARVAM, OpenRouter) tested individually and working

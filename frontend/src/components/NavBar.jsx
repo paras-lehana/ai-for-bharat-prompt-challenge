@@ -7,7 +7,7 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { FiHome, FiSearch, FiPlusCircle, FiMessageSquare, FiTrendingUp, FiLogOut } from 'react-icons/fi';
+import { FiHome, FiSearch, FiPlusCircle, FiMessageSquare, FiTrendingUp, FiLogOut, FiBook } from 'react-icons/fi';
 
 export default function NavBar() {
   const { user, logout } = useContext(AuthContext);
@@ -54,6 +54,11 @@ export default function NavBar() {
             <Link to="/prices" className="flex items-center space-x-1 text-gray-700 hover:text-primary-600">
               <FiTrendingUp className="w-5 h-5" />
               <span>Prices</span>
+            </Link>
+
+            <Link to="/guide" className="flex items-center space-x-1 text-gray-700 hover:text-primary-600">
+              <FiBook className="w-5 h-5" />
+              <span>Guide</span>
             </Link>
 
             <button

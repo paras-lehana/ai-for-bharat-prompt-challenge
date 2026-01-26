@@ -64,7 +64,9 @@ export const negotiationsAPI = {
   getById: (id) => api.get(`/negotiations/${id}`),
   counterOffer: (id, data) => api.post(`/negotiations/${id}/counter`, data),
   accept: (id) => api.post(`/negotiations/${id}/accept`),
-  reject: (id) => api.post(`/negotiations/${id}/reject`)
+  reject: (id) => api.post(`/negotiations/${id}/reject`),
+  withdraw: (id) => api.post(`/negotiations/${id}/reject`), // Same as reject
+  getMyNegotiations: () => api.get('/negotiations/my/all')
 };
 
 // Voice APIs

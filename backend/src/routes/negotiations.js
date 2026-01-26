@@ -4,6 +4,7 @@ const { authenticateToken } = require('../middleware/auth');
 const { asyncHandler, createError } = require('../middleware/errorHandler');
 const { Negotiation, Offer, Listing, User, Transaction } = require('../models');
 const PricingService = require('../services/PricingService');
+const AIService = require('../services/AIService');
 
 // Create negotiation
 router.post('/', authenticateToken, asyncHandler(async (req, res) => {
@@ -118,6 +119,62 @@ router.post('/:id/accept', authenticateToken, asyncHandler(async (req, res) => {
   res.json({ message: 'Offer accepted', transaction });
 }));
 
+// Reject/Withdraw negotiation
+router.post('/:id/reject', authenticateToken, asyncHandler(async (req, res) => {
+  const negotiation = await Negotiation.findByPk(req.params.id);
+  if (!negotiation) throw createError('Negotiation not found', 404);
+  
+  // Check if user is part of this negotiation
+  if (negotiation.buyerId !== req.user.id && negotiation.vendorId !== req.user.id) {
+    throw createError('Unauthorized', 403);
+  }
+
+  await negotiation.update({ status: 'rejected' });
+
+  res.json({ message: 'Negotiation withdrawn/rejected successfully' });
+}));
+
+// Get my negotiations (buyer or vendor)
+router.get('/my/all', authenticateToken, asyncHandler(async (req, res) => {
+  const where = req.user.role === 'vendor' 
+    ? { vendorId: req.user.id }
+    : { buyerId: req.user.id };
+
+  const negotiations = await Negotiation.findAll({
+    where,
+    include: [
+      { 
+        model: Listing, 
+        as: 'listing',
+        attributes: ['id', 'cropType', 'finalPrice', 'images']
+      },
+      { 
+        model: User, 
+        as: req.user.role === 'vendor' ? 'buyer' : 'vendor',
+        attributes: ['id', 'name']
+      }
+    ],
+    order: [['createdAt', 'DESC']]
+  });
+
+  // Get last offer for each negotiation
+  const negotiationsWithOffers = await Promise.all(
+    negotiations.map(async (neg) => {
+      const lastOffer = await Offer.findOne({
+        where: { negotiationId: neg.id },
+        order: [['createdAt', 'DESC']]
+      });
+
+      return {
+        ...neg.toJSON(),
+        lastOffer: lastOffer ? lastOffer.amount : null
+      };
+    })
+  );
+
+  res.json({ negotiations: negotiationsWithOffers });
+}));
+
 // Get AI counter-offer suggestion
 router.get('/:id/suggestion', authenticateToken, asyncHandler(async (req, res) => {
   const negotiation = await Negotiation.findByPk(req.params.id, {
@@ -134,12 +191,20 @@ router.get('/:id/suggestion', authenticateToken, asyncHandler(async (req, res) =
     return res.json({ suggestion: null, message: 'No offers yet' });
   }
 
-  const suggestion = PricingService.generateCounterOffer(
+  // Use AI for negotiation analysis
+  const aiAnalysis = await AIService.analyzeNegotiation(
+    negotiation.listing.finalPrice,
     lastOffer.amount,
-    negotiation.listing.finalPrice
+    { average: negotiation.listing.basePrice }
   );
 
-  res.json({ suggestion });
+  res.json({ 
+    suggestion: {
+      amount: aiAnalysis.counterOffer,
+      reasoning: aiAnalysis.reasoning,
+      confidence: aiAnalysis.confidence
+    }
+  });
 }));
 
 module.exports = router;

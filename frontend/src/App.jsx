@@ -17,6 +17,7 @@ import ListingDetail from './pages/ListingDetail';
 import VendorProfile from './pages/VendorProfile';
 import MyNegotiations from './pages/MyNegotiations';
 import PriceInfo from './pages/PriceInfo';
+import Guide from './pages/Guide';
 
 // Components
 import NavBar from './components/NavBar';
@@ -75,6 +76,7 @@ function App() {
             <Route path="/vendor/:id" element={user ? <VendorProfile /> : <Navigate to="/login" />} />
             <Route path="/negotiations" element={user ? <MyNegotiations /> : <Navigate to="/login" />} />
             <Route path="/prices" element={user ? <PriceInfo /> : <Navigate to="/login" />} />
+            <Route path="/guide" element={user ? <Guide /> : <Navigate to="/login" />} />
           </Routes>
         </div>
       </Router>

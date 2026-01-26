@@ -1,0 +1,9 @@
+{
+  "intent": "create_listing",
+  "cropType": "टमाटर",
+  "quantity": null,
+  "price": 20,
+  "location": null,
+  "qualityTier": null,
+  "confidence": "high"
+}

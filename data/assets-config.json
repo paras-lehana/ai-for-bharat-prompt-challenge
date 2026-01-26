@@ -1,0 +1,451 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-01-26",
+  "description": "Central configuration for all assets, images, and data in Multilingual Mandi",
+  
+  "crops": [
+    {
+      "id": "wheat",
+      "name": "Wheat",
+      "displayName": {
+        "en": "Wheat",
+        "hi": "गेहूं",
+        "mr": "गहू",
+        "ta": "கோதுமை",
+        "te": "గోధుమ"
+      },
+      "category": "grain",
+      "defaultUnit": "kg",
+      "imageUrl": "/images/crops/wheat.jpg",
+      "imageSource": "local",
+      "averagePrice": 2500,
+      "season": ["winter"]
+    },
+    {
+      "id": "rice",
+      "name": "Rice",
+      "displayName": {
+        "en": "Rice",
+        "hi": "चावल",
+        "mr": "तांदूळ",
+        "ta": "அரிசி",
+        "te": "బియ్యం"
+      },
+      "category": "grain",
+      "defaultUnit": "kg",
+      "imageUrl": "/images/crops/rice.jpg",
+      "imageSource": "local",
+      "averagePrice": 3000,
+      "season": ["monsoon", "summer"]
+    },
+    {
+      "id": "tomato",
+      "name": "Tomato",
+      "displayName": {
+        "en": "Tomato",
+        "hi": "टमाटर",
+        "mr": "टोमॅटो",
+        "ta": "தக்காளி",
+        "te": "టమాటా"
+      },
+      "category": "vegetable",
+      "defaultUnit": "kg",
+      "imageUrl": "/images/crops/tomato.jpg",
+      "imageSource": "local",
+      "averagePrice": 30,
+      "season": ["winter", "summer"]
+    },
+    {
+      "id": "onion",
+      "name": "Onion",
+      "displayName": {
+        "en": "Onion",
+        "hi": "प्याज",
+        "mr": "कांदा",
+        "ta": "வெங்காயம்",
+        "te": "ఉల్లిపాయ"
+      },
+      "category": "vegetable",
+      "defaultUnit": "kg",
+      "imageUrl": "/images/crops/onion.jpg",
+      "imageSource": "local",
+      "averagePrice": 40,
+      "season": ["winter", "summer"]
+    },
+    {
+      "id": "potato",
+      "name": "Potato",
+      "displayName": {
+        "en": "Potato",
+        "hi": "आलू",
+        "mr": "बटाटा",
+        "ta": "உருளைக்கிழங்கு",
+        "te": "బంగాళాదుంప"
+      },
+      "category": "vegetable",
+      "defaultUnit": "kg",
+      "imageUrl": "/images/crops/potato.jpg",
+      "imageSource": "local",
+      "averagePrice": 20,
+      "season": ["winter"]
+    },
+    {
+      "id": "cotton",
+      "name": "Cotton",
+      "displayName": {
+        "en": "Cotton",
+        "hi": "कपास",
+        "mr": "कापूस",
+        "ta": "பருத்தி",
+        "te": "పత్తి"
+      },
+      "category": "cash_crop",
+      "defaultUnit": "kg",
+      "imageUrl": "/images/crops/cotton.png",
+      "imageSource": "local",
+      "averagePrice": 6000,
+      "season": ["monsoon"]
+    },
+    {
+      "id": "maize",
+      "name": "Maize",
+      "displayName": {
+        "en": "Maize",
+        "hi": "मक्का",
+        "mr": "मका",
+        "ta": "சோளம்",
+        "te": "మొక్కజొన్న"
+      },
+      "category": "grain",
+      "defaultUnit": "kg",
+      "imageUrl": "/images/crops/maize.jpeg",
+      "imageSource": "local",
+      "averagePrice": 1800,
+      "season": ["monsoon", "winter"]
+    },
+    {
+      "id": "soybean",
+      "name": "Soybean",
+      "displayName": {
+        "en": "Soybean",
+        "hi": "सोयाबीन",
+        "mr": "सोयाबीन",
+        "ta": "சோயா",
+        "te": "సోయాబీన్"
+      },
+      "category": "pulse",
+      "defaultUnit": "kg",
+      "imageUrl": "/images/crops/soybean.jpg",
+      "imageSource": "local",
+      "averagePrice": 4000,
+      "season": ["monsoon"]
+    },
+    {
+      "id": "groundnut",
+      "name": "Groundnut",
+      "displayName": {
+        "en": "Groundnut",
+        "hi": "मूंगफली",
+        "mr": "शेंगदाणा",
+        "ta": "கடலை",
+        "te": "వేరుశెనగ"
+      },
+      "category": "oilseed",
+      "defaultUnit": "kg",
+      "imageUrl": "/images/crops/groundnut.jpg",
+      "imageSource": "local",
+      "averagePrice": 5000,
+      "season": ["monsoon", "summer"]
+    },
+    {
+      "id": "sugarcane",
+      "name": "Sugarcane",
+      "displayName": {
+        "en": "Sugarcane",
+        "hi": "गन्ना",
+        "mr": "ऊस",
+        "ta": "கரும்பு",
+        "te": "చెరకు"
+      },
+      "category": "cash_crop",
+      "defaultUnit": "ton",
+      "imageUrl": "/images/crops/sugarcane.webp",
+      "imageSource": "local",
+      "averagePrice": 3000,
+      "season": ["winter", "summer"]
+    }
+  ],
+
+  "qualityTiers": [
+    {
+      "id": "premium",
+      "name": "Premium",
+      "displayName": {
+        "en": "Premium",
+        "hi": "प्रीमियम",
+        "mr": "प्रीमियम",
+        "ta": "பிரீமியம்",
+        "te": "ప్రీమియం"
+      },
+      "multiplier": 1.2,
+      "description": {
+        "en": "Highest quality, best grade",
+        "hi": "उच्चतम गुणवत्ता, सर्वोत्तम ग्रेड",
+        "mr": "सर्वोच्च गुणवत्ता, सर्वोत्तम ग्रेड",
+        "ta": "உயர்ந்த தரம், சிறந்த தரம்",
+        "te": "అత్యధిక నాణ్యత, ఉత్తమ గ్రేడ్"
+      }
+    },
+    {
+      "id": "standard",
+      "name": "Standard",
+      "displayName": {
+        "en": "Standard",
+        "hi": "मानक",
+        "mr": "मानक",
+        "ta": "நிலையான",
+        "te": "ప్రామాణిక"
+      },
+      "multiplier": 1.0,
+      "description": {
+        "en": "Good quality, standard grade",
+        "hi": "अच्छी गुणवत्ता, मानक ग्रेड",
+        "mr": "चांगली गुणवत्ता, मानक ग्रेड",
+        "ta": "நல்ல தரம், நிலையான தரம்",
+        "te": "మంచి నాణ్యత, ప్రామాణిక గ్రేడ్"
+      }
+    },
+    {
+      "id": "basic",
+      "name": "Basic",
+      "displayName": {
+        "en": "Basic",
+        "hi": "बेसिक",
+        "mr": "मूलभूत",
+        "ta": "அடிப்படை",
+        "te": "ప్రాథమిక"
+      },
+      "multiplier": 0.85,
+      "description": {
+        "en": "Acceptable quality, basic grade",
+        "hi": "स्वीकार्य गुणवत्ता, बेसिक ग्रेड",
+        "mr": "स्वीकार्य गुणवत्ता, मूलभूत ग्रेड",
+        "ta": "ஏற்றுக்கொள்ளக்கூடிய தரம், அடிப்படை தரம்",
+        "te": "ఆమోదయోగ్యమైన నాణ్యత, ప్రాథమిక గ్రేడ్"
+      }
+    }
+  ],
+
+  "languages": [
+    {
+      "code": "en",
+      "name": "English",
+      "nativeName": "English",
+      "sarvamCode": "en-IN",
+      "enabled": true
+    },
+    {
+      "code": "hi",
+      "name": "Hindi",
+      "nativeName": "हिन्दी",
+      "sarvamCode": "hi-IN",
+      "enabled": true
+    },
+    {
+      "code": "mr",
+      "name": "Marathi",
+      "nativeName": "मराठी",
+      "sarvamCode": "mr-IN",
+      "enabled": true
+    },
+    {
+      "code": "ta",
+      "name": "Tamil",
+      "nativeName": "தமிழ்",
+      "sarvamCode": "ta-IN",
+      "enabled": true
+    },
+    {
+      "code": "te",
+      "name": "Telugu",
+      "nativeName": "తెలుగు",
+      "sarvamCode": "te-IN",
+      "enabled": true
+    },
+    {
+      "code": "kn",
+      "name": "Kannada",
+      "nativeName": "ಕನ್ನಡ",
+      "sarvamCode": "kn-IN",
+      "enabled": true
+    },
+    {
+      "code": "pa",
+      "name": "Punjabi",
+      "nativeName": "ਪੰਜਾਬੀ",
+      "sarvamCode": "pa-IN",
+      "enabled": true
+    },
+    {
+      "code": "gu",
+      "name": "Gujarati",
+      "nativeName": "ગુજરાતી",
+      "sarvamCode": "gu-IN",
+      "enabled": true
+    },
+    {
+      "code": "ml",
+      "name": "Malayalam",
+      "nativeName": "മലയാളം",
+      "sarvamCode": "ml-IN",
+      "enabled": true
+    },
+    {
+      "code": "or",
+      "name": "Odia",
+      "nativeName": "ଓଡ଼ିଆ",
+      "sarvamCode": "or-IN",
+      "enabled": true
+    },
+    {
+      "code": "bn",
+      "name": "Bengali",
+      "nativeName": "বাংলা",
+      "sarvamCode": "bn-IN",
+      "enabled": true
+    }
+  ],
+
+  "units": [
+    {
+      "id": "kg",
+      "name": "Kilogram",
+      "displayName": {
+        "en": "Kg",
+        "hi": "किलो",
+        "mr": "किलो",
+        "ta": "கிலோ",
+        "te": "కిలో"
+      },
+      "abbreviation": "kg"
+    },
+    {
+      "id": "quintal",
+      "name": "Quintal",
+      "displayName": {
+        "en": "Quintal",
+        "hi": "क्विंटल",
+        "mr": "क्विंटल",
+        "ta": "குவிண்டால்",
+        "te": "క్వింటాల్"
+      },
+      "abbreviation": "qtl",
+      "kgEquivalent": 100
+    },
+    {
+      "id": "ton",
+      "name": "Ton",
+      "displayName": {
+        "en": "Ton",
+        "hi": "टन",
+        "mr": "टन",
+        "ta": "டன்",
+        "te": "టన్"
+      },
+      "abbreviation": "ton",
+      "kgEquivalent": 1000
+    }
+  ],
+
+  "trustBadges": [
+    {
+      "id": "trusted_vendor",
+      "name": "Trusted Vendor",
+      "displayName": {
+        "en": "Trusted Vendor",
+        "hi": "विश्वसनीय विक्रेता",
+        "mr": "विश्वासार्ह विक्रेता",
+        "ta": "நம்பகமான விற்பனையாளர்",
+        "te": "విశ్వసనీయ విక్రేత"
+      },
+      "icon": "🏆",
+      "requirements": {
+        "minScore": 4.5,
+        "minTransactions": 20
+      },
+      "color": "#FFD700"
+    },
+    {
+      "id": "verified_seller",
+      "name": "Verified Seller",
+      "displayName": {
+        "en": "Verified Seller",
+        "hi": "सत्यापित विक्रेता",
+        "mr": "सत्यापित विक्रेता",
+        "ta": "சரிபார்க்கப்பட்ட விற்பனையாளர்",
+        "te": "ధృవీకరించబడిన విక్రేత"
+      },
+      "icon": "✓",
+      "requirements": {
+        "minScore": 4.0,
+        "minTransactions": 50
+      },
+      "color": "#4CAF50"
+    }
+  ],
+
+  "imageDownloadSources": {
+    "maize": "https://5.imimg.com/data5/SELLER/Default/2026/1/572877306/VR/KK/VB/106854847/whatsapp-image-2026-01-03-at-11-12-16-am-1000x1000.jpeg",
+    "cotton": "https://www.tricorp.com/Admin/Public/GetImage.ashx?Image=/Files/Images/Contentpagina/Over%20ons/Kennisbank/Kennisbank-katoen-1.png&Crop=7&Format=png&Quality=90&Compression=80&Width=1000",
+    "groundnut": "https://t4.ftcdn.net/jpg/01/62/52/95/360_F_162529503_TMrcXIAPWttw5pdqZ8LYT3MqllFzaAXu.jpg",
+    "sugarcane": "https://plantly.io/wp-content/uploads/2023/12/var.webp"
+  },
+
+  "pricingConfig": {
+    "demandAdjusterRange": {
+      "min": 0.8,
+      "max": 1.3
+    },
+    "trustScoreWeights": {
+      "delivery": 0.4,
+      "quality": 0.3,
+      "response": 0.2,
+      "fairPricing": 0.1
+    },
+    "negotiationExpiry": {
+      "hours": 24
+    },
+    "disputeEvidenceDeadline": {
+      "hours": 48
+    }
+  },
+
+  "apiConfig": {
+    "sarvam": {
+      "baseUrl": "https://api.sarvam.ai",
+      "sttModel": "saaras:v3",
+      "ttsModel": "bulbul:v1",
+      "translationModel": "mayura:v1"
+    },
+    "openrouter": {
+      "baseUrl": "https://openrouter.ai/api/v1",
+      "defaultModel": "qwen/qwen3-vl-32b-instruct",
+      "alternativeModels": [
+        "qwen/qwen-2.5-72b-instruct",
+        "meta-llama/llama-3.1-70b-instruct",
+        "anthropic/claude-3-sonnet"
+      ]
+    }
+  },
+
+  "featureFlags": {
+    "voiceInterface": true,
+    "realTimeMessaging": true,
+    "offlineSupport": true,
+    "pwaEnabled": true,
+    "disputeResolution": true,
+    "microAggregation": true,
+    "advisoryService": true,
+    "analytics": true
+  }
+}

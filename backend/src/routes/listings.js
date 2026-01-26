@@ -5,6 +5,7 @@ const { asyncHandler, createError } = require('../middleware/errorHandler');
 const { Listing, User } = require('../models');
 const { Op } = require('sequelize');
 const PricingService = require('../services/PricingService');
+const AIService = require('../services/AIService');
 
 // Get all listings with filters
 router.get('/search', asyncHandler(async (req, res) => {
@@ -54,6 +55,17 @@ router.post('/', authenticateToken, requireRole('vendor'), asyncHandler(async (r
     location.address
   );
 
+  // Generate AI description if not provided
+  let finalDescription = description;
+  if (!description || description.length < 20) {
+    finalDescription = await AIService.generateListingDescription(
+      cropType,
+      quantity,
+      qualityTier,
+      location.address
+    );
+  }
+
   const listing = await Listing.create({
     vendorId: req.user.id,
     cropType,
@@ -64,7 +76,7 @@ router.post('/', authenticateToken, requireRole('vendor'), asyncHandler(async (r
     qualityMultiplier: pricingData.qualityMultiplier,
     demandAdjuster: pricingData.demandAdjuster,
     finalPrice: pricingData.finalPrice,
-    description,
+    description: finalDescription,
     images,
     locationLat: location.latitude,
     locationLng: location.longitude,
@@ -74,7 +86,8 @@ router.post('/', authenticateToken, requireRole('vendor'), asyncHandler(async (r
 
   res.status(201).json({
     listing,
-    pricingBreakdown: pricingData.breakdown
+    pricingBreakdown: pricingData.breakdown,
+    aiGenerated: !description || description.length < 20
   });
 }));
 

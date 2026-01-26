@@ -216,22 +216,45 @@ export default function Login() {
         </div>
 
         {/* Features */}
-        <div className="mt-8 grid grid-cols-2 gap-4 text-center text-sm text-gray-600">
-          <div>
-            <div className="text-2xl mb-1">🎤</div>
-            <div>Voice in 6 Languages</div>
-          </div>
-          <div>
-            <div className="text-2xl mb-1">💬</div>
-            <div>AI Negotiation</div>
-          </div>
-          <div>
-            <div className="text-2xl mb-1">📊</div>
-            <div>Fair Pricing</div>
-          </div>
-          <div>
-            <div className="text-2xl mb-1">⭐</div>
-            <div>Trusted Community</div>
+        <div className="mt-8 space-y-4">
+          <h3 className="text-center font-bold text-gray-700 text-xl mb-6">Why Farmers Trust Us</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
+              <div className="text-4xl mb-3">🎤</div>
+              <div className="font-bold text-lg mb-2">Speak in Your Language</div>
+              <div className="text-sm text-gray-700">No reading needed. Use voice commands in 22 Indian languages to check prices and list products</div>
+            </div>
+            
+            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
+              <div className="text-4xl mb-3">💰</div>
+              <div className="font-bold text-lg mb-2">Get Fair Prices</div>
+              <div className="text-sm text-gray-700">Transparent quality-based pricing. See exactly how prices are calculated. No hidden charges</div>
+            </div>
+            
+            <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
+              <div className="text-4xl mb-3">🤝</div>
+              <div className="font-bold text-lg mb-2">Smart Negotiation</div>
+              <div className="text-sm text-gray-700">AI assistant helps you negotiate better deals based on real market data</div>
+            </div>
+            
+            <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
+              <div className="text-4xl mb-3">🛡️</div>
+              <div className="font-bold text-lg mb-2">Safe & Trusted</div>
+              <div className="text-sm text-gray-700">Verified vendors with ratings. Dispute resolution system protects both buyers and sellers</div>
+            </div>
+            
+            <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
+              <div className="text-4xl mb-3">👥</div>
+              <div className="font-bold text-lg mb-2">Find Nearby Vendors</div>
+              <div className="text-sm text-gray-700">Discover farmers in your area. Team up for bulk orders and better prices</div>
+            </div>
+            
+            <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
+              <div className="text-4xl mb-3">📊</div>
+              <div className="font-bold text-lg mb-2">Live Market Prices</div>
+              <div className="text-sm text-gray-700">Real-time government market data. Know the right price before you sell</div>
+            </div>
           </div>
         </div>
       </div>

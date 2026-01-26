@@ -553,6 +553,83 @@ interface Message {
 }
 ```
 
+### 11. Unified Voice Assistant Service (Kisaan Bot)
+
+**Responsibilities:**
+- Capture and process voice input
+- Transcribe audio using SARVAM STT
+- Extract intent and parameters using OpenRouter AI
+- Execute appropriate API calls based on intent
+- Provide user-friendly confirmations and error messages
+- Handle microphone permissions and errors
+
+**Interface:**
+```typescript
+interface KisaanBotService {
+  captureVoiceInput(): Promise<Blob>
+  transcribeAudio(audioBlob: Blob, language: string): Promise<string>
+  extractIntent(transcribedText: string, language: string): Promise<VoiceIntent>
+  executeIntent(intent: VoiceIntent, userId: string): Promise<IntentResult>
+  formatConfirmation(intent: VoiceIntent, language: string): Promise<string>
+  handleError(error: Error, language: string): Promise<string>
+}
+
+interface VoiceIntent {
+  type: 'price_query' | 'create_listing' | 'make_offer' | 'search_listings' | 'general_help'
+  parameters: {
+    cropType?: string
+    quantity?: number
+    price?: number
+    location?: string
+    qualityTier?: string
+    listingId?: string
+    [key: string]: any
+  }
+  confidence: number
+  rawText: string
+}
+
+interface IntentResult {
+  success: boolean
+  data?: any
+  redirectUrl?: string
+  errorMessage?: string
+}
+```
+
+### 12. Guide Service
+
+**Responsibilities:**
+- Serve guide content
+- Translate guide content based on user language
+- Cache translations
+- Organize guide sections
+
+**Interface:**
+```typescript
+interface GuideService {
+  getGuideContent(section: string, language: string): Promise<GuideContent>
+  translateGuide(content: string, targetLanguage: string): Promise<string>
+  getCachedTranslation(section: string, language: string): Promise<string | null>
+  getAllSections(): Promise<GuideSection[]>
+}
+
+interface GuideContent {
+  section: string
+  title: string
+  content: string
+  language: string
+  lastUpdated: Date
+}
+
+interface GuideSection {
+  id: string
+  title: string
+  order: number
+  subsections?: GuideSection[]
+}
+```
+
 ## Data Models
 
 ### Database Schema
@@ -1244,6 +1321,126 @@ A property is a characteristic or behavior that should hold true across all vali
 **Property 91: CSV Export Validity**
 *For any* vendor exporting transaction data, the generated CSV file should be valid and contain all transaction records with proper formatting.
 **Validates: Requirements 15.8**
+
+### Unified Voice Assistant (Kisaan Bot) Properties
+
+**Property 92: Voice Input Capture**
+*For any* user activating Kisaan Bot, the system should successfully capture audio from the device microphone.
+**Validates: Requirements 16.1**
+
+**Property 93: Audio Transcription via SARVAM**
+*For any* captured audio, the system should transcribe it to text using SARVAM STT API.
+**Validates: Requirements 16.2**
+
+**Property 94: Intent Extraction via OpenRouter**
+*For any* transcribed text, the system should extract user intent and parameters using OpenRouter AI.
+**Validates: Requirements 16.3**
+
+**Property 95: Intent Support Completeness**
+*For any* supported intent (price_query, create_listing, make_offer, search_listings, general_help), the system should correctly identify and process it.
+**Validates: Requirements 16.4**
+
+**Property 96: User Confirmation Display**
+*For any* extracted intent and parameters, the system should display them in business-friendly language for user confirmation.
+**Validates: Requirements 16.5**
+
+**Property 97: API Execution After Confirmation**
+*For any* confirmed intent, the system should execute the appropriate API call with extracted parameters.
+**Validates: Requirements 16.6**
+
+**Property 98: Successful Redirection**
+*For any* successful API call, the system should redirect the user to the relevant page.
+**Validates: Requirements 16.7**
+
+**Property 99: Error Handling in User Language**
+*For any* failed API call, the system should explain the error in the user's language.
+**Validates: Requirements 16.8**
+
+### User Guide Properties
+
+**Property 100: Guide Page Routing**
+*For any* user navigating to the Guide page, the system should display content without routing errors.
+**Validates: Requirements 17.1**
+
+**Property 101: Automatic Guide Translation**
+*For any* user with a non-English language preference, guide content should be automatically translated.
+**Validates: Requirements 17.2**
+
+**Property 102: No Manual Translation Prompts**
+*For any* guide page, the system should NOT display "use google translate" messages.
+**Validates: Requirements 17.3**
+
+**Property 103: Guide Discoverability**
+*For any* page in the application, users should have access to guide links (home page CTA, footer link, or floating button).
+**Validates: Requirements 17.4, 17.5, 17.6**
+
+### Login Experience Properties
+
+**Property 104: Business Benefits Display**
+*For any* user viewing the login page, at least 6 business benefits should be displayed.
+**Validates: Requirements 18.1**
+
+**Property 105: No Technical Jargon**
+*For any* text on the login page, technical terms (API names, model names) should NOT be displayed.
+**Validates: Requirements 18.3**
+
+**Property 106: Farmer-Friendly Language**
+*For any* feature description on the login page, language should be clear and farmer-friendly.
+**Validates: Requirements 18.4**
+
+### Modern UI Properties
+
+**Property 107: Consistent Color Scheme**
+*For any* page in the application, the color scheme should be consistent and vibrant.
+**Validates: Requirements 19.1**
+
+**Property 108: Smooth Transitions**
+*For any* page navigation or state change, transitions should be smooth and animated.
+**Validates: Requirements 19.2**
+
+**Property 109: Interactive Feedback**
+*For any* interactive element (button, card), hover effects should provide visual feedback.
+**Validates: Requirements 19.3**
+
+**Property 110: Loading State Indication**
+*For any* data fetching operation, loading animations should be displayed.
+**Validates: Requirements 19.4**
+
+### Image Management Properties
+
+**Property 111: Local Image Storage**
+*For any* crop image, it should be stored locally in frontend/public/images/crops/.
+**Validates: Requirements 20.1, 20.2**
+
+**Property 112: Local Image Path Usage**
+*For any* displayed listing, the image path should reference local storage, NOT external URLs.
+**Validates: Requirements 20.3**
+
+**Property 113: Image Fallback Handling**
+*For any* missing crop image, a generic placeholder should be displayed without breaking the UI.
+**Validates: Requirements 20.4**
+
+**Property 114: Consistent Image Display**
+*For any* page displaying listings (Home, Browse, Detail), images should load correctly.
+**Validates: Requirements 20.5**
+
+### Negotiations Management Properties
+
+**Property 115: View Details Navigation**
+*For any* negotiation with a "View Details" button, clicking it should navigate to the negotiation detail page.
+**Validates: Requirements 21.1**
+
+**Property 116: Withdraw Functionality**
+*For any* negotiation with a "Withdraw" button, clicking it should call the API to cancel the negotiation.
+**Validates: Requirements 21.2**
+
+**Property 117: Negotiation Loading States**
+*For any* negotiation data fetch, loading states should be displayed.
+**Validates: Requirements 21.3**
+
+**Property 118: Negotiation Error Handling**
+*For any* negotiation API error, user-friendly error messages should be displayed.
+**Validates: Requirements 21.4**
 
 
 ## Error Handling

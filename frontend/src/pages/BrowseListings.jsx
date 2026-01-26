@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { listingsAPI } from '../utils/api';
 import { FiSearch, FiFilter } from 'react-icons/fi';
+import { getCropImageUrl } from '../utils/cropImageMapper';
 
 export default function BrowseListings() {
   const [listings, setListings] = useState([]);
@@ -102,41 +103,75 @@ export default function BrowseListings() {
         </div>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {listings.map((listing) => (
-            <Link key={listing.id} to={`/listing/${listing.id}`} className="card hover:shadow-lg transition-shadow">
-              <div className="aspect-square bg-gray-200 rounded-lg mb-4 flex items-center justify-center text-6xl">
-                🌾
-              </div>
-              
-              <h3 className="font-bold text-xl mb-2">{listing.cropType}</h3>
-              
-              <div className="flex justify-between items-center mb-3">
-                <span className="text-3xl font-bold text-primary-600">₹{listing.finalPrice}</span>
-                <span className="text-gray-600">/{listing.unit}</span>
-              </div>
-
-              <div className="flex items-center justify-between mb-3">
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  listing.qualityTier === 'premium' ? 'bg-yellow-100 text-yellow-800' :
-                  listing.qualityTier === 'standard' ? 'bg-blue-100 text-blue-800' :
-                  'bg-gray-100 text-gray-800'
-                }`}>
-                  {listing.qualityTier}
-                </span>
-                <span className="text-sm text-gray-600">{listing.quantity} {listing.unit}</span>
-              </div>
-
-              {listing.vendor && (
-                <div className="text-sm text-gray-600 border-t pt-3">
-                  <div>Vendor: {listing.vendor.name || 'Anonymous'}</div>
-                  <div className="flex items-center mt-1">
-                    <span className="text-yellow-500">⭐⭐⭐⭐</span>
-                    <span className="ml-1">(4.2)</span>
-                  </div>
+          {listings.map((listing) => {
+            // Handle images - could be array or JSON string
+            let images = [];
+            if (listing.images) {
+              if (Array.isArray(listing.images)) {
+                images = listing.images;
+              } else if (typeof listing.images === 'string') {
+                try {
+                  images = JSON.parse(listing.images);
+                } catch (e) {
+                  images = [];
+                }
+              }
+            }
+            const imageUrl = images[0] || getCropImageUrl(listing.cropType);
+            
+            return (
+              <Link key={listing.id} to={`/listing/${listing.id}`} className="card hover:shadow-lg transition-shadow">
+                <div className="aspect-square bg-gray-200 rounded-lg mb-4 overflow-hidden">
+                  <img 
+                    src={imageUrl} 
+                    alt={listing.cropType}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    onError={(e) => {
+                      e.target.src = '/images/crops/wheat.jpg';
+                    }}
+                  />
                 </div>
-              )}
-            </Link>
-          ))}
+                
+                <h3 className="font-bold text-xl mb-2">{listing.cropType}</h3>
+                
+                <div className="mb-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-3xl font-bold text-primary-600">₹{listing.finalPrice}</span>
+                    <span className="text-gray-600">/{listing.unit}</span>
+                  </div>
+                  {listing.basePrice !== listing.finalPrice && (
+                    <div className="flex items-center space-x-2 mt-1">
+                      <span className="text-sm text-gray-500 line-through">₹{listing.basePrice}</span>
+                      <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">
+                        {Math.round(((listing.finalPrice - listing.basePrice) / listing.basePrice) * 100)}% off
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-between mb-3">
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    listing.qualityTier === 'premium' ? 'bg-yellow-100 text-yellow-800' :
+                    listing.qualityTier === 'standard' ? 'bg-blue-100 text-blue-800' :
+                    'bg-gray-100 text-gray-800'
+                  }`}>
+                    {listing.qualityTier}
+                  </span>
+                  <span className="text-sm text-gray-600">{listing.quantity} {listing.unit}</span>
+                </div>
+
+                {listing.vendor && (
+                  <div className="text-sm text-gray-600 border-t pt-3">
+                    <div>Vendor: {listing.vendor.name || 'Anonymous'}</div>
+                    <div className="flex items-center mt-1">
+                      <span className="text-yellow-500">⭐⭐⭐⭐</span>
+                      <span className="ml-1">(4.2)</span>
+                    </div>
+                  </div>
+                )}
+              </Link>
+            );
+          })}
         </div>
       )}
 
