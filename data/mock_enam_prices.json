@@ -1,0 +1,47 @@
+[
+  {
+    "cropType": "tomato",
+    "mandiName": "Azadpur Mandi",
+    "mandiLocation": "Delhi",
+    "modalPrice": 30,
+    "minPrice": 25,
+    "maxPrice": 35,
+    "date": "2024-01-26"
+  },
+  {
+    "cropType": "onion",
+    "mandiName": "Azadpur Mandi",
+    "mandiLocation": "Delhi",
+    "modalPrice": 40,
+    "minPrice": 35,
+    "maxPrice": 45,
+    "date": "2024-01-26"
+  },
+  {
+    "cropType": "potato",
+    "mandiName": "Azadpur Mandi",
+    "mandiLocation": "Delhi",
+    "modalPrice": 20,
+    "minPrice": 18,
+    "maxPrice": 22,
+    "date": "2024-01-26"
+  },
+  {
+    "cropType": "wheat",
+    "mandiName": "Azadpur Mandi",
+    "mandiLocation": "Delhi",
+    "modalPrice": 2500,
+    "minPrice": 2400,
+    "maxPrice": 2600,
+    "date": "2024-01-26"
+  },
+  {
+    "cropType": "rice",
+    "mandiName": "Azadpur Mandi",
+    "mandiLocation": "Delhi",
+    "modalPrice": 3000,
+    "minPrice": 2900,
+    "maxPrice": 3100,
+    "date": "2024-01-26"
+  }
+]
