@@ -167,6 +167,12 @@ docker-compose up -d --build --force-recreate
 - **Fix**: Installed and configured ReactMarkdown
 - **Status**: Fixed ✅
 
+### Issue 6: ERR_EMPTY_RESPONSE on Login
+- **Cause**: Frontend container missing react-markdown package, causing entire frontend to crash
+- **Fix**: Rebuilt frontend container with `docker-compose build --no-cache frontend`
+- **Status**: Fixed ✅
+- **Details**: Package was in package.json but not installed in Docker container
+
 ---
 
 ## 📝 Files Changed Today
