@@ -127,7 +127,7 @@ export default function Login() {
                     type="text"
                     value={otp}
                     onChange={(e) => setOTP(e.target.value)}
-                    placeholder="123456"
+                    placeholder="Try 1104"
                     maxLength="6"
                     className="input-field pl-10 text-center text-2xl tracking-widest"
                     required

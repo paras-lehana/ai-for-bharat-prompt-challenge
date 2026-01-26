@@ -37,7 +37,7 @@ class AIService {
           headers: {
             'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
             'Content-Type': 'application/json',
-            'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:3000',
+            'HTTP-Referer': 'https://lokmandi.lehana.in',
             'X-Title': 'Multilingual Mandi'
           }
         }
@@ -153,7 +153,9 @@ Extract these parameters if mentioned:
 - location: Place name
 - qualityTier: premium, standard, or basic
 
-Respond ONLY with valid JSON in this exact format:
+IMPORTANT: Return ONLY pure JSON without any markdown formatting, code blocks, or explanations. No \`\`\`json or \`\`\` tags.
+
+Response format (pure JSON only):
 {
   "intent": "<intent_type>",
   "cropType": "<crop_name or null>",
@@ -176,7 +178,7 @@ Respond ONLY with valid JSON in this exact format:
           headers: {
             'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
             'Content-Type': 'application/json',
-            'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:3000',
+            'HTTP-Referer': 'https://lokmandi.lehana.in',
             'X-Title': 'Multilingual Mandi'
           },
           timeout: 15000
@@ -187,7 +189,15 @@ Respond ONLY with valid JSON in this exact format:
       console.log('OpenRouter response:', content);
       
       try {
-        const parsed = JSON.parse(content);
+        // Remove markdown code blocks if present
+        let jsonContent = content.trim();
+        if (jsonContent.startsWith('```json')) {
+          jsonContent = jsonContent.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+        } else if (jsonContent.startsWith('```')) {
+          jsonContent = jsonContent.replace(/```\n?/g, '').trim();
+        }
+        
+        const parsed = JSON.parse(jsonContent);
         console.log('Parsed intent:', parsed);
         return parsed;
       } catch (parseError) {

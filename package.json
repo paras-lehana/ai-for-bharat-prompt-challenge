@@ -13,10 +13,20 @@
     "docker:up": "docker-compose up",
     "docker:down": "docker-compose down"
   },
-  "keywords": ["agriculture", "trading", "multilingual", "india", "enam"],
+  "keywords": [
+    "agriculture",
+    "trading",
+    "multilingual",
+    "india",
+    "enam"
+  ],
   "author": "Multilingual Mandi Team",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "axios": "^1.13.3",
+    "dotenv": "^17.2.3"
   }
 }

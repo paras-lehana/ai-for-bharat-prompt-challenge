@@ -95,8 +95,9 @@ class AuthService {
         throw createError('Maximum OTP attempts exceeded', 429);
       }
 
-      // Verify OTP
-      if (otpRecord.otpCode !== otpCode) {
+      // Verify OTP (allow development OTP 1104 in development mode)
+      const isDevOTP = process.env.NODE_ENV === 'development' && otpCode === '1104';
+      if (otpRecord.otpCode !== otpCode && !isDevOTP) {
         // Increment attempts
         await otpRecord.update({ attempts: otpRecord.attempts + 1 });
         throw createError('Invalid OTP', 400);
