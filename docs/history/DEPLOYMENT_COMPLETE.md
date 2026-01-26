@@ -22,13 +22,13 @@
 ### 1. AI Integrations ✨
 
 #### SARVAM AI (Speech-to-Text)
-- ✅ API Key configured: `sk_6z9mp3xl_hmIP6pmLSzsZyqJUtNtKkGkv`
+- ✅ API Key configured: `key`
 - ✅ Real STT integration in `TranslationService.js`
 - ✅ Fallback to mock for development
 - ✅ Supports all 22 Indian languages
 
 #### OpenRouter AI (Smart Features)
-- ✅ API Key configured: `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`
+- ✅ API Key configured: `key`
 - ✅ Model: `qwen/qwen3-vl-32b-instruct`
 - ✅ AI-powered listing descriptions
 - ✅ Smart negotiation analysis

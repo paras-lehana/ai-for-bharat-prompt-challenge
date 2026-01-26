@@ -6,7 +6,7 @@
 const https = require('https');
 const fs = require('fs');
 
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || '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';
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
 console.log('🧪 Testing OpenRouter with SARVAM transcription...\n');
 

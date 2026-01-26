@@ -7,7 +7,7 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
-const SARVAM_API_KEY = process.env.SARVAM_API_KEY || 'sk_6z9mp3xl_hmIP6pmLSzsZyqJUtNtKkGkv';
+const SARVAM_API_KEY = process.env.SARVAM_API_KEY;
 const audioFilePath = 'test/sample_add_listing.m4a';
 
 console.log('🧪 Testing SARVAM STT API with audio file...\n');

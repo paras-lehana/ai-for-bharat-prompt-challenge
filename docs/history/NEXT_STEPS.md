@@ -37,12 +37,12 @@
 #### A. SARVAM AI Integration
 **Purpose**: Real Speech-to-Text for voice queries
 
-**API Key**: `sk_6z9mp3xl_hmIP6pmLSzsZyqJUtNtKkGkv`
+**API Key**: `sarvam-key`
 
 **Implementation Steps**:
 1. Update `.env` file:
    ```env
-   SARVAM_API_KEY=sk_6z9mp3xl_hmIP6pmLSzsZyqJUtNtKkGkv
+   SARVAM_API_KEY=sarvam-key
    SARVAM_API_URL=https://api.sarvam.ai
    ```
 
@@ -79,13 +79,13 @@
 #### B. OpenRouter AI Integration
 **Purpose**: AI-powered listing generation and smart queries
 
-**API Key**: `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`
+**API Key**: `openrouter-key`
 **Model**: `qwen/qwen3-vl-32b-instruct`
 
 **Implementation Steps**:
 1. Update `.env` file:
    ```env
-   OPENROUTER_API_KEY=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
+   OPENROUTER_API_KEY=openrouter-key
    OPENROUTER_MODEL=qwen/qwen3-vl-32b-instruct
    OPENROUTER_API_URL=https://openrouter.ai/api/v1
    ```
@@ -360,8 +360,8 @@ curl -X POST http://localhost:5000/api/listings/generate \
 nano .env
 
 # Add these lines:
-SARVAM_API_KEY=sk_6z9mp3xl_hmIP6pmLSzsZyqJUtNtKkGkv
-OPENROUTER_API_KEY=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
+SARVAM_API_KEY=sarvam-key
+OPENROUTER_API_KEY=openrouter-key
 OPENROUTER_MODEL=qwen/qwen3-vl-32b-instruct
 
 # Restart containers

@@ -314,11 +314,11 @@ JWT_SECRET=your-super-secret-jwt-key-change-in-production
 JWT_EXPIRES_IN=7d
 
 # SARVAM AI Configuration
-SARVAM_API_KEY=sk_6z9mp3xl_hmIP6pmLSzsZyqJUtNtKkGkv
+SARVAM_API_KEY=sarvam-key
 SARVAM_API_URL=https://api.sarvam.ai
 
 # OpenRouter AI Configuration
-OPENROUTER_API_KEY=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
+OPENROUTER_API_KEY=openrouter-key
 OPENROUTER_MODEL=qwen/qwen3-vl-32b-instruct
 OPENROUTER_API_URL=https://openrouter.ai/api/v1
 

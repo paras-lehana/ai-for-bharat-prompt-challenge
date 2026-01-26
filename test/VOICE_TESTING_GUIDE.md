@@ -21,8 +21,8 @@ npm --version
 ### 2. API Keys Configuration
 Check that API keys are configured in `backend/.env`:
 ```env
-SARVAM_API_KEY=sk_6z9mp3xl_hmIP6pmLSzsZyqJUtNtKkGkv
-OPENROUTER_API_KEY=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
+SARVAM_API_KEY=sarvam-key
+OPENROUTER_API_KEY=openrouter-key
 ```
 
 ### 3. Install Dependencies

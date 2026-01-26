@@ -16,7 +16,8 @@ services:
       - /app/node_modules
     command: npm run dev
     networks:
-      - mandi-network
+      root_default:
+        ipv4_address: 172.18.0.20
 
   frontend:
     build:
@@ -32,8 +33,9 @@ services:
     depends_on:
       - backend
     networks:
-      - mandi-network
+      root_default:
+        ipv4_address: 172.18.0.21
 
 networks:
-  mandi-network:
-    driver: bridge
+  root_default:
+    external: true

@@ -47,8 +47,9 @@ async function initializeDatabase() {
     
     // Sync models (create tables if they don't exist)
     // In production, use migrations instead of sync
-    await sequelize.sync({ alter: isDevelopment });
-    console.log('Database models synchronized');
+    // TEMPORARY FIX: Use force to drop and recreate tables
+    await sequelize.sync({ force: true });
+    console.log('Database models synchronized (force mode)');
     
     return sequelize;
   } catch (error) {
