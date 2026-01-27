@@ -1,0 +1,428 @@
+{
+  "timestamp": "2026-01-27T11:03:26.766Z",
+  "totalTests": 18,
+  "passed": 14,
+  "failed": 4,
+  "tests": [
+    {
+      "id": "PQ1",
+      "intent": "price_query",
+      "language": "Hindi",
+      "input": "मुझे गेहूं की कीमत बताओ",
+      "translation": "Tell me wheat price",
+      "expectedIntent": "price_query",
+      "expectedParams": {
+        "cropType": "wheat"
+      },
+      "actualIntent": "price_query",
+      "actualParams": {
+        "cropType": "गेहूं",
+        "quantity": null,
+        "price": null,
+        "location": null,
+        "qualityTier": null
+      },
+      "confidence": "high",
+      "passed": false,
+      "intentMatch": true,
+      "paramsMatch": false,
+      "paramIssues": [
+        "cropType: expected \"wheat\", got \"गेहूं\""
+      ],
+      "rawResponse": "{\n  \"intent\": \"price_query\",\n  \"cropType\": \"गेहूं\",\n  \"quantity\": null,\n  \"price\": null,\n  \"location\": null,\n  \"qualityTier\": null,\n  \"confidence\": \"high\"\n}"
+    },
+    {
+      "id": "PQ2",
+      "intent": "price_query",
+      "language": "English",
+      "input": "What is the price of rice?",
+      "error": "Cannot read properties of undefined (reading '0')",
+      "passed": false
+    },
+    {
+      "id": "PQ3",
+      "intent": "price_query",
+      "language": "Hindi",
+      "input": "टमाटर कितने का है?",
+      "error": "Cannot read properties of undefined (reading '0')",
+      "passed": false
+    },
+    {
+      "id": "PQ4",
+      "intent": "price_query",
+      "language": "English",
+      "input": "Tell me onion prices",
+      "translation": "Tell me onion prices",
+      "expectedIntent": "price_query",
+      "expectedParams": {
+        "cropType": "onion"
+      },
+      "actualIntent": "price_query",
+      "actualParams": {
+        "cropType": "onion",
+        "quantity": null,
+        "price": null,
+        "location": null,
+        "qualityTier": null
+      },
+      "confidence": "high",
+      "passed": true,
+      "intentMatch": true,
+      "paramsMatch": true,
+      "paramIssues": [],
+      "rawResponse": "{\n  \"intent\": \"price_query\",\n  \"cropType\": \"onion\",\n  \"quantity\": null,\n  \"price\": null,\n  \"location\": null,\n  \"qualityTier\": null,\n  \"confidence\": \"high\"\n}"
+    },
+    {
+      "id": "CL1",
+      "intent": "create_listing",
+      "language": "Hindi",
+      "input": "मैं 100 किलो टमाटर बेचना चाहता हूं",
+      "translation": "I want to sell 100 kg tomatoes",
+      "expectedIntent": "create_listing",
+      "expectedParams": {
+        "cropType": "tomato",
+        "quantity": "100 kg"
+      },
+      "actualIntent": "create_listing",
+      "actualParams": {
+        "cropType": "tomato",
+        "quantity": "100 kg",
+        "price": null,
+        "location": null,
+        "qualityTier": null
+      },
+      "confidence": "high",
+      "passed": true,
+      "intentMatch": true,
+      "paramsMatch": true,
+      "paramIssues": [],
+      "rawResponse": "{\n  \"intent\": \"create_listing\",\n  \"cropType\": \"tomato\",\n  \"quantity\": \"100 kg\",\n  \"price\": null,\n  \"location\": null,\n  \"qualityTier\": null,\n  \"confidence\": \"high\"\n}"
+    },
+    {
+      "id": "CL2",
+      "intent": "create_listing",
+      "language": "English",
+      "input": "I want to sell 50 quintal wheat",
+      "translation": "I want to sell 50 quintal wheat",
+      "expectedIntent": "create_listing",
+      "expectedParams": {
+        "cropType": "wheat",
+        "quantity": "50 quintal"
+      },
+      "actualIntent": "create_listing",
+      "actualParams": {
+        "cropType": "wheat",
+        "quantity": "50 quintal",
+        "price": null,
+        "location": null,
+        "qualityTier": null
+      },
+      "confidence": "high",
+      "passed": true,
+      "intentMatch": true,
+      "paramsMatch": true,
+      "paramIssues": [],
+      "rawResponse": "{\n  \"intent\": \"create_listing\",\n  \"cropType\": \"wheat\",\n  \"quantity\": \"50 quintal\",\n  \"price\": null,\n  \"location\": null,\n  \"qualityTier\": null,\n  \"confidence\": \"high\"\n}"
+    },
+    {
+      "id": "CL3",
+      "intent": "create_listing",
+      "language": "Hindi",
+      "input": "मेरे पास 200 किलो प्याज है बेचने के लिए",
+      "translation": "I have 200 kg onions to sell",
+      "expectedIntent": "create_listing",
+      "expectedParams": {
+        "cropType": "onion",
+        "quantity": "200 kg"
+      },
+      "actualIntent": "create_listing",
+      "actualParams": {
+        "cropType": "onion",
+        "quantity": "200 kg",
+        "price": null,
+        "location": null,
+        "qualityTier": null
+      },
+      "confidence": "high",
+      "passed": true,
+      "intentMatch": true,
+      "paramsMatch": true,
+      "paramIssues": [],
+      "rawResponse": "{\n  \"intent\": \"create_listing\",\n  \"cropType\": \"onion\",\n  \"quantity\": \"200 kg\",\n  \"price\": null,\n  \"location\": null,\n  \"qualityTier\": null,\n  \"confidence\": \"high\"\n}"
+    },
+    {
+      "id": "CL4",
+      "intent": "create_listing",
+      "language": "English",
+      "input": "Selling premium quality rice 100 kg",
+      "translation": "Selling premium quality rice 100 kg",
+      "expectedIntent": "create_listing",
+      "expectedParams": {
+        "cropType": "rice",
+        "quantity": "100 kg",
+        "qualityTier": "premium"
+      },
+      "actualIntent": "create_listing",
+      "actualParams": {
+        "cropType": "rice",
+        "quantity": "100 kg",
+        "price": null,
+        "location": null,
+        "qualityTier": "premium"
+      },
+      "confidence": "high",
+      "passed": true,
+      "intentMatch": true,
+      "paramsMatch": true,
+      "paramIssues": [],
+      "rawResponse": "{\n  \"intent\": \"create_listing\",\n  \"cropType\": \"rice\",\n  \"quantity\": \"100 kg\",\n  \"price\": null,\n  \"location\": null,\n  \"qualityTier\": \"premium\",\n  \"confidence\": \"high\"\n}"
+    },
+    {
+      "id": "MO1",
+      "intent": "make_offer",
+      "language": "Hindi",
+      "input": "मैं 5000 रुपये का ऑफर देना चाहता हूं",
+      "translation": "I want to offer 5000 rupees",
+      "expectedIntent": "make_offer",
+      "expectedParams": {
+        "price": 5000
+      },
+      "actualIntent": "make_offer",
+      "actualParams": {
+        "cropType": null,
+        "quantity": null,
+        "price": "5000",
+        "location": null,
+        "qualityTier": null
+      },
+      "confidence": "high",
+      "passed": true,
+      "intentMatch": true,
+      "paramsMatch": true,
+      "paramIssues": [],
+      "rawResponse": "{\n  \"intent\": \"make_offer\",\n  \"cropType\": null,\n  \"quantity\": null,\n  \"price\": \"5000\",\n  \"location\": null,\n  \"qualityTier\": null,\n  \"confidence\": \"high\"\n}"
+    },
+    {
+      "id": "MO2",
+      "intent": "make_offer",
+      "language": "English",
+      "input": "I will pay 3000 for this listing",
+      "translation": "I will pay 3000 for this listing",
+      "expectedIntent": "make_offer",
+      "expectedParams": {
+        "price": 3000
+      },
+      "actualIntent": "make_offer",
+      "actualParams": {
+        "cropType": null,
+        "quantity": null,
+        "price": "3000",
+        "location": null,
+        "qualityTier": null
+      },
+      "confidence": "high",
+      "passed": true,
+      "intentMatch": true,
+      "paramsMatch": true,
+      "paramIssues": [],
+      "rawResponse": "{\n  \"intent\": \"make_offer\",\n  \"cropType\": null,\n  \"quantity\": null,\n  \"price\": \"3000\",\n  \"location\": null,\n  \"qualityTier\": null,\n  \"confidence\": \"high\"\n}"
+    },
+    {
+      "id": "MO3",
+      "intent": "make_offer",
+      "language": "Hindi",
+      "input": "इस लिस्टिंग पर 2500 रुपये दूंगा",
+      "translation": "I will give 2500 rupees for this listing",
+      "expectedIntent": "make_offer",
+      "expectedParams": {
+        "price": 2500
+      },
+      "actualIntent": "make_offer",
+      "actualParams": {
+        "cropType": null,
+        "quantity": null,
+        "price": "2500",
+        "location": null,
+        "qualityTier": null
+      },
+      "confidence": "high",
+      "passed": true,
+      "intentMatch": true,
+      "paramsMatch": true,
+      "paramIssues": [],
+      "rawResponse": "{\n  \"intent\": \"make_offer\",\n  \"cropType\": null,\n  \"quantity\": null,\n  \"price\": \"2500\",\n  \"location\": null,\n  \"qualityTier\": null,\n  \"confidence\": \"high\"\n}"
+    },
+    {
+      "id": "SL1",
+      "intent": "search_listings",
+      "language": "Hindi",
+      "input": "मुझे प्याज खरीदना है",
+      "translation": "I want to buy onions",
+      "expectedIntent": "search_listings",
+      "expectedParams": {
+        "cropType": "onion"
+      },
+      "actualIntent": "search_listings",
+      "actualParams": {
+        "cropType": "onion",
+        "quantity": null,
+        "price": null,
+        "location": null,
+        "qualityTier": null
+      },
+      "confidence": "high",
+      "passed": true,
+      "intentMatch": true,
+      "paramsMatch": true,
+      "paramIssues": [],
+      "rawResponse": "{\n  \"intent\": \"search_listings\",\n  \"cropType\": \"onion\",\n  \"quantity\": null,\n  \"price\": null,\n  \"location\": null,\n  \"qualityTier\": null,\n  \"confidence\": \"high\"\n}"
+    },
+    {
+      "id": "SL2",
+      "intent": "search_listings",
+      "language": "English",
+      "input": "Looking for potatoes",
+      "translation": "Looking for potatoes",
+      "expectedIntent": "search_listings",
+      "expectedParams": {
+        "cropType": "potato"
+      },
+      "actualIntent": "search_listings",
+      "actualParams": {
+        "cropType": "potato",
+        "quantity": null,
+        "price": null,
+        "location": null,
+        "qualityTier": null
+      },
+      "confidence": "high",
+      "passed": true,
+      "intentMatch": true,
+      "paramsMatch": true,
+      "paramIssues": [],
+      "rawResponse": "{\n  \"intent\": \"search_listings\",\n  \"cropType\": \"potato\",\n  \"quantity\": null,\n  \"price\": null,\n  \"location\": null,\n  \"qualityTier\": null,\n  \"confidence\": \"high\"\n}"
+    },
+    {
+      "id": "SL3",
+      "intent": "search_listings",
+      "language": "Hindi",
+      "input": "गेहूं खोज रहा हूं",
+      "translation": "Looking for wheat",
+      "expectedIntent": "search_listings",
+      "expectedParams": {
+        "cropType": "wheat"
+      },
+      "actualIntent": "search_listings",
+      "actualParams": {
+        "cropType": "गेहूं",
+        "quantity": null,
+        "price": null,
+        "location": null,
+        "qualityTier": null
+      },
+      "confidence": "high",
+      "passed": false,
+      "intentMatch": true,
+      "paramsMatch": false,
+      "paramIssues": [
+        "cropType: expected \"wheat\", got \"गेहूं\""
+      ],
+      "rawResponse": "{\n  \"intent\": \"search_listings\",\n  \"cropType\": \"गेहूं\",\n  \"quantity\": null,\n  \"price\": null,\n  \"location\": null,\n  \"qualityTier\": null,\n  \"confidence\": \"high\"\n}"
+    },
+    {
+      "id": "SL4",
+      "intent": "search_listings",
+      "language": "English",
+      "input": "Find premium quality tomatoes",
+      "translation": "Find premium quality tomatoes",
+      "expectedIntent": "search_listings",
+      "expectedParams": {
+        "cropType": "tomato",
+        "qualityTier": "premium"
+      },
+      "actualIntent": "search_listings",
+      "actualParams": {
+        "cropType": "tomato",
+        "quantity": null,
+        "price": null,
+        "location": null,
+        "qualityTier": "premium"
+      },
+      "confidence": "high",
+      "passed": true,
+      "intentMatch": true,
+      "paramsMatch": true,
+      "paramIssues": [],
+      "rawResponse": "{\n  \"intent\": \"search_listings\",\n  \"cropType\": \"tomato\",\n  \"quantity\": null,\n  \"price\": null,\n  \"location\": null,\n  \"qualityTier\": \"premium\",\n  \"confidence\": \"high\"\n}"
+    },
+    {
+      "id": "GH1",
+      "intent": "general_help",
+      "language": "Hindi",
+      "input": "यह कैसे काम करता है?",
+      "translation": "How does this work?",
+      "expectedIntent": "general_help",
+      "expectedParams": {},
+      "actualIntent": "general_help",
+      "actualParams": {
+        "cropType": null,
+        "quantity": null,
+        "price": null,
+        "location": null,
+        "qualityTier": null
+      },
+      "confidence": "high",
+      "passed": true,
+      "intentMatch": true,
+      "paramsMatch": true,
+      "paramIssues": [],
+      "rawResponse": "{\n  \"intent\": \"general_help\",\n  \"cropType\": null,\n  \"quantity\": null,\n  \"price\": null,\n  \"location\": null,\n  \"qualityTier\": null,\n  \"confidence\": \"high\"\n}"
+    },
+    {
+      "id": "GH2",
+      "intent": "general_help",
+      "language": "English",
+      "input": "I need help",
+      "translation": "I need help",
+      "expectedIntent": "general_help",
+      "expectedParams": {},
+      "actualIntent": "general_help",
+      "actualParams": {
+        "cropType": null,
+        "quantity": null,
+        "price": null,
+        "location": null,
+        "qualityTier": null
+      },
+      "confidence": "high",
+      "passed": true,
+      "intentMatch": true,
+      "paramsMatch": true,
+      "paramIssues": [],
+      "rawResponse": "{\n  \"intent\": \"general_help\",\n  \"cropType\": null,\n  \"quantity\": null,\n  \"price\": null,\n  \"location\": null,\n  \"qualityTier\": null,\n  \"confidence\": \"high\"\n}"
+    },
+    {
+      "id": "GH3",
+      "intent": "general_help",
+      "language": "Hindi",
+      "input": "मुझे मदद चाहिए",
+      "translation": "I need help",
+      "expectedIntent": "general_help",
+      "expectedParams": {},
+      "actualIntent": "general_help",
+      "actualParams": {
+        "cropType": null,
+        "quantity": null,
+        "price": null,
+        "location": null,
+        "qualityTier": null
+      },
+      "confidence": "high",
+      "passed": true,
+      "intentMatch": true,
+      "paramsMatch": true,
+      "paramIssues": [],
+      "rawResponse": "{\n  \"intent\": \"general_help\",\n  \"cropType\": null,\n  \"quantity\": null,\n  \"price\": null,\n  \"location\": null,\n  \"qualityTier\": null,\n  \"confidence\": \"high\"\n}"
+    }
+  ]
+}

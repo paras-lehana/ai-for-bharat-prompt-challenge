@@ -24,6 +24,7 @@ router.get('/search', asyncHandler(async (req, res) => {
   const listings = await Listing.findAll({
     where,
     include: [{ model: User, as: 'vendor', attributes: ['id', 'name', 'phoneNumber'] }],
+    order: [['createdAt', 'DESC']], // Newest listings first
     limit: 50
   });
 

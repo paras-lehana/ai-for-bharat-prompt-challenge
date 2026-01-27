@@ -1,0 +1,177 @@
+{
+  "timestamp": "2026-01-27T15:41:47.399Z",
+  "backend": {
+    "total": 8,
+    "passed": 8,
+    "failed": 0,
+    "tests": [
+      {
+        "name": "Health Check",
+        "passed": true,
+        "message": "Health endpoint returned 200",
+        "details": {
+          "status": "ok",
+          "timestamp": "2026-01-27T15:41:47.429Z",
+          "service": "Lokal Mandi API"
+        }
+      },
+      {
+        "name": "Auth - Send OTP",
+        "passed": true,
+        "message": "OTP sent successfully",
+        "details": {
+          "success": true,
+          "expiresAt": "2026-01-27T15:46:47.455Z"
+        }
+      },
+      {
+        "name": "Listings - Search",
+        "passed": true,
+        "message": "Found 4 wheat listings",
+        "details": {
+          "count": 4,
+          "sample": {
+            "images": "[\"/images/crops/wheat.jpg\"]",
+            "id": "d8a2d15d-a22d-444e-9985-a79dedb02f32",
+            "vendorId": "2a80c2a0-b065-4023-ad64-b5828061193a",
+            "cropType": "Wheat",
+            "quantity": 146,
+            "unit": "Kg",
+            "basePrice": 2452,
+            "qualityTier": "premium",
+            "qualityMultiplier": 1.2,
+            "demandAdjuster": 1.01,
+            "finalPrice": 2959,
+            "description": "Fresh Wheat from Jaipur, Rajasthan. High quality premium grade.",
+            "locationLat": 26.9124,
+            "locationLng": 75.7873,
+            "locationAddress": "Jaipur, Rajasthan",
+            "status": "active",
+            "createdAt": "2026-01-27T15:41:39.869Z",
+            "updatedAt": "2026-01-27T15:41:39.869Z",
+            "vendor": {
+              "id": "2a80c2a0-b065-4023-ad64-b5828061193a",
+              "name": "Vendor 7",
+              "phoneNumber": "+919876543217"
+            }
+          }
+        }
+      },
+      {
+        "name": "Listings - Get All (via search)",
+        "passed": true,
+        "message": "Found 28 total listings",
+        "details": {
+          "total": 28,
+          "byCrop": {
+            "Sugarcane": 3,
+            "Potato": 3,
+            "Onion": 1,
+            "Cotton": 3,
+            "Soybean": 6,
+            "Groundnut": 2,
+            "Rice": 3,
+            "Maize": 2,
+            "Tomato": 1,
+            "Wheat": 4
+          }
+        }
+      },
+      {
+        "name": "Voice - Parse Intent",
+        "passed": true,
+        "message": "All intent parsing tests passed",
+        "details": [
+          {
+            "input": "मुझे गेहूं की कीमत बताओ",
+            "passed": true,
+            "intent": "price_query",
+            "crop": "wheat"
+          },
+          {
+            "input": "मैं 100 किलो टमाटर बेचना चाहता हूं",
+            "passed": true,
+            "intent": "create_listing",
+            "crop": "tomato"
+          },
+          {
+            "input": "मुझे प्याज खरीदना है",
+            "passed": true,
+            "intent": "search_listings",
+            "crop": "onion"
+          }
+        ]
+      },
+      {
+        "name": "Prices - Get Current",
+        "passed": true,
+        "message": "Got price for wheat in Delhi: ₹90-110",
+        "details": {
+          "cropType": "wheat",
+          "location": "Delhi",
+          "modalPrice": 100,
+          "minPrice": 90,
+          "maxPrice": 110,
+          "source": "fallback",
+          "timestamp": "2026-01-27T15:42:04.339Z"
+        }
+      },
+      {
+        "name": "Vendors - Get Nearby",
+        "passed": true,
+        "message": "Found undefined nearby vendors",
+        "details": {}
+      },
+      {
+        "name": "Ratings - Get Vendor Ratings",
+        "passed": true,
+        "message": "Got ratings for vendor 2a80c2a0-b065-4023-ad64-b5828061193a",
+        "details": {
+          "vendorId": "2a80c2a0-b065-4023-ad64-b5828061193a",
+          "vendorName": "Vendor 7",
+          "trustScore": {
+            "badges": null,
+            "id": "7a0e2ea5-0ec4-47ce-8c9b-c179d23b6ae6",
+            "vendorId": "2a80c2a0-b065-4023-ad64-b5828061193a",
+            "overallScore": 3.53,
+            "deliveryScore": 4.77,
+            "qualityScore": 3.71,
+            "responseScore": 3.52,
+            "fairPricingScore": 3.77,
+            "transactionCount": 50,
+            "createdAt": "2026-01-27T15:41:39.606Z",
+            "updatedAt": "2026-01-27T15:41:39.606Z"
+          },
+          "badges": [],
+          "transactionCount": 0,
+          "recentRatings": [],
+          "flaggedForReview": false
+        }
+      }
+    ]
+  },
+  "frontend": {
+    "total": 2,
+    "passed": 2,
+    "failed": 0,
+    "tests": [
+      {
+        "name": "Homepage Loads",
+        "passed": true,
+        "message": "Frontend loads successfully",
+        "details": {
+          "hasTitle": true,
+          "hasRoot": true
+        }
+      },
+      {
+        "name": "API Proxy Works",
+        "passed": true,
+        "message": "API proxy working - found 3 listings",
+        "details": {
+          "count": 3
+        }
+      }
+    ]
+  }
+}

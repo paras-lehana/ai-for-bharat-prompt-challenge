@@ -49,6 +49,7 @@ const PORT = process.env.PORT || 5000;
 // CORS configuration
 const allowedOrigins = [
   'http://localhost:3001',
+  'https://lokalmandi.lehana.in',
   'https://lokmandi.lehana.in',
   'https://lokmandi.aidhunik.com'
 ];
@@ -87,7 +88,7 @@ app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 
     timestamp: new Date().toISOString(),
-    service: 'Multilingual Mandi API'
+    service: 'Lokal Mandi API'
   });
 });
 
@@ -124,7 +125,7 @@ async function startServer() {
     console.log('✅ Database initialized successfully');
     
     app.listen(PORT, () => {
-      console.log(`🚀 Multilingual Mandi API running on port ${PORT}`);
+      console.log(`🚀 Lokal Mandi API running on port ${PORT}`);
       console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`🌐 CORS enabled for: ${corsOptions.origin}`);
     });

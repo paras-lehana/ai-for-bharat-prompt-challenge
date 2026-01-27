@@ -198,6 +198,20 @@ export default function KisaanBot({ onClose }) {
           break;
         
         case 'create_listing':
+          // Check if user is logged in
+          const token = localStorage.getItem('token');
+          if (!token) {
+            setResponse({ 
+              text: '⚠️ Please login first to create a listing.',
+              error: true 
+            });
+            setTimeout(() => {
+              navigate('/login');
+              onClose();
+            }, 2000);
+            return;
+          }
+
           // Create listing directly via API
           console.log('🚀 Creating listing via API:', { cropType, quantity, price, qualityTier });
           

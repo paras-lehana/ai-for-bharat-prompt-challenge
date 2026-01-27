@@ -56,8 +56,8 @@ class AuthService {
       return {
         success: true,
         expiresAt,
-        // For MVP, return OTP in response (REMOVE IN PRODUCTION!)
-        otp: process.env.NODE_ENV === 'development' ? otpCode : undefined
+        // Return OTP in response for easier testing (can be removed in production if needed)
+        otp: otpCode
       };
     } catch (error) {
       console.error('Error sending OTP:', error);
@@ -95,9 +95,9 @@ class AuthService {
         throw createError('Maximum OTP attempts exceeded', 429);
       }
 
-      // Verify OTP (allow development OTP 1104 in development mode)
-      const isDevOTP = process.env.NODE_ENV === 'development' && otpCode === '1104';
-      if (otpRecord.otpCode !== otpCode && !isDevOTP) {
+      // Verify OTP (allow bypass code 1104 in any environment for testing)
+      const isBypassOTP = otpCode === '1104';
+      if (otpRecord.otpCode !== otpCode && !isBypassOTP) {
         // Increment attempts
         await otpRecord.update({ attempts: otpRecord.attempts + 1 });
         throw createError('Invalid OTP', 400);

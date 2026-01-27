@@ -1,0 +1,111 @@
+{
+  "timestamp": "2026-01-27T11:25:03.225Z",
+  "backend": {
+    "total": 8,
+    "passed": 4,
+    "failed": 4,
+    "tests": [
+      {
+        "name": "Health Check",
+        "passed": true,
+        "message": "Health endpoint returned 200",
+        "details": {
+          "status": "ok",
+          "timestamp": "2026-01-27T11:25:03.255Z",
+          "service": "Lokal Mandi API"
+        }
+      },
+      {
+        "name": "Auth - Send OTP",
+        "passed": true,
+        "message": "OTP sent successfully",
+        "details": {
+          "success": true,
+          "expiresAt": "2026-01-27T11:30:03.292Z"
+        }
+      },
+      {
+        "name": "Listings - Search",
+        "passed": false,
+        "message": "Found undefined wheat listings",
+        "details": {}
+      },
+      {
+        "name": "Listings - Get All",
+        "passed": false,
+        "error": "Request failed with status code 404"
+      },
+      {
+        "name": "Voice - Parse Intent",
+        "passed": true,
+        "message": "All intent parsing tests passed",
+        "details": [
+          {
+            "input": "मुझे गेहूं की कीमत बताओ",
+            "passed": true,
+            "intent": "price_query",
+            "crop": "wheat"
+          },
+          {
+            "input": "मैं 100 किलो टमाटर बेचना चाहता हूं",
+            "passed": true,
+            "intent": "create_listing",
+            "crop": "tomato"
+          },
+          {
+            "input": "मुझे प्याज खरीदना है",
+            "passed": true,
+            "intent": "search_listings",
+            "crop": "onion"
+          }
+        ]
+      },
+      {
+        "name": "Prices - Get Current",
+        "passed": true,
+        "message": "Got price for wheat in Delhi: ₹90-110",
+        "details": {
+          "cropType": "wheat",
+          "location": "Delhi",
+          "modalPrice": 100,
+          "minPrice": 90,
+          "maxPrice": 110,
+          "source": "fallback",
+          "timestamp": "2026-01-27T11:25:13.786Z"
+        }
+      },
+      {
+        "name": "Vendors - Get All",
+        "passed": false,
+        "error": "Request failed with status code 404"
+      },
+      {
+        "name": "Ratings - Get All",
+        "passed": false,
+        "error": "Request failed with status code 404"
+      }
+    ]
+  },
+  "frontend": {
+    "total": 2,
+    "passed": 1,
+    "failed": 1,
+    "tests": [
+      {
+        "name": "Homepage Loads",
+        "passed": true,
+        "message": "Frontend loads successfully",
+        "details": {
+          "hasTitle": true,
+          "hasRoot": true
+        }
+      },
+      {
+        "name": "API Proxy Works",
+        "passed": false,
+        "message": "API proxy working - found undefined listings",
+        "details": {}
+      }
+    ]
+  }
+}

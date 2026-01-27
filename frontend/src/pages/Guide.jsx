@@ -280,22 +280,27 @@ export default function Guide() {
 
   const [selectedGuide, setSelectedGuide] = useState(null);
 
-  // Translate content when language changes
+  // Translate content when language changes (ONLY if not English)
   useEffect(() => {
-    if (selectedLanguage !== 'en' && selectedGuide) {
-      translateContent(selectedGuide.content);
+    // CRITICAL: Do NOT translate if English is selected
+    if (selectedLanguage === 'en') {
+      setTranslatedContent({}); // Clear any existing translations
+      setTranslating(false);
+      return; // Exit early - no translation needed
+    }
+    
+    // Only translate for non-English languages AND when a guide is selected
+    if (selectedGuide) {
+      translateContent(selectedGuide.content, selectedGuide.title);
     }
   }, [selectedLanguage, selectedGuide]);
 
-  const translateContent = async (text) => {
-    if (selectedLanguage === 'en') {
-      return text;
-    }
-
+  const translateContent = async (text, title) => {
+    const cacheKey = `${title}-${selectedLanguage}`;
+    
     // Check if already translated
-    const cacheKey = `${selectedGuide.title}-${selectedLanguage}`;
     if (translatedContent[cacheKey]) {
-      return translatedContent[cacheKey];
+      return;
     }
 
     setTranslating(true);
@@ -310,10 +315,9 @@ export default function Guide() {
         ...prev,
         [cacheKey]: translated
       }));
-      return translated;
     } catch (error) {
       console.error('Translation error:', error);
-      return text;
+      // Keep original text on error
     } finally {
       setTranslating(false);
     }
@@ -333,7 +337,7 @@ export default function Guide() {
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">📚 Help & Documentation</h1>
         <p className="text-xl text-gray-600 mb-6">
-          Everything you need to know about Multilingual Mandi
+          Everything you need to know about Lokal Mandi
         </p>
 
         {/* Language Selector */}

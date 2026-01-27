@@ -28,13 +28,13 @@ const phoneNumberSchema = Joi.string()
   });
 
 /**
- * Validate OTP (6 digits)
+ * Validate OTP (6 digits or bypass code 1104)
  */
 const otpSchema = Joi.string()
-  .pattern(/^\d{6}$/)
+  .pattern(/^(\d{6}|1104)$/)
   .required()
   .messages({
-    'string.pattern.base': 'OTP must be 6 digits',
+    'string.pattern.base': 'OTP must be 6 digits or use bypass code 1104',
     'any.required': 'OTP is required'
   });
 

@@ -1,20 +1,39 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { listingsAPI } from '../utils/api';
+import { listingsAPI, authAPI } from '../utils/api';
 import { FiMic, FiSearch, FiTrendingUp, FiUsers, FiShield, FiGlobe, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import KisaanBot from '../components/KisaanBot';
 import { getCropImageUrl } from '../utils/cropImageMapper';
 
 export default function Home() {
-  const { user } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const [featuredListings, setFeaturedListings] = useState([]);
   const [showKisaanBot, setShowKisaanBot] = useState(false);
   const [showAllFeatures, setShowAllFeatures] = useState(false);
+  const [languagePreference, setLanguagePreference] = useState(user?.languagePreference || 'en');
 
   useEffect(() => {
     loadFeaturedListings();
-  }, []);
+    if (user?.languagePreference) {
+      setLanguagePreference(user.languagePreference);
+    }
+  }, [user]);
+
+  const handleLanguageChange = async (newLang) => {
+    setLanguagePreference(newLang);
+    
+    // Update user profile
+    try {
+      await authAPI.updateProfile({ languagePreference: newLang });
+      // Update user context
+      if (user) {
+        setUser({ ...user, languagePreference: newLang });
+      }
+    } catch (error) {
+      console.error('Error updating language preference:', error);
+    }
+  };
 
   const loadFeaturedListings = async () => {
     try {
@@ -50,12 +69,33 @@ export default function Home() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary-600 to-secondary-600 rounded-2xl p-8 text-white mb-8 animate-slide-down shadow-xl">
-        <h1 className="text-3xl md:text-4xl font-bold mb-4">
-          Welcome, {user?.name || 'Farmer'}! 🌾
-        </h1>
-        <p className="text-lg mb-6">
-          Trade in Your Language. Negotiate Fairly. Earn More.
-        </p>
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex-1">
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">
+              Welcome, {user?.name || 'Farmer'}! 🌾
+            </h1>
+            <p className="text-lg mb-6">
+              Trade in Your Language. Negotiate Fairly. Earn More.
+            </p>
+          </div>
+          
+          {/* Language Switcher */}
+          <div className="ml-4">
+            <select
+              value={languagePreference}
+              onChange={(e) => handleLanguageChange(e.target.value)}
+              className="bg-white text-gray-800 px-4 py-2 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors cursor-pointer shadow-md"
+            >
+              <option value="en">English</option>
+              <option value="hi">हिंदी</option>
+              <option value="mr">मराठी</option>
+              <option value="ta">தமிழ்</option>
+              <option value="te">తెలుగు</option>
+              <option value="kn">ಕನ್ನಡ</option>
+              <option value="pa">ਪੰਜਾਬੀ</option>
+            </select>
+          </div>
+        </div>
         
         {/* Voice Query Button */}
         <button
@@ -125,7 +165,7 @@ export default function Home() {
 
       {/* Core Features */}
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">Why Choose Multilingual Mandi?</h2>
+        <h2 className="text-2xl font-bold mb-4">Why Choose Lokal Mandi?</h2>
         <div className="grid md:grid-cols-3 gap-6">
           <div className="card-interactive">
             <FiMic className="w-12 h-12 text-primary-600 mb-4" />
@@ -285,7 +325,7 @@ export default function Home() {
       {/* Guide CTA */}
       <div className="bg-gradient-to-r from-teal-500 to-teal-600 rounded-2xl p-8 text-white text-center">
         <div className="text-5xl mb-4">📚</div>
-        <h2 className="text-2xl font-bold mb-4">New to Multilingual Mandi?</h2>
+        <h2 className="text-2xl font-bold mb-4">New to Lokal Mandi?</h2>
         <p className="mb-6 text-lg">
           Check out our comprehensive guides and tutorials
         </p>

@@ -8,6 +8,7 @@ export default defineConfig({
     port: 3001,
     strictPort: true,
     allowedHosts: [
+      'lokalmandi.lehana.in',
       'lokmandi.lehana.in',
       'lokmandi.aidhunik.com',
       'localhost'

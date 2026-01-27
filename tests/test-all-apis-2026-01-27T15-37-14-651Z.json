@@ -1,0 +1,155 @@
+{
+  "timestamp": "2026-01-27T15:37:04.420Z",
+  "backend": {
+    "total": 8,
+    "passed": 6,
+    "failed": 2,
+    "tests": [
+      {
+        "name": "Health Check",
+        "passed": true,
+        "message": "Health endpoint returned 200",
+        "details": {
+          "status": "ok",
+          "timestamp": "2026-01-27T15:37:04.447Z",
+          "service": "Lokal Mandi API"
+        }
+      },
+      {
+        "name": "Auth - Send OTP",
+        "passed": true,
+        "message": "OTP sent successfully",
+        "details": {
+          "success": true,
+          "expiresAt": "2026-01-27T15:42:04.480Z"
+        }
+      },
+      {
+        "name": "Listings - Search",
+        "passed": true,
+        "message": "Found 6 wheat listings",
+        "details": {
+          "count": 6,
+          "sample": {
+            "images": "[\"/images/crops/wheat.jpg\"]",
+            "id": "4d7c1814-9be6-452e-b053-ddc7c17500f3",
+            "vendorId": "1b4ff3b0-d447-4912-ae6d-3f858fabd8a3",
+            "cropType": "Wheat",
+            "quantity": 124,
+            "unit": "Kg",
+            "basePrice": 2405,
+            "qualityTier": "basic",
+            "qualityMultiplier": 0.85,
+            "demandAdjuster": 1.14,
+            "finalPrice": 2336,
+            "description": "Fresh Wheat from Delhi, Delhi. High quality basic grade.",
+            "locationLat": 28.7041,
+            "locationLng": 77.1025,
+            "locationAddress": "Delhi, Delhi",
+            "status": "active",
+            "createdAt": "2026-01-27T15:35:20.626Z",
+            "updatedAt": "2026-01-27T15:35:20.626Z",
+            "vendor": {
+              "id": "1b4ff3b0-d447-4912-ae6d-3f858fabd8a3",
+              "name": "Vendor 1",
+              "phoneNumber": "+919876543211"
+            }
+          }
+        }
+      },
+      {
+        "name": "Listings - Get All (via search)",
+        "passed": true,
+        "message": "Found 30 total listings",
+        "details": {
+          "total": 30,
+          "byCrop": {
+            "Tomato": 4,
+            "Rice": 4,
+            "Wheat": 6,
+            "Maize": 3,
+            "Soybean": 2,
+            "Onion": 3,
+            "Potato": 2,
+            "Sugarcane": 2,
+            "Cotton": 1,
+            "Groundnut": 3
+          }
+        }
+      },
+      {
+        "name": "Voice - Parse Intent",
+        "passed": true,
+        "message": "All intent parsing tests passed",
+        "details": [
+          {
+            "input": "मुझे गेहूं की कीमत बताओ",
+            "passed": true,
+            "intent": "price_query",
+            "crop": "wheat"
+          },
+          {
+            "input": "मैं 100 किलो टमाटर बेचना चाहता हूं",
+            "passed": true,
+            "intent": "create_listing",
+            "crop": "tomato"
+          },
+          {
+            "input": "मुझे प्याज खरीदना है",
+            "passed": true,
+            "intent": "search_listings",
+            "crop": "onion"
+          }
+        ]
+      },
+      {
+        "name": "Prices - Get Current",
+        "passed": true,
+        "message": "Got price for wheat in Delhi: ₹90-110",
+        "details": {
+          "cropType": "wheat",
+          "location": "Delhi",
+          "modalPrice": 100,
+          "minPrice": 90,
+          "maxPrice": 110,
+          "source": "fallback",
+          "timestamp": "2026-01-27T15:37:14.444Z"
+        }
+      },
+      {
+        "name": "Vendors - Get Nearby",
+        "passed": false,
+        "error": "Request failed with status code 500"
+      },
+      {
+        "name": "Ratings - Get Vendor Ratings",
+        "passed": false,
+        "error": "Request failed with status code 500"
+      }
+    ]
+  },
+  "frontend": {
+    "total": 2,
+    "passed": 2,
+    "failed": 0,
+    "tests": [
+      {
+        "name": "Homepage Loads",
+        "passed": true,
+        "message": "Frontend loads successfully",
+        "details": {
+          "hasTitle": true,
+          "hasRoot": true
+        }
+      },
+      {
+        "name": "API Proxy Works",
+        "passed": true,
+        "message": "API proxy working - found 4 listings",
+        "details": {
+          "count": 4
+        }
+      }
+    ]
+  }
+}

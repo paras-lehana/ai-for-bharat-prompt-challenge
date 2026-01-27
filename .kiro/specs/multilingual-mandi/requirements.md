@@ -4,6 +4,21 @@
 
 The Multilingual Mandi is a real-time linguistic bridge for local trade in India, designed to make agricultural trading accessible to the 146 million farmers across India, particularly the 85% who currently don't use digital trading platforms due to language barriers. The system addresses critical gaps in existing platforms (eNAM, ODOP, GeM) by providing voice-based interactions in local languages, AI-driven negotiation support, transparent pricing, and trust-building mechanisms.
 
+## Project Context
+
+**Repository**: ai-for-bharat-prompt-challenge
+**Tech Stack**: Node.js/Express (Backend), React/Tailwind (Frontend), SQLite/PostgreSQL (Database)
+**External APIs**: SARVAM AI (Speech), OpenRouter AI (Intent), Google Translate (Translation)
+**Deployment**: Docker, Vercel (Frontend), Render/Railway (Backend)
+
+## Key Documentation References
+
+- **Tech Stack Details**: `docs/TECH_STACK.md`
+- **Code Architecture**: `docs/CODE_ARCHITECTURE.md`
+- **Testing Strategy**: `docs/TESTING_STRATEGY.md`
+- **API Modification Guide**: `docs/API_MODIFICATION_GUIDE.md`
+- **Where to Find What**: `docs/WHERE_TO_FIND_WHAT.md`
+
 ## Glossary
 
 - **Mandi_System**: The complete multilingual trading platform

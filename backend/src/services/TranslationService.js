@@ -136,7 +136,25 @@ class TranslationService {
   };
 
   /**
-   * Translate text to target language using OpenRouter AI
+   * Common UI translations dictionary (for instant, accurate translations)
+   */
+  static UI_TRANSLATIONS = {
+    'Login with Phone': { hi: 'फ़ोन से लॉगिन करें', mr: 'फोनसह लॉगिन करा', ta: 'தொலைபேசி மூலம் உள்நுழைக', te: 'ఫోన్‌తో లాగిన్ చేయండి', kn: 'ಫೋನ್ ಮೂಲಕ ಲಾಗಿನ್ ಮಾಡಿ', pa: 'ਫ਼ੋਨ ਨਾਲ ਲਾਗਇਨ ਕਰੋ' },
+    'Phone Number': { hi: 'फ़ोन नंबर', mr: 'फोन नंबर', ta: 'தொலைபேசி எண்', te: 'ఫోన్ నంబర్', kn: 'ಫೋನ್ ಸಂಖ್ಯೆ', pa: 'ਫ਼ੋਨ ਨੰਬਰ' },
+    'Send OTP': { hi: 'ओटीपी भेजें', mr: 'ओटीपी पाठवा', ta: 'OTP அனுப்பு', te: 'OTP పంపండి', kn: 'OTP ಕಳುಹಿಸಿ', pa: 'OTP ਭੇਜੋ' },
+    'Enter OTP': { hi: 'ओटीपी दर्ज करें', mr: 'ओटीपी प्रविष्ट करा', ta: 'OTP உள்ளிடவும்', te: 'OTP నమోదు చేయండి', kn: 'OTP ನಮೂದಿಸಿ', pa: 'OTP ਦਾਖਲ ਕਰੋ' },
+    'Vendor': { hi: 'विक्रेता', mr: 'विक्रेता', ta: 'விற்பனையாளர்', te: 'విక్రేత', kn: 'ಮಾರಾಟಗಾರ', pa: 'ਵਿਕਰੇਤਾ' },
+    'Buyer': { hi: 'खरीदार', mr: 'खरेदीदार', ta: 'வாங்குபவர்', te: 'కొనుగోలుదారు', kn: 'ಖರೀದಿದಾರ', pa: 'ਖਰੀਦਦਾਰ' },
+    'Sell products': { hi: 'उत्पाद बेचें', mr: 'उत्पादने विका', ta: 'தயாரிப்புகளை விற்கவும்', te: 'ఉత్పత్తులను అమ్మండి', kn: 'ಉತ್ಪನ್ನಗಳನ್ನು ಮಾರಾಟ ಮಾಡಿ', pa: 'ਉਤਪਾਦ ਵੇਚੋ' },
+    'Buy products': { hi: 'उत्पाद खरीदें', mr: 'उत्पादने खरेदी करा', ta: 'தயாரிப்புகளை வாங்கவும்', te: 'ఉత్పత్తులను కొనండి', kn: 'ಉತ್ಪನ್ನಗಳನ್ನು ಖರೀದಿಸಿ', pa: 'ਉਤਪਾਦ ਖਰੀਦੋ' },
+    'Preferred Language': { hi: 'पसंदीदा भाषा', mr: 'पसंतीची भाषा', ta: 'விருப்பமான மொழி', te: 'ఇష్టమైన భాష', kn: 'ಆದ್ಯತೆಯ ಭಾಷೆ', pa: 'ਤਰਜੀਹੀ ਭਾਸ਼ਾ' },
+    'Verify & Login': { hi: 'सत्यापित करें और लॉगिन करें', mr: 'सत्यापित करा आणि लॉगिन करा', ta: 'சரிபார்த்து உள்நுழைக', te: 'ధృవీకరించండి మరియు లాగిన్ చేయండి', kn: 'ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಲಾಗಿನ್ ಮಾಡಿ', pa: 'ਤਸਦੀਕ ਕਰੋ ਅਤੇ ਲਾਗਇਨ ਕਰੋ' },
+    'Change Phone Number': { hi: 'फ़ोन नंबर बदलें', mr: 'फोन नंबर बदला', ta: 'தொலைபேசி எண்ணை மாற்றவும்', te: 'ఫోన్ నంబర్ మార్చండి', kn: 'ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಬದಲಾಯಿಸಿ', pa: 'ਫ਼ੋਨ ਨੰਬਰ ਬਦਲੋ' },
+    'I am a': { hi: 'मैं हूँ', mr: 'मी आहे', ta: 'நான்', te: 'నేను', kn: 'ನಾನು', pa: 'ਮੈਂ ਹਾਂ' }
+  };
+
+  /**
+   * Translate text to target language using free translation API
    * @param {string} text - Text to translate
    * @param {string} sourceLang - Source language code (default: 'en')
    * @param {string} targetLang - Target language code
@@ -149,49 +167,62 @@ class TranslationService {
         return text;
       }
 
-      // Use OpenRouter for better translation
-      const axios = require('axios');
-      
-      if (!process.env.OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY.includes('your-')) {
-        console.log('OpenRouter API not configured, using mock translation');
-        return this.mockTranslate(text, targetLang);
+      // Check UI translations dictionary first (instant, accurate)
+      if (this.UI_TRANSLATIONS[text] && this.UI_TRANSLATIONS[text][targetLang]) {
+        return this.UI_TRANSLATIONS[text][targetLang];
       }
 
-      const targetLangName = this.SUPPORTED_LANGUAGES[targetLang] || targetLang;
+      const axios = require('axios');
       
-      const response = await axios.post(
-        'https://openrouter.ai/api/v1/chat/completions',
-        {
-          model: process.env.OPENROUTER_MODEL || 'google/gemini-flash-1.5',
-          messages: [
-            {
-              role: 'system',
-              content: `You are a professional translator. Translate the following text from English to ${targetLangName}. Only return the translated text, nothing else. Preserve markdown formatting if present.`
-            },
-            {
-              role: 'user',
-              content: text
-            }
-          ],
-          temperature: 0.3,
-          max_tokens: 2000
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-            'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://multilingualmandi.in',
-            'X-Title': 'Multilingual Mandi'
+      // Use Google Translate unofficial API (free, fast, accurate)
+      try {
+        const googleResponse = await axios.get('https://translate.googleapis.com/translate_a/single', {
+          params: {
+            client: 'gtx',
+            sl: sourceLang,
+            tl: targetLang,
+            dt: 't',
+            q: text
           },
-          timeout: 15000
-        }
-      );
+          timeout: 5000
+        });
 
-      const translatedText = response.data.choices[0]?.message?.content?.trim();
-      return translatedText || text;
+        if (googleResponse.data && googleResponse.data[0] && googleResponse.data[0][0]) {
+          return googleResponse.data[0][0][0];
+        }
+      } catch (googleError) {
+        console.error('Google Translate API error:', googleError.message);
+      }
+
+      // Fallback: Try MyMemory Translation API
+      try {
+        const response = await axios.get('https://api.mymemory.translated.net/get', {
+          params: {
+            q: text,
+            langpair: `${sourceLang}|${targetLang}`
+          },
+          timeout: 5000
+        });
+
+        if (response.data && response.data.responseData && response.data.responseData.translatedText) {
+          const translated = response.data.responseData.translatedText;
+          
+          // Check if translation is valid (not empty or same as input)
+          if (translated && translated !== text) {
+            return translated;
+          }
+        }
+      } catch (apiError) {
+        console.error('MyMemory API error:', apiError.message);
+      }
+
+      // If both APIs fail, return original text
+      console.log('All translation APIs failed, returning original text');
+      return text;
+      
     } catch (error) {
       console.error('Translation error:', error.message);
-      return this.mockTranslate(text, targetLang);
+      return text;
     }
   }
 

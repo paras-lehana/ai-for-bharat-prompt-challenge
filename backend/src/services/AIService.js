@@ -38,7 +38,7 @@ class AIService {
             'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
             'Content-Type': 'application/json',
             'HTTP-Referer': 'https://lokmandi.lehana.in',
-            'X-Title': 'Multilingual Mandi'
+            'X-Title': 'Lokal Mandi'
           }
         }
       );
@@ -90,7 +90,7 @@ Format: {"counterOffer": <number>, "reasoning": "<text>"}`
             'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
             'Content-Type': 'application/json',
             'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:3000',
-            'X-Title': 'Multilingual Mandi'
+            'X-Title': 'Lokal Mandi'
           }
         }
       );
@@ -147,24 +147,44 @@ Possible intents:
 - general_help: General questions
 
 Extract these parameters if mentioned:
-- cropType: Name of the crop (wheat, rice, tomato, onion, potato, cotton, etc.)
-- quantity: Amount with unit (e.g., "100 kg")
-- price: Price mentioned (number only)
+- cropType: Name of the crop in ENGLISH ONLY. Translate Hindi/regional names to English.
+- quantity: Amount with unit (e.g., "100 kg", "50 quintal")
+- price: Price mentioned (number only, no currency symbols)
 - location: Place name
 - qualityTier: premium, standard, or basic
 
-IMPORTANT: Return ONLY pure JSON without any markdown formatting, code blocks, or explanations. No \`\`\`json or \`\`\` tags.
+CRITICAL TRANSLATION RULES:
+- गेहूं → wheat
+- चावल → rice
+- टमाटर → tomato
+- प्याज → onion
+- आलू → potato
+- कपास → cotton
+- गन्ना → sugarcane
+- मक्का → maize
+- सोयाबीन → soybean
+- मूंगफली → groundnut
 
-Response format (pure JSON only):
+NEVER return Hindi crop names. ALWAYS translate to English.
+
+Response format (pure JSON only, no markdown):
 {
   "intent": "<intent_type>",
-  "cropType": "<crop_name or null>",
+  "cropType": "<crop_name_in_english or null>",
   "quantity": "<quantity or null>",
   "price": "<price or null>",
   "location": "<location or null>",
   "qualityTier": "<tier or null>",
   "confidence": "<high/medium/low>"
 }`
+            },
+            {
+              role: 'user',
+              content: 'मुझे गेहूं की कीमत बताओ'
+            },
+            {
+              role: 'assistant',
+              content: '{"intent":"price_query","cropType":"wheat","quantity":null,"price":null,"location":null,"qualityTier":null,"confidence":"high"}'
             },
             {
               role: 'user',
@@ -179,7 +199,7 @@ Response format (pure JSON only):
             'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
             'Content-Type': 'application/json',
             'HTTP-Referer': 'https://lokmandi.lehana.in',
-            'X-Title': 'Multilingual Mandi'
+            'X-Title': 'Lokal Mandi'
           },
           timeout: 15000
         }

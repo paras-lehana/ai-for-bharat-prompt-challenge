@@ -125,7 +125,7 @@ class PricingService {
       const cached = await ENAMPrice.findOne({
         where: {
           cropType: cropType.toLowerCase(),
-          location: location || 'Delhi',
+          mandiLocation: location || 'Delhi',
           updatedAt: { [Op.gte]: new Date(Date.now() - 24 * 60 * 60 * 1000) } // 24 hours
         }
       });
@@ -157,9 +157,10 @@ class PricingService {
       // Cache the price
       await ENAMPrice.create({
         cropType: cropType.toLowerCase(),
-        location: location || 'Delhi',
+        mandiName: `${location || 'Delhi'} Mandi`,
+        mandiLocation: location || 'Delhi',
         ...price,
-        source: 'enam_api'
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours from now
       });
 
       return {

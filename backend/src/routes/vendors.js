@@ -6,9 +6,15 @@ const { User, Listing, TrustScore } = require('../models');
 router.get('/nearby', asyncHandler(async (req, res) => {
   const { cropType, lat, lng, radius = 50 } = req.query;
   
-  // Simplified: return all vendors with that crop
+  // If no cropType provided, return all active listings
+  const whereClause = { status: 'active' };
+  if (cropType) {
+    whereClause.cropType = cropType;
+  }
+  
+  // Simplified: return all vendors with that crop (or all if no crop specified)
   const listings = await Listing.findAll({
-    where: { cropType, status: 'active' },
+    where: whereClause,
     include: [{ model: User, as: 'vendor' }],
     limit: 20
   });
