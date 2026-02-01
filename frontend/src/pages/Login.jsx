@@ -197,6 +197,15 @@ export default function Login() {
         <div className="text-center mb-6 sm:mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-primary-600 mb-2">🌾 Lokal Mandi</h1>
           <p className="text-sm sm:text-base text-gray-600">{t('Trade in Your Language. Negotiate Fairly. Earn More.')}</p>
+          <div className="mt-4">
+            <a
+              href="/demo"
+              className="inline-flex items-center space-x-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-bold hover:bg-blue-200 transition-colors"
+            >
+              <span>🎥</span>
+              <span>Watch Product Demo</span>
+            </a>
+          </div>
         </div>
 
         {/* Login Card */}

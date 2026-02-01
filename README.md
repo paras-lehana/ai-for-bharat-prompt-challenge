@@ -242,6 +242,9 @@ Market intelligence in your local language - price alerts, seasonal guidance.
 
 ---
 
+## 🎥 Product Demo
+**Watch the platform in action**: [lokalmandi.lehana.in/demo](https://lokalmandi.lehana.in/demo)
+
 ## 🚀 Quick Start (5 Minutes)
 
 ### Prerequisites

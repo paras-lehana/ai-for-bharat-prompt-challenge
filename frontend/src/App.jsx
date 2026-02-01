@@ -47,7 +47,7 @@ import { ComparisonProvider } from './context/ComparisonContext';
 
 const DemoRedirect = () => {
   useEffect(() => {
-    window.location.href = import.meta.env.VITE_DEMO_VIDEO_URL || 'https://youtube.com';
+    window.location.href = import.meta.env.VITE_DEMO_VIDEO_URL || 'https://youtu.be/FNDPGmC9-Qo';
   }, []);
   return <LoadingSpinner />;
 };

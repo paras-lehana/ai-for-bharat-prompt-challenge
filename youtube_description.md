@@ -3,6 +3,7 @@
 Welcome to **Lokal Mandi**, a revolutionary multilingual agricultural marketplace designed to empower farmers and traders across Bharat. Built for the **AI for Bharat Prompt Challenge**, this application breaks language barriers and brings AI-driven negotiations to the grassroots level.
 
 🌐 **Live Demo:** [https://lokalmandi.lehana.in](https://lokalmandi.lehana.in)
+🎥 **Product Demo:** [https://lokalmandi.lehana.in/demo](https://lokalmandi.lehana.in/demo)
 💻 **GitHub Repository:** [https://github.com/paras-lehana/ai-for-bharat-prompt-challenge](https://github.com/paras-lehana/ai-for-bharat-prompt-challenge) (Commit hash to be updated)
 
 ---

@@ -88,6 +88,11 @@ export default function NavBar() {
               <span>{t('nav.guide')}</span>
             </Link>
 
+            <Link to="/demo" className="flex items-center space-x-1 text-blue-600 hover:text-blue-800 font-bold">
+              <span className="animate-pulse">🎥</span>
+              <span>Demo</span>
+            </Link>
+
             <Link to="/favorites" className="flex items-center space-x-1 text-gray-700 hover:text-primary-600">
               <FaHeart className="w-5 h-5" />
               <span>Favorites</span>
@@ -239,6 +244,15 @@ export default function NavBar() {
               >
                 <FiBook className="w-5 h-5" />
                 <span>{t('nav.guide')}</span>
+              </Link>
+
+              <Link
+                to="/demo"
+                onClick={closeMobileMenu}
+                className="flex items-center space-x-3 p-3 rounded-lg bg-blue-50 text-blue-700 font-bold min-h-[48px]"
+              >
+                <span>🎥</span>
+                <span>Watch Demo</span>
               </Link>
 
               <Link
