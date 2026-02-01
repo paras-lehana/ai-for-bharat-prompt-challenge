@@ -107,6 +107,7 @@ export default defineConfig({
     allowedHosts: [
       'lokalmandi.lehana.in',
       'lokmandi.lehana.in',
+      'lokalmandi.aidhunik.com',
       'lokmandi.aidhunik.com',
       'localhost'
     ],

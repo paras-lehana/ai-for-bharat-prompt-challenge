@@ -16,11 +16,12 @@ import { AuthContext } from '../context/AuthContext';
 import { analyticsAPI, advisoryAPI } from '../utils/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import TranslatedText from '../components/TranslatedText';
+import PageSummarizer from '../components/PageSummarizer';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 function Analytics() {
   const { user } = useContext(AuthContext);
-  
+
   const [dashboard, setDashboard] = useState(null);
   const [pricing, setPricing] = useState(null);
   const [negotiations, setNegotiations] = useState(null);
@@ -29,30 +30,39 @@ function Analytics() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (user.role === 'vendor') {
+    if (user && user.role === 'vendor') {
       loadAnalytics();
     }
-  }, []);
+  }, [user]);
 
   const loadAnalytics = async () => {
+    if (!user) return;
     try {
+      setLoading(true);
       const [dashboardRes, pricingRes, negotiationsRes, insightsRes] = await Promise.all([
         analyticsAPI.getDashboard(user.id),
         analyticsAPI.getPricing(user.id),
         analyticsAPI.getNegotiations(user.id),
         advisoryAPI.getInsights(user.id)
       ]);
-      
+
       setDashboard(dashboardRes.data);
       setPricing(pricingRes.data);
       setNegotiations(negotiationsRes.data);
-      setInsights(insightsRes.data);
-      setLoading(false);
+      setInsights(insightsRes.data.insights || []);
+      setError(null);
     } catch (err) {
+      console.error('Error loading analytics:', err);
       setError('Failed to load analytics');
+    } finally {
       setLoading(false);
     }
   };
+
+
+  if (!user || loading) {
+    return <LoadingSpinner />;
+  }
 
   if (user.role !== 'vendor') {
     return (
@@ -64,14 +74,10 @@ function Analytics() {
     );
   }
 
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
   return (
-    <div className="container mx-auto px-4 py-6 sm:py-8 pb-24 md:pb-8">
+    <div className="container py-6 sm:py-8 pb-24 md:pb-8">
       <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">
         📊 <TranslatedText text="Analytics Dashboard" />
       </h1>
@@ -90,21 +96,21 @@ function Analytics() {
           </p>
           <p className="text-2xl sm:text-3xl font-bold">₹{dashboard?.totalSales?.toFixed(2) || 0}</p>
         </div>
-        
+
         <div className="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-lg shadow-lg p-4 sm:p-6">
           <p className="text-xs sm:text-sm opacity-90 mb-2">
             <TranslatedText text="Active Listings" />
           </p>
           <p className="text-2xl sm:text-3xl font-bold">{dashboard?.activeListings || 0}</p>
         </div>
-        
+
         <div className="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-lg shadow-lg p-4 sm:p-6">
           <p className="text-xs sm:text-sm opacity-90 mb-2">
             <TranslatedText text="Pending Negotiations" />
           </p>
           <p className="text-2xl sm:text-3xl font-bold">{dashboard?.pendingNegotiations || 0}</p>
         </div>
-        
+
         <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 text-white rounded-lg shadow-lg p-4 sm:p-6">
           <p className="text-xs sm:text-sm opacity-90 mb-2">
             <TranslatedText text="Trust Score" />
@@ -123,11 +129,10 @@ function Analytics() {
             {insights.map((insight, index) => (
               <div
                 key={index}
-                className={`p-4 rounded-lg border-l-4 ${
-                  insight.type === 'price_increase' ? 'bg-green-50 border-green-500' :
+                className={`p-4 rounded-lg border-l-4 ${insight.type === 'price_increase' ? 'bg-green-50 border-green-500' :
                   insight.type === 'high_demand' ? 'bg-blue-50 border-blue-500' :
-                  'bg-yellow-50 border-yellow-500'
-                }`}
+                    'bg-yellow-50 border-yellow-500'
+                  }`}
               >
                 <p className="font-semibold mb-1">{insight.title}</p>
                 <p className="text-sm text-gray-700">{insight.message}</p>
@@ -237,9 +242,8 @@ function Analytics() {
               <p className="text-sm text-gray-600 mb-2">
                 <TranslatedText text="Price Difference" />
               </p>
-              <p className={`text-2xl font-bold ${
-                (pricing.averagePrice - pricing.regionalAverage) > 0 ? 'text-red-600' : 'text-green-600'
-              }`}>
+              <p className={`text-2xl font-bold ${(pricing.averagePrice - pricing.regionalAverage) > 0 ? 'text-red-600' : 'text-green-600'
+                }`}>
                 {((pricing.averagePrice - pricing.regionalAverage) / pricing.regionalAverage * 100).toFixed(1)}%
               </p>
             </div>
@@ -281,6 +285,8 @@ function Analytics() {
           </div>
         </div>
       )}
+      {/* Voice Summary */}
+      {dashboard && <PageSummarizer pageType="analytics" data={{ ...dashboard, ...pricing, ...negotiations }} />}
     </div>
   );
 }

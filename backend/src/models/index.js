@@ -20,6 +20,9 @@ const Favorite = require('./Favorite');
 const SavedSearch = require('./SavedSearch');
 const Share = require('./Share');
 const PriceAlert = require('./PriceAlert');
+const CommunityPost = require('./CommunityPost');
+const CommunityComment = require('./CommunityComment');
+const GovernmentScheme = require('./GovernmentScheme');
 
 // Define additional associations not already in model files
 // Rating associations (these are missing)
@@ -52,9 +55,18 @@ Share.belongsTo(Listing, { foreignKey: 'listing_id', as: 'listing' });
 User.hasMany(Share, { foreignKey: 'user_id', as: 'shares' });
 Listing.hasMany(Share, { foreignKey: 'listing_id', as: 'shares' });
 
-// PriceAlert associations
 PriceAlert.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 User.hasMany(PriceAlert, { foreignKey: 'userId', as: 'priceAlerts' });
+
+// Community associations
+CommunityPost.belongsTo(User, { foreignKey: 'userId', as: 'author' });
+User.hasMany(CommunityPost, { foreignKey: 'userId', as: 'posts' });
+CommunityComment.belongsTo(CommunityPost, { foreignKey: 'postId', as: 'post' });
+CommunityPost.hasMany(CommunityComment, { foreignKey: 'postId', as: 'comments' });
+CommunityComment.belongsTo(User, { foreignKey: 'userId', as: 'author' });
+User.hasMany(CommunityComment, { foreignKey: 'userId', as: 'comments' });
+CommunityComment.belongsTo(CommunityComment, { foreignKey: 'parentId', as: 'parent' });
+CommunityComment.hasMany(CommunityComment, { foreignKey: 'parentId', as: 'replies' });
 
 module.exports = {
   User,
@@ -72,5 +84,8 @@ module.exports = {
   Favorite,
   SavedSearch,
   Share,
-  PriceAlert
+  PriceAlert,
+  CommunityPost,
+  CommunityComment,
+  GovernmentScheme
 };

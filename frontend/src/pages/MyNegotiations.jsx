@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { negotiationsAPI } from '../utils/api';
 import { FiClock, FiCheck, FiX } from 'react-icons/fi';
+import PageSummarizer from '../components/PageSummarizer';
 
 export default function MyNegotiations() {
   const { user } = useContext(AuthContext);
@@ -32,7 +33,7 @@ export default function MyNegotiations() {
 
   const handleWithdraw = async (negotiationId) => {
     if (!window.confirm('Are you sure you want to withdraw this offer?')) return;
-    
+
     try {
       await negotiationsAPI.withdraw(negotiationId);
       alert('Offer withdrawn successfully');
@@ -64,7 +65,7 @@ export default function MyNegotiations() {
               <div className="flex-1">
                 <h3 className="font-bold text-lg mb-1">{negotiation.listing.cropType}</h3>
                 <div className="text-sm text-gray-600">
-                  Asking: ₹{negotiation.listing.finalPrice} | Your Offer: ₹{negotiation.lastOffer}
+                  Asking: ₹{Math.round(negotiation.listing.finalPrice)} | Your Offer: ₹{Math.round(negotiation.lastOffer)}
                 </div>
               </div>
 
@@ -93,13 +94,13 @@ export default function MyNegotiations() {
             {negotiation.status === 'active' && (
               <div className="mt-4 pt-4 border-t">
                 <div className="flex space-x-3">
-                  <button 
+                  <button
                     onClick={() => handleViewDetails(negotiation)}
                     className="btn-primary flex-1"
                   >
                     View Details
                   </button>
-                  <button 
+                  <button
                     onClick={() => handleWithdraw(negotiation.id)}
                     className="btn-secondary flex-1"
                   >
@@ -119,6 +120,7 @@ export default function MyNegotiations() {
           </div>
         )}
       </div>
+      {negotiations.length > 0 && <PageSummarizer pageType="negotiations" data={negotiations} />}
     </div>
   );
 }

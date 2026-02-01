@@ -16,6 +16,7 @@ import { AuthContext } from '../context/AuthContext';
 import { transactionsAPI } from '../utils/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import TranslatedText from '../components/TranslatedText';
+import PageSummarizer from '../components/PageSummarizer';
 
 function Transactions() {
   const { user } = useContext(AuthContext);
@@ -27,23 +28,31 @@ function Transactions() {
   const [filter, setFilter] = useState('all');
 
   useEffect(() => {
-    loadTransactions();
-  }, []);
+    if (user) {
+      loadTransactions();
+    }
+  }, [user]);
 
   const loadTransactions = async () => {
+    if (!user) return;
     try {
+      setLoading(true);
       const response = user.role === 'vendor'
         ? await transactionsAPI.getByVendor(user.id)
         : await transactionsAPI.getByBuyer(user.id);
 
-      setTransactions(response.data || []);
-      setLoading(false);
+      setTransactions(response.data.transactions || []);
+
+      setError(null);
     } catch (err) {
+      console.error('Error loading transactions:', err);
       setError('Failed to load transactions');
       setTransactions([]);
+    } finally {
       setLoading(false);
     }
   };
+
 
   const getStatusColor = (status) => {
     const colors = {
@@ -61,7 +70,7 @@ function Transactions() {
     ? transactions
     : transactions.filter(t => t.status === filter);
 
-  if (loading) {
+  if (!user || loading) {
     return <LoadingSpinner />;
   }
 
@@ -72,12 +81,19 @@ function Transactions() {
           <TranslatedText text="My Transactions" />
         </h1>
 
-        <button
-          onClick={() => navigate('/analytics')}
-          className="w-full sm:w-auto px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors min-h-[48px] flex items-center justify-center gap-2"
-        >
-          📊 <TranslatedText text="View Analytics" />
-        </button>
+        <div className="flex gap-2 w-full sm:w-auto">
+          {filteredTransactions.length > 0 && (
+            <div className="w-full sm:w-auto">
+              <PageSummarizer pageType="transactions" data={filteredTransactions} />
+            </div>
+          )}
+          <button
+            onClick={() => navigate('/analytics')}
+            className="w-full sm:w-auto px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors min-h-[48px] flex items-center justify-center gap-2"
+          >
+            📊 <TranslatedText text="Analytics" />
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -93,8 +109,8 @@ function Transactions() {
             key={status}
             onClick={() => setFilter(status)}
             className={`px-4 py-2 sm:py-3 rounded-lg whitespace-nowrap transition-colors min-h-[44px] text-sm sm:text-base ${filter === status
-                ? 'bg-blue-500 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-100'
+              ? 'bg-blue-500 text-white'
+              : 'bg-white text-gray-700 hover:bg-gray-100'
               }`}
           >
             <TranslatedText text={status.charAt(0).toUpperCase() + status.slice(1).replace('_', ' ')} />
@@ -127,7 +143,7 @@ function Transactions() {
                   </p>
                 </div>
                 <span className={`px-3 py-1 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap ${getStatusColor(transaction.status)}`}>
-                  <TranslatedText text={transaction.status.replace('_', ' ')} />
+                  <TranslatedText text={(transaction.status || 'pending').replace('_', ' ')} />
                 </span>
               </div>
 
@@ -136,20 +152,20 @@ function Transactions() {
                   <p className="text-sm text-gray-500">
                     <TranslatedText text="Quantity" />
                   </p>
-                  <p className="font-semibold">{transaction.quantity} {transaction.unit}</p>
+                  <p className="font-semibold">{transaction.quantity || 0} {transaction.unit || ''}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">
                     <TranslatedText text="Price" />
                   </p>
-                  <p className="font-semibold">₹{transaction.agreedPrice}</p>
+                  <p className="font-semibold">₹{transaction.agreedPrice || 0}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">
                     <TranslatedText text="Total" />
                   </p>
                   <p className="font-semibold text-green-600">
-                    ₹{(transaction.quantity * transaction.agreedPrice).toFixed(2)}
+                    ₹{((transaction.quantity || 0) * (transaction.agreedPrice || 0)).toFixed(2)}
                   </p>
                 </div>
                 <div>
@@ -157,29 +173,29 @@ function Transactions() {
                     <TranslatedText text="Date" />
                   </p>
                   <p className="font-semibold">
-                    {new Date(transaction.createdAt).toLocaleDateString()}
+                    {transaction.createdAt ? new Date(transaction.createdAt).toLocaleDateString() : 'N/A'}
                   </p>
                 </div>
               </div>
 
               {/* Status Timeline */}
-              <div className="flex items-center gap-2 text-sm">
-                <div className={`flex items-center ${transaction.status !== 'pending' ? 'text-green-600' : 'text-gray-400'}`}>
+              <div className="flex items-center gap-2 text-sm overflow-x-auto scrollbar-hide">
+                <div className={`flex items-center whitespace-nowrap ${transaction.status !== 'pending' ? 'text-green-600' : 'text-gray-400'}`}>
                   <span className="mr-1">✓</span>
                   <TranslatedText text="Created" />
                 </div>
-                <div className="flex-1 h-0.5 bg-gray-300"></div>
-                <div className={`flex items-center ${['confirmed', 'in_transit', 'delivered'].includes(transaction.status) ? 'text-green-600' : 'text-gray-400'}`}>
+                <div className="flex-1 h-0.5 min-w-[10px] bg-gray-300"></div>
+                <div className={`flex items-center whitespace-nowrap ${['confirmed', 'in_transit', 'delivered'].includes(transaction.status) ? 'text-green-600' : 'text-gray-400'}`}>
                   <span className="mr-1">✓</span>
                   <TranslatedText text="Confirmed" />
                 </div>
-                <div className="flex-1 h-0.5 bg-gray-300"></div>
-                <div className={`flex items-center ${['in_transit', 'delivered'].includes(transaction.status) ? 'text-green-600' : 'text-gray-400'}`}>
+                <div className="flex-1 h-0.5 min-w-[10px] bg-gray-300"></div>
+                <div className={`flex items-center whitespace-nowrap ${['in_transit', 'delivered'].includes(transaction.status) ? 'text-green-600' : 'text-gray-400'}`}>
                   <span className="mr-1">✓</span>
                   <TranslatedText text="Shipped" />
                 </div>
-                <div className="flex-1 h-0.5 bg-gray-300"></div>
-                <div className={`flex items-center ${transaction.status === 'delivered' ? 'text-green-600' : 'text-gray-400'}`}>
+                <div className="flex-1 h-0.5 min-w-[10px] bg-gray-300"></div>
+                <div className={`flex items-center whitespace-nowrap ${transaction.status === 'delivered' ? 'text-green-600' : 'text-gray-400'}`}>
                   <span className="mr-1">✓</span>
                   <TranslatedText text="Delivered" />
                 </div>

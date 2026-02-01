@@ -57,6 +57,7 @@ const allowedOrigins = [
   'http://localhost:3001',
   'https://lokalmandi.lehana.in',
   'https://lokmandi.lehana.in',
+  'https://lokalmandi.aidhunik.com',
   'https://lokmandi.aidhunik.com'
 ];
 
@@ -75,10 +76,10 @@ const corsOptions = {
   optionsSuccessStatus: 200
 };
 
-// Rate limiting
+// Rate limiting - increased for demo/testing (1000 requests per 15 minutes)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  max: 1000, // Limit each IP to 1000 requests per windowMs
   message: 'Too many requests from this IP, please try again later.'
 });
 
@@ -122,6 +123,7 @@ app.use('/api/predictions', require('./routes/predictions'));
 app.use('/api/quality', require('./routes/quality'));
 app.use('/api/logistics', require('./routes/logistics'));
 app.use('/api/community', require('./routes/community'));
+app.use('/api/schemes', require('./routes/schemes'));
 
 // 404 handler
 app.use((req, res) => {

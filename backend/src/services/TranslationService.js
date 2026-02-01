@@ -176,19 +176,20 @@ class TranslationService {
       
       // Use Google Translate unofficial API (free, fast, accurate)
       try {
-        const googleResponse = await axios.get('https://translate.googleapis.com/translate_a/single', {
-          params: {
-            client: 'gtx',
-            sl: sourceLang,
-            tl: targetLang,
-            dt: 't',
-            q: text
-          },
-          timeout: 5000
-        });
+        const googleResponse = await axios.post('https://translate.googleapis.com/translate_a/single', 
+          `client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`,
+          { 
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            timeout: 10000 
+          }
+        );
 
-        if (googleResponse.data && googleResponse.data[0] && googleResponse.data[0][0]) {
-          return googleResponse.data[0][0][0];
+        if (googleResponse.data && googleResponse.data[0]) {
+          // Join all segments for larger text, filtering only valid translated strings
+          return googleResponse.data[0]
+            .map(segment => (segment && Array.isArray(segment) ? segment[0] : null))
+            .filter(text => typeof text === 'string' && text.length > 0)
+            .join('');
         }
       } catch (googleError) {
         console.error('Google Translate API error:', googleError.message);
@@ -216,13 +217,13 @@ class TranslationService {
         console.error('MyMemory API error:', apiError.message);
       }
 
-      // If both APIs fail, return original text
-      console.log('All translation APIs failed, returning original text');
-      return text;
+      // If both APIs fail, return mock translation (fallback)
+      console.log('All translation APIs failed, returning mock translation');
+      return this.mockTranslate(text, targetLang);
       
     } catch (error) {
       console.error('Translation error:', error.message);
-      return text;
+      return this.mockTranslate(text, targetLang);
     }
   }
 
@@ -389,18 +390,21 @@ class TranslationService {
         return 'mock-audio-base64';
       }
 
+      // Map language code to Sarvam format (e.g., hi -> hi-IN)
+      const sarvamLang = language.includes('-') ? language : `${language}-IN`;
+
       const response = await axios.post(
         `${process.env.SARVAM_API_URL}/text-to-speech`,
         {
           inputs: [text],
-          target_language_code: language,
-          speaker: 'meera',
+          target_language_code: sarvamLang,
+          speaker: 'anushka', // aditya not compatible with v2, using anushka
           pitch: 0,
           pace: 1.0,
           loudness: 1.5,
           speech_sample_rate: 8000,
           enable_preprocessing: true,
-          model: 'bulbul:v1'
+          model: 'bulbul:v2' // Upgrade to v2 as v1 is deprecated
         },
         {
           headers: {

@@ -34,6 +34,8 @@ const PricePredictionChart = ({ cropType, location }) => {
     if (!data) return null;
 
     // Combine history and forecast for chart
+    if (!data?.history || !data?.forecast) return null;
+
     const chartData = [
         ...data.history.map(d => ({
             date: new Date(d.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),

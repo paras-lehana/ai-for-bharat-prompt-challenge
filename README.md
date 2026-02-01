@@ -1,6 +1,6 @@
 # 🌾 The Multilingual Mandi
 
-**Current Version**: 4.4  
+**Current Version**: 4.5  
 > **Real-time linguistic bridge for local trade in India**
 
 [![Status](https://img.shields.io/badge/Status-Production%20Ready-success)](https://github.com)

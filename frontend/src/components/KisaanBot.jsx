@@ -26,18 +26,18 @@ export default function KisaanBot({ onClose }) {
       setParsedIntent(null);
 
       console.log('🎤 Requesting microphone access...');
-      
+
       // Request microphone access with specific constraints
-      const stream = await navigator.mediaDevices.getUserMedia({ 
+      const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           echoCancellation: true,
           noiseSuppression: true,
           sampleRate: 16000
-        } 
+        }
       });
-      
+
       console.log('✅ Microphone access granted');
-      
+
       // Create MediaRecorder with supported format
       const mimeType = MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/ogg';
       const recorder = new MediaRecorder(stream, { mimeType });
@@ -55,7 +55,7 @@ export default function KisaanBot({ onClose }) {
         const audioBlob = new Blob(chunks, { type: mimeType });
         console.log('📊 Total audio size:', audioBlob.size, 'bytes');
         await processAudio(audioBlob);
-        
+
         // Stop all tracks
         stream.getTracks().forEach(track => track.stop());
       };
@@ -64,7 +64,7 @@ export default function KisaanBot({ onClose }) {
       setMediaRecorder(recorder);
       setIsListening(true);
       setTranscript('🎤 Listening... Speak now!');
-      
+
       console.log('🔴 Recording started');
 
     } catch (err) {
@@ -90,11 +90,11 @@ export default function KisaanBot({ onClose }) {
       // Convert blob to base64
       const reader = new FileReader();
       reader.readAsDataURL(audioBlob);
-      
+
       reader.onloadend = async () => {
         const base64Audio = reader.result.split(',')[1];
         console.log('📝 Base64 audio length:', base64Audio.length);
-        
+
         try {
           // Step 1: Transcribe audio using SARVAM STT
           console.log('🗣️ Sending to SARVAM STT...');
@@ -102,44 +102,44 @@ export default function KisaanBot({ onClose }) {
             audioBase64: base64Audio,
             languageCode: user?.languagePreference || 'hi'
           });
-          
+
           // Defensive check for transcribe response
           if (!transcribeResponse || !transcribeResponse.data || !transcribeResponse.data.text) {
             throw new Error('Invalid transcription response');
           }
-          
+
           const transcribedText = transcribeResponse.data.text;
           console.log('✅ Transcribed:', transcribedText);
           setTranscript(transcribedText);
-          
+
           // Step 2: Parse intent using OpenRouter
           console.log('🤖 Parsing intent with OpenRouter...');
           setTranscript(`${transcribedText}\n\n🤖 Understanding your request...`);
-          
+
           const intentResponse = await axios.post(`${API_BASE_URL}/voice/parse-intent`, {
             text: transcribedText,
             languageCode: user?.languagePreference || 'hi'
           });
-          
+
           // Defensive check for intent response
           if (!intentResponse || !intentResponse.data) {
             throw new Error('Invalid intent parsing response');
           }
-          
+
           const intent = intentResponse.data;
           console.log('✅ Parsed intent:', intent);
           setParsedIntent(intent);
-          
+
           // Step 3: Show confirmation to user
           setResponse({
             text: generateConfirmationMessage(intent),
             intent: intent
           });
-          
+
         } catch (err) {
           console.error('❌ Voice API error:', err);
           console.error('Error details:', err.response?.data);
-          
+
           // Show actual error to user
           const errorMsg = err.response?.data?.error || err.message || 'Failed to process voice';
           setError(`Error: ${errorMsg}. Please check API keys and try again.`);
@@ -157,53 +157,73 @@ export default function KisaanBot({ onClose }) {
   };
 
   const generateConfirmationMessage = (intent) => {
+    // Priority 1: Use direct message from LLM if available
+    if (intent.displayMessage) return intent.displayMessage;
+
     const { intent: action, cropType, location, price, quantity, qualityTier } = intent;
-    
+
+    // Friendly fallbacks
     switch (action) {
       case 'price_query':
-        return `I understood: You want to know the price of ${cropType || 'crops'}${location ? ` in ${location}` : ''}.`;
-      
+        return `Do you want me to check the latest rates for ${cropType || 'crops'}${location ? ` in ${location}` : ''}?`;
+
       case 'search_listings':
-        return `I understood: You want to search for ${cropType || 'products'}${location ? ` near ${location}` : ''}.`;
-      
+        return `Should I find ${cropType || 'products'}${location ? ` near ${location}` : ''} for you?`;
+
       case 'create_listing':
-        return `I understood: You want to create a listing for ${cropType || 'a product'}${quantity ? ` (${quantity})` : ''}${price ? ` at ₹${price}` : ''}.`;
-      
+        return `Would you like to list ${quantity || 'some amount'} of ${cropType || 'produce'}${price ? ` at ₹${price}` : ''}?`;
+
       case 'make_offer':
-        return `I understood: You want to make an offer${cropType ? ` for ${cropType}` : ''}${price ? ` at ₹${price}` : ''}.`;
-      
+        return `Shall I send your offer of ₹${price} for this ${cropType || 'crop'}?`;
+
+      case 'news_query':
+        return 'Would you like to see the latest agricultural news and market advisories?';
+
       case 'general_help':
-        return 'I can help you with: checking prices, searching products, creating listings, or making offers. What would you like to do?';
-      
+        return 'Kisaan Bhai, I can help you check prices, find buyers, or list your crops. What should we do today?';
+
       default:
-        return 'I understood your request. Please confirm to proceed.';
+        return 'I have processed your request. Shall we proceed?';
     }
   };
 
   const executeAction = async () => {
     if (!parsedIntent) return;
-    
-    const { intent, cropType, location, price, quantity, qualityTier } = parsedIntent;
-    
+
+    // Robust extraction for various LLM response formats (flat or nested)
+    const intent = parsedIntent.intent || parsedIntent.INTENT || '';
+    const entities = parsedIntent.ENTITIES || parsedIntent.entities || {};
+
+    const cropType = parsedIntent.cropType || entities.cropType || '';
+    const location = parsedIntent.location || entities.location || '';
+    const price = parsedIntent.price || entities.price || '';
+    const quantity = parsedIntent.quantity || entities.quantity || '';
+    const qualityTier = parsedIntent.qualityTier || entities.qualityTier || 'standard';
+
     try {
       switch (intent) {
         case 'price_query':
           // Navigate to price info page with search
           navigate(`/price-info?crop=${cropType || ''}&location=${location || ''}`);
           break;
-        
+
+        case 'news_query':
+          // Navigate to home where news widget is
+          navigate('/');
+          break;
+
         case 'search_listings':
           // Navigate to browse with filters
           navigate(`/browse?search=${cropType || ''}&location=${location || ''}`);
           break;
-        
+
         case 'create_listing':
           // Check if user is logged in
           const token = localStorage.getItem('token');
           if (!token) {
-            setResponse({ 
+            setResponse({
               text: '⚠️ Please login first to create a listing.',
-              error: true 
+              error: true
             });
             setTimeout(() => {
               navigate('/login');
@@ -214,7 +234,7 @@ export default function KisaanBot({ onClose }) {
 
           // Create listing directly via API
           console.log('🚀 Creating listing via API:', { cropType, quantity, price, qualityTier });
-          
+
           const listingData = {
             cropType: cropType || 'Tomato',
             quantity: parseInt(quantity) || 10,
@@ -229,41 +249,41 @@ export default function KisaanBot({ onClose }) {
             },
             images: []
           };
-          
+
           console.log('📦 Listing data:', listingData);
-          
+
           const response = await api.post('/listings', listingData);
-          
+
           // Defensive check for response
           if (!response || !response.data || !response.data.listing) {
             throw new Error('Invalid listing creation response');
           }
-          
+
           console.log('✅ Listing created:', response.data);
-          
+
           // Show success message and navigate to browse
           setResponse({ text: `✅ Listing created successfully! Your ${cropType || 'product'} is now live.` });
-          
+
           setTimeout(() => {
             navigate('/browse');
             onClose();
           }, 2000);
           break;
-        
+
         case 'make_offer':
           // Navigate to browse to find listing
           navigate(`/browse?search=${cropType || ''}`);
           break;
-        
+
         case 'general_help':
           // Navigate to guide
           navigate('/guide');
           break;
-        
+
         default:
           navigate('/browse');
       }
-      
+
       if (intent !== 'create_listing') {
         onClose();
       }
@@ -296,13 +316,12 @@ export default function KisaanBot({ onClose }) {
           <button
             onClick={isListening ? stopListening : startListening}
             disabled={processing}
-            className={`w-24 h-24 rounded-full flex items-center justify-center transition-all ${
-              isListening
-                ? 'bg-red-500 hover:bg-red-600 animate-pulse'
-                : processing
+            className={`w-24 h-24 rounded-full flex items-center justify-center transition-all ${isListening
+              ? 'bg-red-500 hover:bg-red-600 animate-pulse'
+              : processing
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-primary-600 hover:bg-primary-700'
-            }`}
+              }`}
           >
             {isListening ? (
               <FiMicOff className="w-12 h-12 text-white" />
@@ -325,7 +344,7 @@ export default function KisaanBot({ onClose }) {
           <div className="bg-primary-50 rounded-lg p-4 mb-4">
             <div className="text-sm text-primary-600 mb-1">Kisaan Bot:</div>
             <div className="font-medium mb-3">{response.text}</div>
-            
+
             <div className="flex space-x-2">
               <button
                 onClick={executeAction}

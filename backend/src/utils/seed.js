@@ -18,7 +18,10 @@
  */
 
 const { sequelize } = require('./database');
-const { User, Listing, Negotiation, Offer, Transaction, Rating, Message, ENAMPrice } = require('../models');
+const { 
+  User, Listing, Negotiation, Offer, Transaction, Rating, Message, ENAMPrice,
+  CommunityPost, CommunityComment, GovernmentScheme 
+} = require('../models');
 
 // ============================================================================
 // DEMO ACCOUNTS - Easy to remember for presentations
@@ -167,20 +170,22 @@ const testListings = [
     demandAdjuster: 1.0,
     description: 'Fresh red tomatoes, premium quality, harvested yesterday. Perfect for restaurants and hotels.',
     images: ['/images/crops/tomato.jpg'],
-    status: 'active'
+    status: 'active',
+    createdAt: new Date(Date.now() - 86400000) // 1 day ago
   },
   {
     cropType: 'Wheat',
     quantity: 5000,
     unit: 'kg',
-    basePrice: 2500,
-    finalPrice: 3000,
+    basePrice: 2400,
+    finalPrice: 2880,
     qualityTier: 'premium',
     qualityMultiplier: 1.2,
     demandAdjuster: 1.0,
     description: 'Premium wheat grains, excellent for flour milling. High protein content, clean and sorted.',
     images: ['/images/crops/wheat.jpg'],
-    status: 'active'
+    status: 'active',
+    createdAt: new Date(Date.now() - 86400000)
   },
   {
     cropType: 'Cotton',
@@ -193,7 +198,8 @@ const testListings = [
     demandAdjuster: 1.0,
     description: 'High quality cotton, long staple. Ideal for textile manufacturing.',
     images: ['/images/crops/cotton.jpg'],
-    status: 'active'
+    status: 'active',
+    createdAt: new Date(Date.now() - 86400000)
   },
   
   // Standard Quality Listings (1.0x multiplier)
@@ -208,7 +214,8 @@ const testListings = [
     demandAdjuster: 1.0,
     description: 'Good quality onions, suitable for wholesale. Fresh from farm, properly stored.',
     images: ['/images/crops/onion.jpg'],
-    status: 'active'
+    status: 'active',
+    createdAt: new Date(Date.now() - 86400000)
   },
   {
     cropType: 'Rice',
@@ -221,7 +228,8 @@ const testListings = [
     demandAdjuster: 1.0,
     description: 'Basmati rice, aromatic and long grain. Good for retail distribution.',
     images: ['/images/crops/rice.jpg'],
-    status: 'active'
+    status: 'active',
+    createdAt: new Date(Date.now() - 86400000)
   },
   {
     cropType: 'Maize',
@@ -233,8 +241,9 @@ const testListings = [
     qualityMultiplier: 1.0,
     demandAdjuster: 1.0,
     description: 'Yellow maize, good for animal feed and poultry farms.',
-    images: ['/images/crops/maize.jpg'],
-    status: 'active'
+    images: ['/images/crops/maize.jpeg'],
+    status: 'active',
+    createdAt: new Date(Date.now() - 86400000)
   },
   {
     cropType: 'Groundnut',
@@ -247,7 +256,8 @@ const testListings = [
     demandAdjuster: 1.0,
     description: 'Fresh groundnuts, good oil content. Suitable for oil extraction.',
     images: ['/images/crops/groundnut.jpg'],
-    status: 'active'
+    status: 'active',
+    createdAt: new Date(Date.now() - 86400000)
   },
   {
     cropType: 'Sugarcane',
@@ -260,7 +270,8 @@ const testListings = [
     demandAdjuster: 1.0,
     description: 'Fresh sugarcane for sugar mills. Good sucrose content.',
     images: ['/images/crops/sugarcane.jpg'],
-    status: 'active'
+    status: 'active',
+    createdAt: new Date(Date.now() - 86400000)
   },
   
   // Basic Quality Listings (0.85x multiplier)
@@ -275,7 +286,8 @@ const testListings = [
     demandAdjuster: 1.0,
     description: 'Standard potatoes for bulk purchase. Good for processing and chips manufacturing.',
     images: ['/images/crops/potato.jpg'],
-    status: 'active'
+    status: 'active',
+    createdAt: new Date(Date.now() - 86400000)
   },
   {
     cropType: 'Soybean',
@@ -288,7 +300,8 @@ const testListings = [
     demandAdjuster: 1.0,
     description: 'Soybean for oil extraction. Basic grade, suitable for industrial use.',
     images: ['/images/crops/soybean.jpg'],
-    status: 'active'
+    status: 'active',
+    createdAt: new Date(Date.now() - 86400000)
   },
   
   // Additional listings for peer discovery (nearby vendors with same crops)
@@ -338,9 +351,23 @@ async function seed() {
     console.log('🌱 Starting comprehensive demo data seed...');
     console.log('📋 This seed includes data for all 7 core initiatives\n');
 
-    // Sync database (create tables if they don't exist)
-    await sequelize.sync({ force: false });
-    console.log('✅ Database synced');
+    // Clear existing data safely (handling foreign keys)
+    try {
+      await sequelize.query('PRAGMA foreign_keys = OFF');
+      const tables = ['ratings', 'transactions', 'offers', 'negotiations', 'favorites', 'shares', 'price_alerts', 'messages', 'community_comments', 'community_posts', 'listings'];
+      for (const table of tables) {
+        try {
+          await sequelize.query(`DELETE FROM ${table}`);
+          console.log(`   ✓ Cleared ${table}`);
+        } catch (e) {
+          console.log(`   ⚠ Could not clear ${table} (might not exist yet)`);
+        }
+      }
+      await sequelize.query('PRAGMA foreign_keys = ON');
+      console.log('✅ Marketplace data cleared for fresh seed');
+    } catch (error) {
+      console.error('❌ Error during data clearing:', error.message);
+    }
 
     // ========================================================================
     // STEP 1: Create Demo Accounts + Test Users
@@ -401,42 +428,54 @@ async function seed() {
     const buyers = users.filter(u => u.role === 'buyer');
     const negotiations = [];
     
-    // Create active negotiations with multiple rounds
-    for (let i = 0; i < Math.min(5, listings.length); i++) {
-      const listing = listings[i];
+    // Create LOTS of active negotiations (15+)
+    for (let i = 0; i < 15; i++) {
+      const listing = listings[i % listings.length];
       const buyer = buyers[i % buyers.length];
       
       const negotiation = await Negotiation.create({
         buyerId: buyer.id,
         vendorId: listing.vendorId,
         listingId: listing.id,
-        currentOffer: listing.finalPrice * 0.9, // 10% below listing price
-        status: 'active',
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours from now
+        currentOffer: listing.finalPrice * (0.85 + (Math.random() * 0.1)), // Random offer
+        status: ['active', 'vendor_counter', 'buyer_counter', 'active'][i % 4],
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
       });
       
-      // Create initial buyer offer
+      // Initial buyer offer
       await Offer.create({
         negotiationId: negotiation.id,
         userId: buyer.id,
-        amount: listing.finalPrice * 0.9,
+        amount: listing.finalPrice * 0.85,
         type: 'buyer_offer',
         offerType: 'buyer_offer',
         reasoning: 'Initial offer based on market research'
       });
       
-      // Create AI counter-offer suggestion
-      await Offer.create({
-        negotiationId: negotiation.id,
-        userId: listing.vendorId,
-        amount: listing.finalPrice * 0.95,
-        type: 'ai_suggestion',
-        offerType: 'vendor_counter',
-        reasoning: 'AI suggests 5% discount based on quality tier and regional pricing'
-      });
+      // AI counter-offer suggestion (for some)
+      if (i % 2 === 0) {
+        await Offer.create({
+          negotiationId: negotiation.id,
+          userId: listing.vendorId,
+          amount: listing.finalPrice * 0.92,
+          type: 'ai_suggestion',
+          offerType: 'vendor_counter',
+          reasoning: 'AI suggests counter-offer based on high demand in your area.'
+        });
+      }
+
+      // Add more back-and-forth for some
+      if (i % 3 === 0) {
+         await Offer.create({
+          negotiationId: negotiation.id,
+          userId: buyer.id,
+          amount: listing.finalPrice * 0.88,
+          offerType: 'buyer_offer',
+          reasoning: 'I can pay slightly more but I need delivery included.'
+        });
+      }
       
       negotiations.push(negotiation);
-      console.log(`   ✓ Negotiation on ${listing.cropType}: ₹${listing.finalPrice * 0.9} → ₹${listing.finalPrice * 0.95}`);
     }
     console.log(`✅ Created ${negotiations.length} active negotiations with AI suggestions`);
 
@@ -446,10 +485,12 @@ async function seed() {
     console.log('\n⭐ INITIATIVE 5: Creating trust system data (transactions & ratings)...');
     const transactions = [];
     
-    // Create completed transactions with ratings
-    for (let i = 0; i < Math.min(6, listings.length - 5); i++) {
-      const listing = listings[i + 5];
-      const buyer = buyers[i % buyers.length];
+    // Create LOTS of completed transactions (25+)
+    for (let i = 0; i < 25; i++) {
+      const listing = listings[i % listings.length];
+      const buyer = buyers[(i + 1) % buyers.length];
+      
+      const status = ['delivered', 'delivered', 'delivered', 'in_transit', 'confirmed'][i % 5];
       
       // Create completed negotiation
       const completedNegotiation = await Negotiation.create({
@@ -458,7 +499,7 @@ async function seed() {
         listingId: listing.id,
         currentOffer: listing.finalPrice,
         status: 'accepted',
-        expiresAt: new Date(Date.now() - 1 * 60 * 60 * 1000) // Expired 1 hour ago
+        expiresAt: new Date(Date.now() - (i + 1) * 24 * 60 * 60 * 1000)
       });
       
       // Create transaction
@@ -469,37 +510,37 @@ async function seed() {
         listingId: listing.id,
         agreedPrice: listing.finalPrice,
         quantity: listing.quantity,
-        status: 'delivered',
-        deliveredAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) // Delivered 2 days ago
+        status: status,
+        deliveredAt: status === 'delivered' ? new Date(Date.now() - i * 24 * 60 * 60 * 1000) : null
       });
       
-      // Create rating with varied scores
-      const deliveryRating = 4 + Math.random(); // 4-5 stars
-      const qualityRating = 3.5 + Math.random() * 1.5; // 3.5-5 stars
-      
-      await Rating.create({
-        transactionId: transaction.id,
-        vendorId: transaction.vendorId,
-        buyerId: transaction.buyerId,
-        deliveryRating: Math.round(deliveryRating * 10) / 10,
-        qualityRating: Math.round(qualityRating * 10) / 10,
-        comment: qualityRating > 4.5 
-          ? 'Excellent quality products, timely delivery. Highly recommended!' 
-          : 'Good quality products, satisfied with the purchase.'
-      });
+      if (status === 'delivered') {
+        const deliveryRating = 3.5 + Math.random() * 1.5;
+        await Rating.create({
+            transactionId: transaction.id,
+            vendorId: transaction.vendorId,
+            buyerId: transaction.buyerId,
+            deliveryRating: Math.round(deliveryRating * 10) / 10,
+            qualityRating: Math.round(deliveryRating * 10) / 10,
+            comment: 'Smooth transaction, thank you!'
+        });
+      }
       
       transactions.push(transaction);
-      console.log(`   ✓ Transaction: ${listing.cropType} - Delivery: ${deliveryRating.toFixed(1)}★, Quality: ${qualityRating.toFixed(1)}★`);
     }
     console.log(`✅ Created ${transactions.length} completed transactions with ratings`);
 
     // ========================================================================
     // STEP 5: INITIATIVE 1 & 13 - Messaging (Voice queries & negotiations)
     // ========================================================================
+    // ========================================================================
+    // STEP 5: INITIATIVE 1 & 13 - Messaging (Voice queries & negotiations)
+    // ========================================================================
     console.log('\n💬 INITIATIVE 1: Creating message threads...');
     let messageCount = 0;
     
-    for (let i = 0; i < Math.min(4, negotiations.length); i++) {
+    // Create messages for the first 10 negotiations
+    for (let i = 0; i < Math.min(10, negotiations.length); i++) {
       const negotiation = negotiations[i];
       const listing = listings.find(l => l.id === negotiation.listingId);
       const threadId = [negotiation.buyerId, negotiation.vendorId].sort().join('-');
@@ -510,9 +551,8 @@ async function seed() {
         senderId: negotiation.buyerId,
         recipientId: negotiation.vendorId,
         listingId: negotiation.listingId,
-        content: `Hello, I am interested in your ${listing.cropType}. Can we negotiate the price?`,
-        originalLanguage: 'en',
-        isRead: true
+        textContent: `Hello, I am interested in your ${listing.cropType || 'item'}. Can we negotiate the price?`,
+        originalLanguage: 'en'
       });
       messageCount++;
       
@@ -522,9 +562,8 @@ async function seed() {
         senderId: negotiation.vendorId,
         recipientId: negotiation.buyerId,
         listingId: negotiation.listingId,
-        content: 'Yes, please make an offer. The quality is excellent and freshly harvested.',
-        originalLanguage: 'en',
-        isRead: true
+        textContent: 'Yes, please make an offer. The quality is excellent and freshly harvested.',
+        originalLanguage: 'en'
       });
       messageCount++;
       
@@ -534,13 +573,12 @@ async function seed() {
         senderId: negotiation.buyerId,
         recipientId: negotiation.vendorId,
         listingId: negotiation.listingId,
-        content: 'Can you provide delivery to my location? What are the payment terms?',
-        originalLanguage: 'en',
-        isRead: false
+        textContent: 'Can you provide delivery to my location? What are the payment terms?',
+        originalLanguage: 'en'
       });
       messageCount++;
     }
-    console.log(`✅ Created ${messageCount} messages across ${Math.min(4, negotiations.length)} threads`);
+    console.log(`✅ Created ${messageCount} messages across ${Math.min(10, negotiations.length)} threads`);
 
     // ========================================================================
     // STEP 6: INITIATIVE 6 - Government Platform Integration (eNAM Prices)
@@ -578,6 +616,107 @@ async function seed() {
       }
     }
     console.log(`✅ Created ${enamCount} eNAM price entries (${crops.length} crops × ${locations.length} locations)`);
+
+    // ========================================================================
+    // STEP 7: Government Schemes
+    // ========================================================================
+    console.log('\n📄 Creating government schemes...');
+    const schemes = [
+      {
+        name: "PM-KISHAN (Pradhan Mantri Kisan Samman Nidhi)",
+        category: "Direct Benefit Transfer",
+        description: "An initiative by the Government of India in which all farmers will get up to ₹6,000 per year as minimum income support.",
+        eligibility: "All landholding farmer families in the country.",
+        benefits: "₹6,000 per year in three equal installments of ₹2,000 each.",
+        applicationProcess: "Registration through PM-Kishan portal or CSC centers.",
+        officialUrl: "https://pmkisan.gov.in/",
+        state: "Central"
+      },
+      {
+        name: "PM Fasal Bima Yojana (PMFBY)",
+        category: "Insurance",
+        description: "A government-sponsored crop insurance scheme that integrates multiple stakeholders.",
+        eligibility: "All farmers including sharecroppers and tenant farmers growing notified crops in notified areas.",
+        benefits: "Financial support to farmers suffering crop loss/damage arising out of unforeseen events.",
+        applicationProcess: "Online through PMFBY portal or through banks/CSC.",
+        officialUrl: "https://pmfby.gov.in/",
+        state: "Central"
+      },
+      {
+        name: "Kisan Credit Card (KCC)",
+        category: "Credit",
+        description: "Provides farmers with timely access to credit for their cultivation and other needs.",
+        eligibility: "Individual/joint borowers who are owner-cultivators, tenant farmers, oral lessees, sharecroppers.",
+        benefits: "Simplified credit delivery system, low interest rates, flexible repayment.",
+        applicationProcess: "Application through any commercial/rural/cooperative bank.",
+        officialUrl: "https://www.myscheme.gov.in/schemes/kcc",
+        state: "Central"
+      },
+      {
+        name: "Soil Health Card Scheme",
+        category: "Subsidies",
+        description: "Assists State Governments to issue soil health cards to all farmers in the country.",
+        eligibility: "All farmers in India.",
+        benefits: "Soil health cards provide information to farmers on nutrient status of their soil.",
+        applicationProcess: "Testing at regional soil testing labs.",
+        officialUrl: "https://www.soilhealth.dac.gov.in/",
+        state: "Central"
+      },
+      {
+        name: "Paramparagat Krishi Vikas Yojana (PKVY)",
+        category: "Organic Farming",
+        description: "Promotes organic farming through a cluster approach and PGS certification.",
+        eligibility: "Farmers willing to form clusters and adopt organic farming practices.",
+        benefits: "Financial assistance of ₹50,000 per hectare for 3 years.",
+        applicationProcess: "Formation of farmer groups and registration with local agriculture office.",
+        officialUrl: "https://pgsindia-ncof.gov.in/pkvy/index.aspx",
+        state: "Central"
+      }
+    ];
+    await GovernmentScheme.bulkCreate(schemes);
+    console.log(`✅ Created ${schemes.length} government schemes`);
+
+    // ========================================================================
+    // STEP 8: Community Posts
+    // ========================================================================
+    console.log('\n🤝 Creating community forum posts...');
+    const communityPosts = [
+      {
+        authorId: vendors[0].id,
+        title: "Best practices for Tomato harvesting in summer",
+        content: "Harvest tomatoes in the early morning to keep them firm and prevent sun scald. Make sure to use clean crates and avoid stacking too high to prevent crushing.",
+        category: "Tips & Tricks",
+        tags: "harvesting, tomato, summer",
+        likes: 12
+      },
+      {
+        authorId: vendors[1].id,
+        title: "Impact of recent rains on Wheat quality",
+        content: "We've had unseasonal rain in Pune last week. How are your Wheat crops holding up? Mine seem to have higher moisture content now.",
+        category: "Questions",
+        tags: "weather, wheat, moisture",
+        likes: 8
+      },
+      {
+        authorId: vendors[2].id,
+        title: "Success with Organic Farming in Punjab",
+        content: "Switching to organic for my Cotton crop was the best decision. The yield is slightly lower but the premium price I'm getting on Multilingual Mandi more than makes up for it!",
+        category: "Success Stories",
+        tags: "organic, cotton, success",
+        likes: 25
+      }
+    ];
+
+    for (const post of communityPosts) {
+      const p = await CommunityPost.create(post);
+      // Add a comment to each post
+      await CommunityComment.create({
+        postId: p.id,
+        authorId: buyers[0].id,
+        content: "Great advice! I've noticed much better life for tomatoes when harvested early."
+      });
+    }
+    console.log(`✅ Created ${communityPosts.length} community posts with comments`);
 
     // ========================================================================
     // SUMMARY & DEMO CREDENTIALS

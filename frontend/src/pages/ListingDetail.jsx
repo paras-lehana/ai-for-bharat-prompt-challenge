@@ -2,16 +2,22 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { listingsAPI, negotiationsAPI, integrationAPI, favoritesAPI } from '../utils/api';
 import { AuthContext } from '../context/AuthContext';
-import { getCropImageUrl } from '../utils/cropImageMapper';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import ShareButton from '../components/ShareButton';
 import QRCodeDisplay from '../components/QRCodeDisplay';
 import PricePredictionChart from '../components/PricePredictionChart';
 import WeatherWidget from '../components/WeatherWidget';
+import TranslatedText from '../components/TranslatedText';
+import { getCropImageUrl, getTranslatedCropName } from '../utils/cropImageMapper';
+import { useTranslation } from 'react-i18next';
+import PageSummarizer from '../components/PageSummarizer';
+
+import { bustCache } from '../utils/cacheBuster';
 
 export default function ListingDetail() {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
+  const { i18n } = useTranslation();
   const navigate = useNavigate();
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -40,7 +46,7 @@ export default function ListingDetail() {
       const response = await listingsAPI.getById(id);
       const listingData = response.data;
       setListing(listingData);
-      setOfferPrice(listingData.finalPrice);
+      setOfferPrice(Math.round(listingData.finalPrice));
 
       // Check ODOP status
       if (listingData.locationDistrict && listingData.cropType) {
@@ -112,10 +118,10 @@ export default function ListingDetail() {
       }
     }
   }
-  const imageUrl = images[0] || getCropImageUrl(listing.cropType);
+  const imageUrl = bustCache(images[0]) || getCropImageUrl(listing.cropType);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24 md:pb-8">
+    <div className="container py-6 sm:py-8 pb-24 md:pb-8">
       <div className="card">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           {/* Image */}
@@ -126,7 +132,17 @@ export default function ListingDetail() {
               className="w-full h-full object-cover"
               loading="lazy"
               onError={(e) => {
-                e.target.src = '/images/crops/wheat.jpg';
+                const currentSrc = e.target.src;
+                const fallbackSrc = getCropImageUrl(listing.cropType);
+
+                // If we've already tried the fallback or if we're hitting a loop, set to default
+                if (currentSrc.includes(fallbackSrc) || currentSrc.includes('default.jpg')) {
+                  e.target.src = '/images/crops/default.jpg';
+                  return;
+                }
+
+                // Try specific crop local image
+                e.target.src = fallbackSrc;
               }}
             />
             {/* Favorite Button */}
@@ -152,7 +168,9 @@ export default function ListingDetail() {
 
           {/* Details */}
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold mb-4">{listing.cropType}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-4">
+              {getTranslatedCropName(listing.cropType, i18n.language)}
+            </h1>
 
             {/* ODOP Description */}
             {odpBadge && (
@@ -160,37 +178,37 @@ export default function ListingDetail() {
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-2xl">🏆</span>
                   <span className="font-bold text-orange-800">
-                    {odpBadge.displayName[user?.languagePreference || 'en']}
+                    <TranslatedText text={odpBadge.displayName[i18n.language] || odpBadge.displayName['en']} />
                   </span>
                 </div>
                 <p className="text-sm text-orange-700">
-                  {odpBadge.description[user?.languagePreference || 'en']}
+                  <TranslatedText text={odpBadge.description[i18n.language] || odpBadge.description['en']} />
                 </p>
               </div>
             )}
 
             <div className="mb-6">
               <div className="text-3xl sm:text-4xl font-bold text-primary-600 mb-2">
-                ₹{listing.finalPrice}
-                <span className="text-base sm:text-lg text-gray-600">/{listing.unit}</span>
+                ₹{Math.round(listing.finalPrice)}
+                <span className="text-base sm:text-lg text-gray-600">/<TranslatedText text={listing.unit} /></span>
               </div>
               {listing.basePrice !== listing.finalPrice && (
                 <div className="bg-gray-50 p-3 rounded-lg text-sm overflow-x-auto">
                   <div className="flex justify-between mb-1 whitespace-nowrap">
-                    <span className="text-gray-600">Base Price:</span>
-                    <span className="font-medium">₹{listing.basePrice}</span>
+                    <span className="text-gray-600"><TranslatedText text="Base Price" />:</span>
+                    <span className="font-medium">₹{Math.round(listing.basePrice)}</span>
                   </div>
                   <div className="flex justify-between mb-1 whitespace-nowrap">
-                    <span className="text-gray-600">Quality Multiplier:</span>
+                    <span className="text-gray-600"><TranslatedText text="Quality Multiplier" />:</span>
                     <span className="font-medium">×{listing.qualityMultiplier}</span>
                   </div>
                   <div className="flex justify-between mb-1 whitespace-nowrap">
-                    <span className="text-gray-600">Demand Adjuster:</span>
+                    <span className="text-gray-600"><TranslatedText text="Demand Adjuster" />:</span>
                     <span className="font-medium">×{listing.demandAdjuster}</span>
                   </div>
                   <div className="flex justify-between pt-2 border-t border-gray-200 whitespace-nowrap">
-                    <span className="text-gray-700 font-medium">Final Price:</span>
-                    <span className="font-bold text-primary-600">₹{listing.finalPrice}</span>
+                    <span className="text-gray-700 font-medium"><TranslatedText text="Final Price" />:</span>
+                    <span className="font-bold text-primary-600">₹{Math.round(listing.finalPrice)}</span>
                   </div>
                 </div>
               )}
@@ -198,37 +216,37 @@ export default function ListingDetail() {
 
             <div className="space-y-3 mb-6">
               <div className="flex justify-between">
-                <span className="text-gray-600">Quality:</span>
+                <span className="text-gray-600"><TranslatedText text="Quality" />:</span>
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${listing.qualityTier === 'premium' ? 'bg-yellow-100 text-yellow-800' :
                   listing.qualityTier === 'standard' ? 'bg-blue-100 text-blue-800' :
                     'bg-gray-100 text-gray-800'
                   }`}>
-                  {listing.qualityTier}
+                  <TranslatedText text={listing.qualityTier} />
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-gray-600">Quantity:</span>
-                <span className="font-medium">{listing.quantity} {listing.unit}</span>
+                <span className="text-gray-600"><TranslatedText text="Quantity" />:</span>
+                <span className="font-medium">{listing.quantity} <TranslatedText text={listing.unit} /></span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-gray-600">Location:</span>
-                <span className="font-medium">{listing.locationAddress || 'Delhi'}</span>
+                <span className="text-gray-600"><TranslatedText text="Location" />:</span>
+                <span className="font-medium"><TranslatedText text={listing.locationAddress || 'Delhi'} /></span>
               </div>
             </div>
 
             {listing.description && (
               <div className="mb-6">
-                <h3 className="font-bold mb-2">Description</h3>
-                <p className="text-gray-600">{listing.description}</p>
+                <h3 className="font-bold mb-2"><TranslatedText text="Description" /></h3>
+                <p className="text-gray-600"><TranslatedText text={listing.description} /></p>
               </div>
             )}
 
             {/* Vendor Info */}
             {listing.vendor && (
               <div className="border-t pt-4 mb-6">
-                <h3 className="font-bold mb-2">Vendor</h3>
+                <h3 className="font-bold mb-2"><TranslatedText text="Vendor" /></h3>
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center text-2xl">
                     👤
@@ -262,7 +280,7 @@ export default function ListingDetail() {
                       onClick={() => setShowOfferForm(true)}
                       className="btn-primary w-full text-base sm:text-lg"
                     >
-                      Make an Offer
+                      <TranslatedText text="Make an Offer" />
                     </button>
                     <div className="grid grid-cols-2 gap-3">
                       <ShareButton listing={listing} />
@@ -340,6 +358,7 @@ export default function ListingDetail() {
           </div>
         </div>
       </div>
+      {listing && <PageSummarizer pageType="listing_detail" data={listing} />}
     </div>
   );
 }

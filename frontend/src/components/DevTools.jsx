@@ -13,10 +13,10 @@ const DevTools = () => {
         setLoading(true);
         try {
             // 1. Send OTP
-            await authAPI.login({ phone });
+            await authAPI.sendOTP(phone);
 
             // 2. Verify OTP
-            const response = await authAPI.verifyOTP({ phone, otp: '1104', role });
+            const response = await authAPI.verifyOTP(phone, '1104', { role });
 
             // 3. Login
             login(response.data.token, response.data.user);

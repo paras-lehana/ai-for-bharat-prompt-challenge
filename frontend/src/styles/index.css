@@ -10,6 +10,10 @@
     @apply bg-gray-50 text-gray-900;
   }
   
+  .container {
+    @apply max-w-[900px] mx-auto px-4 sm:px-6;
+  }
+
   * {
     @apply transition-colors duration-200;
   }

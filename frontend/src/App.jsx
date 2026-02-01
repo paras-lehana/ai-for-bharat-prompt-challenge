@@ -45,6 +45,13 @@ import { LanguageProvider } from './context/LanguageContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ComparisonProvider } from './context/ComparisonContext';
 
+const DemoRedirect = () => {
+  useEffect(() => {
+    window.location.href = import.meta.env.VITE_DEMO_VIDEO_URL || 'https://youtube.com';
+  }, []);
+  return <LoadingSpinner />;
+};
+
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -124,6 +131,7 @@ function App() {
                   <Route path="/gem-guide" element={user ? <GeMGuide /> : <Navigate to="/login" />} />
                   <Route path="/settings" element={user ? <Settings /> : <Navigate to="/login" />} />
                   <Route path="/community" element={user ? <Community /> : <Navigate to="/login" />} />
+                  <Route path="/demo" element={<DemoRedirect />} />
                 </Routes>
 
                 {/* PWA Components */}

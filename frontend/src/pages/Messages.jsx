@@ -18,6 +18,7 @@ import { AuthContext } from '../context/AuthContext';
 import { messagesAPI } from '../utils/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import TranslatedText from '../components/TranslatedText';
+import PageSummarizer from '../components/PageSummarizer';
 
 function Messages() {
   const { user } = useContext(AuthContext);
@@ -196,9 +197,14 @@ function Messages() {
 
   return (
     <div className="container mx-auto px-4 py-6 sm:py-8 pb-24 md:pb-8">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">
-        <TranslatedText text="Messages" />
-      </h1>
+      <div className="flex justify-between items-center mb-4 sm:mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold">
+          <TranslatedText text="Messages" />
+        </h1>
+        {conversations.length > 0 && (
+          <PageSummarizer pageType="messages" data={conversations} />
+        )}
+      </div>
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm">
@@ -228,15 +234,15 @@ function Messages() {
                     : 'bg-gray-50 hover:bg-gray-100'
                     }`}
                 >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="font-semibold">{conv.userName}</p>
-                      <p className="text-sm text-gray-600 truncate">
-                        {conv.lastMessage}
+                  <div className="flex justify-between items-start gap-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold truncate">{conv.userName}</p>
+                      <p className="text-sm text-gray-600 truncate overflow-hidden whitespace-nowrap" style={{ maxWidth: '180px', display: 'block' }}>
+                        <TranslatedText text={conv.lastMessage} />
                       </p>
                     </div>
                     {conv.unreadCount > 0 && (
-                      <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1">
+                      <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 flex-shrink-0">
                         {conv.unreadCount}
                       </span>
                     )}

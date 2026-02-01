@@ -8,7 +8,7 @@
  * This constant is used as the single source of truth for versioning
  * and is also used for CSS/JS cache busting.
  */
-const APP_VERSION = '4.4';
+const APP_VERSION = '4.6';
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { APP_VERSION };

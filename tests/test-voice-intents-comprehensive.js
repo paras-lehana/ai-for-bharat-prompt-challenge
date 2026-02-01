@@ -11,7 +11,7 @@ const path = require('path');
 const BACKEND_URL = process.env.BACKEND_URL || 'http://172.18.0.30:5000';
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const OPENROUTER_API_URL = process.env.OPENROUTER_API_URL || 'https://openrouter.ai/api/v1';
-const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || 'meta-llama/llama-3.1-8b-instruct:free';
+const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || 'openai/gpt-oss-120b:free';
 
 // Test cases for all intents
 const testCases = [
@@ -202,7 +202,7 @@ async function testIntent(testCase) {
         model: OPENROUTER_MODEL,
         messages: [
           {
-            role: 'system',
+            role: 'user',
             content: `You are an AI assistant for an agricultural marketplace. Extract intent and parameters from user queries in any Indian language.
 
 Possible intents:
@@ -233,28 +233,10 @@ CRITICAL TRANSLATION RULES:
 
 NEVER return Hindi crop names. ALWAYS translate to English.
 
+Now extract from this query: "${testCase.input}"
+
 Response format (pure JSON only, no markdown):
-{
-  "intent": "<intent_type>",
-  "cropType": "<crop_name_in_english or null>",
-  "quantity": "<quantity or null>",
-  "price": "<price or null>",
-  "location": "<location or null>",
-  "qualityTier": "<tier or null>",
-  "confidence": "<high/medium/low>"
-}`
-          },
-          {
-            role: 'user',
-            content: 'मुझे गेहूं की कीमत बताओ'
-          },
-          {
-            role: 'assistant',
-            content: '{"intent":"price_query","cropType":"wheat","quantity":null,"price":null,"location":null,"qualityTier":null,"confidence":"high"}'
-          },
-          {
-            role: 'user',
-            content: testCase.input
+{"intent":"<intent_type>","cropType":"<crop_name_in_english or null>","quantity":"<quantity or null>","price":"<price or null>","location":"<location or null>","qualityTier":"<tier or null>","confidence":"<high/medium/low>"}`
           }
         ],
         temperature: 0.3,
@@ -337,10 +319,10 @@ Response format (pure JSON only, no markdown):
     };
     
     if (passed) {
-      console.log(`✅ PASS`);
+      console.log(`✅ PASS - Intent: ${parsed.intent}, Crop: ${parsed.cropType}`);
       results.passed++;
     } else {
-      console.log(`❌ FAIL`);
+      console.log(`❌ FAIL - Intent: ${parsed.intent}, Crop: ${parsed.cropType}`);
       if (!intentMatch) console.log(`   Intent mismatch: expected "${testCase.expectedIntent}", got "${parsed.intent}"`);
       if (!paramsMatch) console.log(`   Parameter issues: ${paramIssues.join(', ')}`);
       results.failed++;
@@ -350,13 +332,14 @@ Response format (pure JSON only, no markdown):
     return result;
     
   } catch (error) {
-    console.error(`❌ ERROR: ${error.message}`);
+    const errMsg = error.response ? `${error.response.status} - ${JSON.stringify(error.response.data)}` : error.message;
+    console.error(`❌ ERROR: ${errMsg}`);
     const result = {
       id: testCase.id,
       intent: testCase.intent,
       language: testCase.language,
       input: testCase.input,
-      error: error.message,
+      error: errMsg,
       passed: false
     };
     results.tests.push(result);
@@ -470,6 +453,7 @@ async function runTests() {
   console.log('🚀 Starting Comprehensive Voice Intent Testing\n');
   console.log(`Backend URL: ${BACKEND_URL}`);
   console.log(`Model: ${OPENROUTER_MODEL}`);
+  console.log(`API Key: ${OPENROUTER_API_KEY ? OPENROUTER_API_KEY.substring(0, 15) + '...' : 'NOT SET'}`);
   console.log(`Total Test Cases: ${testCases.length}\n`);
   
   if (!OPENROUTER_API_KEY) {
@@ -481,7 +465,7 @@ async function runTests() {
   for (const testCase of testCases) {
     await testIntent(testCase);
     // Small delay between tests
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 5000)); // 5s to avoid rate limits on free tier
   }
   
   // Generate report

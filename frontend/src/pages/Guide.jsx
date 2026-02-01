@@ -3,24 +3,21 @@ import { FiBook, FiStar, FiCode, FiCheckCircle, FiGlobe, FiBarChart, FiZap } fro
 import { AuthContext } from '../context/AuthContext';
 import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
+import TranslatedText from '../components/TranslatedText';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export default function Guide() {
   const { user } = useContext(AuthContext);
-  const [selectedLanguage, setSelectedLanguage] = useState(user?.languagePreference || 'en');
+  const [selectedLanguage, setSelectedLanguage] = useState(localStorage.getItem('i18nextLng') || user?.languagePreference || 'en');
   const [translatedContent, setTranslatedContent] = useState({});
   const [translating, setTranslating] = useState(false);
 
-  // TESTING FEATURE: Support URL query parameter for language testing
-  // Example: /guide?lang=hi
+  // Sync with i18next global state
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const langParam = urlParams.get('lang');
-    if (langParam) {
-      console.log('[Guide] URL parameter detected:', { langParam });
-      setSelectedLanguage(langParam);
-    }
+    // Initial sync
+    const currentLng = localStorage.getItem('i18nextLng') || 'en';
+    setSelectedLanguage(currentLng);
   }, []);
 
   const languages = [
@@ -293,130 +290,62 @@ export default function Guide() {
 
   // Translate content when language changes (ONLY if not English)
   useEffect(() => {
-    console.log('[Guide] Language/Guide changed:', {
-      selectedLanguage,
-      guideTitle: selectedGuide?.title,
-      contentLength: selectedGuide?.content?.length,
-      isEnglish: selectedLanguage === 'en'
-    });
-
     // CRITICAL: Do NOT translate if English is selected
     if (selectedLanguage === 'en') {
-      console.log('[Guide] English selected - clearing translations');
-      setTranslatedContent({}); // Clear any existing translations
       setTranslating(false);
-      return; // Exit early - no translation needed
+      return;
     }
-    
+
     // Only translate for non-English languages AND when a guide is selected
     if (selectedGuide && selectedGuide.content) {
-      console.log('[Guide] Starting translation for:', {
-        language: selectedLanguage,
-        guideTitle: selectedGuide.title
-      });
       translateContent(selectedGuide.content, selectedGuide.title);
     }
   }, [selectedLanguage, selectedGuide]);
 
   const translateContent = async (text, title) => {
     const cacheKey = `${title}-${selectedLanguage}`;
-    
-    console.log('[Guide] translateContent called:', {
-      title,
-      language: selectedLanguage,
-      cacheKey,
-      textLength: text?.length,
-      alreadyCached: !!translatedContent[cacheKey]
-    });
-    
+
     // Check if already translated
     if (translatedContent[cacheKey]) {
-      console.log('[Guide] Using cached translation');
       return;
     }
 
     setTranslating(true);
-    console.log('[Guide] Calling translation API...');
-    
+
     try {
       const requestData = {
         text: text,
         targetLanguage: selectedLanguage
       };
-      
-      console.log('[Guide] Translation request:', {
-        url: `${API_BASE_URL}/voice/translate`,
-        textLength: text.length,
-        targetLanguage: selectedLanguage
-      });
-      
+
       const response = await axios.post(`${API_BASE_URL}/voice/translate`, requestData);
-      
-      console.log('[Guide] Translation response:', {
-        status: response.status,
-        hasData: !!response.data,
-        translatedLength: response.data?.translatedText?.length,
-        firstChars: response.data?.translatedText?.substring(0, 100)
-      });
-      
       const translated = response.data.translatedText || text;
-      
-      if (!translated || translated.trim().length === 0) {
-        console.error('[Guide] Translation returned empty string!');
-      }
-      
+
       setTranslatedContent(prev => ({
         ...prev,
         [cacheKey]: translated
       }));
-      
-      console.log('[Guide] Translation cached successfully');
     } catch (error) {
-      console.error('[Guide] Translation error:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status
-      });
-      // Keep original text on error
+      console.error('[Guide] Translation error:', error.message);
     } finally {
       setTranslating(false);
-      console.log('[Guide] Translation complete');
     }
   };
 
   const getDisplayContent = () => {
-    if (!selectedGuide || !selectedGuide.content) {
-      console.log('[Guide] getDisplayContent: No guide selected');
-      return '';
-    }
-    
-    // Always show English content if English is selected
-    if (selectedLanguage === 'en') {
-      console.log('[Guide] getDisplayContent: Showing English content');
-      return selectedGuide.content;
-    }
-    
-    // For non-English, show translated content if available, otherwise show original
+    if (!selectedGuide || !selectedGuide.content) return '';
+    if (selectedLanguage === 'en') return selectedGuide.content;
+
     const cacheKey = `${selectedGuide.title}-${selectedLanguage}`;
     const translated = translatedContent[cacheKey];
-    
-    console.log('[Guide] getDisplayContent:', {
-      cacheKey,
-      hasTranslated: !!translated,
-      translatedLength: translated?.length,
-      originalLength: selectedGuide.content.length,
-      willShowTranslated: !!(translated && translated.trim().length > 0)
-    });
-    
-    // If we have translated content and it's not empty, use it
-    if (translated && translated.trim().length > 0) {
-      console.log('[Guide] Showing translated content');
-      return translated;
-    }
-    
-    // Otherwise, show original English content
-    console.log('[Guide] Showing original English content (fallback)');
+
+    if (translated && translated.trim().length > 0) return translated;
     return selectedGuide.content;
+  };
+
+  const handleLanguageChange = (lng) => {
+    setSelectedLanguage(lng);
+    localStorage.setItem('i18nextLng', lng);
   };
 
   return (
@@ -427,21 +356,21 @@ export default function Guide() {
           <div className="text-6xl mb-4 animate-bounce-subtle">📚</div>
         </div>
         <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-          Help & Documentation
+          <TranslatedText language={selectedLanguage}>Help & Documentation</TranslatedText>
         </h1>
         <p className="text-xl text-gray-600 mb-6 max-w-2xl mx-auto">
-          Everything you need to know about Lokal Mandi - Your multilingual agricultural marketplace
+          <TranslatedText language={selectedLanguage}>Everything you need to know about Lokal Mandi - Your multilingual agricultural marketplace</TranslatedText>
         </p>
 
         {/* Language Selector */}
         <div className="inline-flex items-center space-x-4 bg-white rounded-xl shadow-lg p-4 hover:shadow-xl transition-shadow duration-300">
           <label className="font-medium text-gray-700 flex items-center space-x-2">
             <span className="text-2xl">🌐</span>
-            <span>Language:</span>
+            <span><TranslatedText language={selectedLanguage}>Language</TranslatedText>:</span>
           </label>
           <select
             value={selectedLanguage}
-            onChange={(e) => setSelectedLanguage(e.target.value)}
+            onChange={(e) => handleLanguageChange(e.target.value)}
             className="border-2 border-primary-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 cursor-pointer hover:border-primary-400"
           >
             {languages.map((lang) => (
@@ -450,8 +379,8 @@ export default function Guide() {
               </option>
             ))}
           </select>
-          <span className="text-sm text-gray-500 bg-blue-50 px-3 py-1 rounded-full">
-            ✨ Auto-translated
+          <span className="text-sm text-gray-500 bg-blue-50 px-3 py-1 rounded-full text-xs">
+            ✨ <TranslatedText language={selectedLanguage}>Auto-translated content</TranslatedText>
           </span>
         </div>
       </div>
@@ -472,13 +401,17 @@ export default function Guide() {
                     {guide.icon}
                   </div>
                   <span className="text-sm font-medium bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm group-hover:bg-white/30 transition-colors">
-                    Read →
+                    <TranslatedText language={selectedLanguage}>Read</TranslatedText> →
                   </span>
                 </div>
-                <h3 className="text-xl font-bold mb-2 relative z-10">{guide.title}</h3>
+                <h3 className="text-xl font-bold mb-2 relative z-10">
+                  <TranslatedText language={selectedLanguage}>{guide.title}</TranslatedText>
+                </h3>
               </div>
               <div className="p-6 bg-gradient-to-br from-white to-gray-50 group-hover:from-gray-50 group-hover:to-white transition-colors duration-300">
-                <p className="text-gray-600 group-hover:text-gray-800 transition-colors">{guide.description}</p>
+                <p className="text-gray-600 group-hover:text-gray-800 transition-colors">
+                  <TranslatedText language={selectedLanguage}>{guide.description}</TranslatedText>
+                </p>
               </div>
             </button>
           ))}
@@ -490,31 +423,31 @@ export default function Guide() {
             className="mb-6 text-primary-600 hover:text-primary-700 font-medium flex items-center space-x-2 group transition-all duration-200"
           >
             <span className="transform group-hover:-translate-x-1 transition-transform">←</span>
-            <span>Back to all guides</span>
+            <span><TranslatedText language={selectedLanguage}>Back to all guides</TranslatedText></span>
           </button>
-          
+
           {translating && selectedLanguage !== 'en' && (
             <div className="mb-4 bg-gradient-to-r from-blue-50 to-blue-100 border-2 border-blue-200 rounded-xl p-4 text-blue-700 flex items-center space-x-3 animate-pulse">
               <div className="text-2xl">🔄</div>
               <div>
-                <div className="font-medium">Translating content...</div>
-                <div className="text-sm">Converting to {languages.find(l => l.code === selectedLanguage)?.name}</div>
+                <div className="font-medium"><TranslatedText language={selectedLanguage}>Translating content...</TranslatedText></div>
+                <div className="text-sm"><TranslatedText language={selectedLanguage}>Converting content</TranslatedText></div>
               </div>
             </div>
           )}
-          
+
           <div className="prose prose-lg max-w-none">
             <ReactMarkdown
               components={{
-                h1: ({node, ...props}) => <h1 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900 border-b-4 border-primary-500 pb-3" {...props} />,
-                h2: ({node, ...props}) => <h2 className="text-2xl md:text-3xl font-bold mb-4 mt-8 text-gray-800 flex items-center space-x-2" {...props} />,
-                h3: ({node, ...props}) => <h3 className="text-xl md:text-2xl font-bold mb-3 mt-6 text-gray-700" {...props} />,
-                p: ({node, ...props}) => <p className="mb-4 text-gray-700 leading-relaxed text-lg" {...props} />,
-                ul: ({node, ...props}) => <ul className="list-disc list-inside mb-4 space-y-2 ml-4" {...props} />,
-                ol: ({node, ...props}) => <ol className="list-decimal list-inside mb-4 space-y-2 ml-4" {...props} />,
-                li: ({node, ...props}) => <li className="text-gray-700 text-lg pl-2" {...props} />,
-                strong: ({node, ...props}) => <strong className="font-bold text-gray-900 bg-yellow-50 px-1 rounded" {...props} />,
-                code: ({node, ...props}) => <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono text-primary-600 border border-gray-200" {...props} />,
+                h1: ({ node, ...props }) => <h1 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900 border-b-4 border-primary-500 pb-3" {...props} />,
+                h2: ({ node, ...props }) => <h2 className="text-2xl md:text-3xl font-bold mb-4 mt-8 text-gray-800 flex items-center space-x-2" {...props} />,
+                h3: ({ node, ...props }) => <h3 className="text-xl md:text-2xl font-bold mb-3 mt-6 text-gray-700" {...props} />,
+                p: ({ node, ...props }) => <p className="mb-4 text-gray-700 leading-relaxed text-lg" {...props} />,
+                ul: ({ node, ...props }) => <ul className="list-disc list-inside mb-4 space-y-2 ml-4" {...props} />,
+                ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-4 space-y-2 ml-4" {...props} />,
+                li: ({ node, ...props }) => <li className="text-gray-700 text-lg pl-2" {...props} />,
+                strong: ({ node, ...props }) => <strong className="font-bold text-gray-900 bg-yellow-50 px-1 rounded" {...props} />,
+                code: ({ node, ...props }) => <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono text-primary-600 border border-gray-200" {...props} />,
               }}
             >
               {getDisplayContent()}
@@ -525,72 +458,39 @@ export default function Guide() {
 
       {/* Quick Links Section */}
       <div className="bg-gradient-to-r from-primary-600 to-secondary-600 rounded-2xl p-8 text-white">
-        <h2 className="text-2xl font-bold mb-6">Quick Links</h2>
+        <h2 className="text-2xl font-bold mb-6"><TranslatedText language={selectedLanguage}>Quick Links</TranslatedText></h2>
         <div className="grid md:grid-cols-2 gap-4">
           <a
             href="/browse"
             className="bg-white/10 backdrop-blur-sm rounded-lg p-4 hover:bg-white/20 transition-colors"
           >
-            <h3 className="font-bold mb-2">🛒 Browse Listings</h3>
-            <p className="text-sm opacity-90">Explore available products</p>
+            <h3 className="font-bold mb-1"><TranslatedText language={selectedLanguage}>Browse Listings</TranslatedText></h3>
+            <p className="text-sm opacity-90"><TranslatedText language={selectedLanguage}>Explore available products</TranslatedText></p>
           </a>
-          
+
           <a
             href="/price-info"
             className="bg-white/10 backdrop-blur-sm rounded-lg p-4 hover:bg-white/20 transition-colors"
           >
-            <h3 className="font-bold mb-2">💰 Price Information</h3>
-            <p className="text-sm opacity-90">Check current market prices</p>
+            <h3 className="font-bold mb-1"><TranslatedText language={selectedLanguage}>Price Information</TranslatedText></h3>
+            <p className="text-sm opacity-90"><TranslatedText language={selectedLanguage}>Check current market prices</TranslatedText></p>
           </a>
-          
+
           <a
             href="/create-listing"
             className="bg-white/10 backdrop-blur-sm rounded-lg p-4 hover:bg-white/20 transition-colors"
           >
-            <h3 className="font-bold mb-2">➕ Create Listing</h3>
-            <p className="text-sm opacity-90">List your products</p>
+            <h3 className="font-bold mb-1"><TranslatedText language={selectedLanguage}>Create Listing</TranslatedText></h3>
+            <p className="text-sm opacity-90"><TranslatedText language={selectedLanguage}>List your products</TranslatedText></p>
           </a>
-          
+
           <a
             href="/negotiations"
             className="bg-white/10 backdrop-blur-sm rounded-lg p-4 hover:bg-white/20 transition-colors"
           >
-            <h3 className="font-bold mb-2">💬 My Negotiations</h3>
-            <p className="text-sm opacity-90">View your offers and deals</p>
+            <h3 className="font-bold mb-1"><TranslatedText language={selectedLanguage}>My Negotiations</TranslatedText></h3>
+            <p className="text-sm opacity-90"><TranslatedText language={selectedLanguage}>View your offers and deals</TranslatedText></p>
           </a>
-        </div>
-      </div>
-
-      {/* Platform Features */}
-      <div className="mt-12 bg-white rounded-2xl p-8 shadow-lg">
-        <h2 className="text-2xl font-bold mb-6 text-center">Platform Capabilities</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="text-center">
-            <h3 className="font-bold text-lg mb-3 text-primary-600">Voice & Language</h3>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li>🎤 22 Indian Languages</li>
-              <li>🗣️ Voice Commands</li>
-              <li>🌐 Auto Translation</li>
-            </ul>
-          </div>
-          
-          <div className="text-center">
-            <h3 className="font-bold text-lg mb-3 text-primary-600">Smart Features</h3>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li>🤖 AI Negotiation Help</li>
-              <li>💰 Fair Pricing</li>
-              <li>📊 Market Intelligence</li>
-            </ul>
-          </div>
-          
-          <div className="text-center">
-            <h3 className="font-bold text-lg mb-3 text-primary-600">Trust & Safety</h3>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li>⭐ Vendor Ratings</li>
-              <li>🛡️ Dispute Resolution</li>
-              <li>✅ Verified Sellers</li>
-            </ul>
-          </div>
         </div>
       </div>
     </div>

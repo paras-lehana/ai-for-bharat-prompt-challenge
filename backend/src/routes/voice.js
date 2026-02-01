@@ -64,6 +64,24 @@ router.post('/parse-intent', asyncHandler(async (req, res) => {
   res.json(intent);
 }));
 
+// Generate page summary (LLM Text -> TTS Audio)
+router.post('/page-summary', asyncHandler(async (req, res) => {
+  const { pageType, data, languageCode = 'en' } = req.body;
+  
+  // 1. Generate Summary Text using LLM
+  const summaryText = await AIService.generatePageSummary(pageType, data, languageCode);
+  console.log(`[PageSummary] Generated text: ${summaryText}`);
+
+  // 2. Synthesize Speech
+  const audio = await TranslationService.synthesizeSpeech(summaryText, languageCode);
+  
+  res.json({
+    audio,
+    text: summaryText,
+    languageCode
+  });
+}));
+
 // Synthesize text to speech
 router.post('/synthesize', asyncHandler(async (req, res) => {
   const { text, languageCode = 'hi' } = req.body;
@@ -76,7 +94,7 @@ router.post('/synthesize', asyncHandler(async (req, res) => {
   });
 }));
 
-// Translate text to target language
+// Translate text to target language (supports large content by splitting)
 router.post('/translate', asyncHandler(async (req, res) => {
   const { text, targetLanguage = 'hi' } = req.body;
   
@@ -88,6 +106,36 @@ router.post('/translate', asyncHandler(async (req, res) => {
     });
   }
   
+  // For large content (like markdown guides), split into paragraphs
+  // and translate each separately to avoid truncation
+  if (text && text.length > 500) {
+    console.log(`[Translate] Large content detected (${text.length} chars), splitting...`);
+    
+    // Split by double newlines (paragraphs) while keeping markdown structure
+    const paragraphs = text.split(/\n\n+/);
+    const translatedParagraphs = [];
+    
+    for (const paragraph of paragraphs) {
+      if (paragraph.trim()) {
+        // Skip translating markdown syntax-heavy lines (headers with #, etc)
+        // but translate the content
+        const translated = await TranslationService.translateText(paragraph, 'en', targetLanguage);
+        translatedParagraphs.push(translated);
+      } else {
+        translatedParagraphs.push('');
+      }
+    }
+    
+    const translatedText = translatedParagraphs.join('\n\n');
+    console.log(`[Translate] Joined ${translatedParagraphs.length} paragraphs (${translatedText.length} chars)`);
+    
+    return res.json({
+      translatedText,
+      targetLanguage
+    });
+  }
+  
+  // For short content, translate directly
   const translatedText = await TranslationService.translateText(text, 'en', targetLanguage);
   
   res.json({

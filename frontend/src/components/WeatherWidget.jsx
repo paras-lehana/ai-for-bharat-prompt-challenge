@@ -10,23 +10,28 @@ const WeatherWidget = ({ location = 'Pune' }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const displayLocation = (typeof location === 'object'
+        ? (location.district || location.city || location.address)
+        : location) || 'Noida, Uttar Pradesh';
+
     useEffect(() => {
-        fetchWeather();
-    }, [location]);
+        if (displayLocation) {
+            fetchWeather();
+        }
+    }, [displayLocation]);
 
     const fetchWeather = async () => {
         try {
             setLoading(true);
             const [currentRes, forecastRes] = await Promise.all([
-                weatherAPI.getCurrent(location),
-                weatherAPI.getForecast(location)
+                weatherAPI.getCurrent(displayLocation),
+                weatherAPI.getForecast(displayLocation)
             ]);
-            setWeather(currentRes.data);
-            setForecast(forecastRes.data);
+            setWeather(currentRes.data || {});
+            setForecast(forecastRes.data || null);
             setLoading(false);
         } catch (err) {
             console.error('Error fetching weather:', err);
-            // Don't show error to user in widget, just fallback or hide
             setError('Unavailable');
             setLoading(false);
         }
@@ -44,8 +49,8 @@ const WeatherWidget = ({ location = 'Pune' }) => {
         return <WiDaySunny className="text-yellow-500 w-12 h-12" />;
     };
 
-    if (loading) return <div className="h-48 flex items-center justify-center"><LoadingSpinner /></div>;
-    if (error || !weather) return null;
+    if (loading) return <div className="h-48 flex items-center justify-center bg-white/50 rounded-xl"><LoadingSpinner /></div>;
+    if (error || !weather || typeof weather.temperature === 'undefined') return null;
 
     return (
         <div className="bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl p-6 text-white shadow-lg animate-fade-in relative overflow-hidden">
@@ -59,21 +64,20 @@ const WeatherWidget = ({ location = 'Pune' }) => {
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <FiMapPin />
-                            <h3 className="font-semibold text-lg">{location}</h3>
+                            <h3 className="font-semibold text-lg">{displayLocation}</h3>
                         </div>
                         <p className="text-blue-100 text-sm">{new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })}</p>
                     </div>
                     <div className="text-right">
                         <div className="flex items-center gap-2">
-                            <span className="text-4xl font-bold">{Math.round(weather.temperature)}°</span>
+                            <span className="text-4xl font-bold">{Math.round(weather.temperature || 0)}°</span>
                             {getWeatherIcon(weather.weathercode)}
                         </div>
-                        <p className="text-blue-100 text-sm">Wind: {weather.windspeed} km/h</p>
+                        <p className="text-blue-100 text-sm">Wind: {weather.windspeed || 0} km/h</p>
                     </div>
                 </div>
 
-                {/* Forecast */}
-                {forecast && (
+                {forecast && forecast.time && (
                     <div className="grid grid-cols-4 gap-2 pt-4 border-t border-white/20">
                         {forecast.time.slice(1, 5).map((date, idx) => (
                             <div key={date} className="text-center">
@@ -81,12 +85,12 @@ const WeatherWidget = ({ location = 'Pune' }) => {
                                     {new Date(date).toLocaleDateString(undefined, { weekday: 'short' })}
                                 </p>
                                 <div className="flex justify-center my-1 scale-75">
-                                    {getWeatherIcon(forecast.weathercode[idx + 1])}
+                                    {getWeatherIcon(forecast.weathercode ? forecast.weathercode[idx + 1] : 0)}
                                 </div>
                                 <p className="font-semibold text-sm">
-                                    {Math.round(forecast.temperature_2m_max[idx + 1])}°
+                                    {Math.round((forecast.temperature_2m_max ? forecast.temperature_2m_max[idx + 1] : 0) || 0)}°
                                     <span className="text-xs text-blue-200 ml-1">
-                                        {Math.round(forecast.temperature_2m_min[idx + 1])}°
+                                        {Math.round((forecast.temperature_2m_min ? forecast.temperature_2m_min[idx + 1] : 0) || 0)}°
                                     </span>
                                 </p>
                             </div>

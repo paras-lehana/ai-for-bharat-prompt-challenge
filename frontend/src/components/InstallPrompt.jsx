@@ -99,38 +99,40 @@ const InstallPrompt = () => {
           </div>
           <div className="flex-1">
             <h3 className="font-bold text-lg mb-1">
-              {t('installApp') || 'Install Lokal Mandi'}
+              Lokal Mandi App
             </h3>
             <p className="text-sm text-white/90 mb-3">
               {isIOS
-                ? t('installInstructionsIOS') || 'Tap the share button and select "Add to Home Screen"'
-                : t('installInstructions') || 'Install our app for quick access and offline support'}
+                ? 'Our native app is coming soon! Register your interest below.'
+                : 'Native app coming soon! Get early access and offline support.'}
             </p>
 
-            {!isIOS && deferredPrompt && (
+            {!isIOS && (
               <button
-                onClick={handleInstallClick}
+                onClick={() => {
+                  alert('Thank you for your interest! We will notify you when the app is available.');
+                  handleDismiss();
+                }}
                 className="bg-white text-green-600 hover:bg-green-50 px-4 py-2 rounded-lg font-semibold transition-colors flex items-center space-x-2"
               >
-                <FiDownload />
-                <span>{t('install') || 'Install'}</span>
+                <span>📲</span>
+                <span>Register Interest</span>
               </button>
             )}
 
             {isIOS && (
-              <div className="text-sm space-y-2 bg-white/10 p-3 rounded-lg">
-                <div className="flex items-center space-x-2">
-                  <span className="text-2xl">1️⃣</span>
-                  <span>{t('tapShareButton') || 'Tap the Share button'}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-2xl">2️⃣</span>
-                  <span>{t('selectAddToHome') || 'Select "Add to Home Screen"'}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <span className="text-2xl">3️⃣</span>
-                  <span>{t('tapAdd') || 'Tap "Add"'}</span>
-                </div>
+              <div className="text-sm space-y-3 bg-white/10 p-3 rounded-lg">
+                <p className="font-medium">📱 Native iOS app coming soon!</p>
+                <button
+                  onClick={() => {
+                    alert('Thank you for your interest! We will notify you when the iOS app is available.');
+                    handleDismiss();
+                  }}
+                  className="bg-white text-green-600 hover:bg-green-50 px-4 py-2 rounded-lg font-semibold transition-colors flex items-center space-x-2"
+                >
+                  <span>📲</span>
+                  <span>Register Interest</span>
+                </button>
               </div>
             )}
           </div>

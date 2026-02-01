@@ -1,0 +1,152 @@
+{
+  "timestamp": "2026-02-01T17:14:58.644Z",
+  "totalTests": 18,
+  "passed": 0,
+  "failed": 18,
+  "tests": [
+    {
+      "id": "PQ1",
+      "intent": "price_query",
+      "language": "Hindi",
+      "input": "मुझे गेहूं की कीमत बताओ",
+      "error": "Request failed with status code 401",
+      "passed": false
+    },
+    {
+      "id": "PQ2",
+      "intent": "price_query",
+      "language": "English",
+      "input": "What is the price of rice?",
+      "error": "Request failed with status code 401",
+      "passed": false
+    },
+    {
+      "id": "PQ3",
+      "intent": "price_query",
+      "language": "Hindi",
+      "input": "टमाटर कितने का है?",
+      "error": "Request failed with status code 401",
+      "passed": false
+    },
+    {
+      "id": "PQ4",
+      "intent": "price_query",
+      "language": "English",
+      "input": "Tell me onion prices",
+      "error": "Request failed with status code 401",
+      "passed": false
+    },
+    {
+      "id": "CL1",
+      "intent": "create_listing",
+      "language": "Hindi",
+      "input": "मैं 100 किलो टमाटर बेचना चाहता हूं",
+      "error": "Request failed with status code 401",
+      "passed": false
+    },
+    {
+      "id": "CL2",
+      "intent": "create_listing",
+      "language": "English",
+      "input": "I want to sell 50 quintal wheat",
+      "error": "Request failed with status code 401",
+      "passed": false
+    },
+    {
+      "id": "CL3",
+      "intent": "create_listing",
+      "language": "Hindi",
+      "input": "मेरे पास 200 किलो प्याज है बेचने के लिए",
+      "error": "Request failed with status code 401",
+      "passed": false
+    },
+    {
+      "id": "CL4",
+      "intent": "create_listing",
+      "language": "English",
+      "input": "Selling premium quality rice 100 kg",
+      "error": "Request failed with status code 401",
+      "passed": false
+    },
+    {
+      "id": "MO1",
+      "intent": "make_offer",
+      "language": "Hindi",
+      "input": "मैं 5000 रुपये का ऑफर देना चाहता हूं",
+      "error": "Request failed with status code 401",
+      "passed": false
+    },
+    {
+      "id": "MO2",
+      "intent": "make_offer",
+      "language": "English",
+      "input": "I will pay 3000 for this listing",
+      "error": "Request failed with status code 401",
+      "passed": false
+    },
+    {
+      "id": "MO3",
+      "intent": "make_offer",
+      "language": "Hindi",
+      "input": "इस लिस्टिंग पर 2500 रुपये दूंगा",
+      "error": "Request failed with status code 401",
+      "passed": false
+    },
+    {
+      "id": "SL1",
+      "intent": "search_listings",
+      "language": "Hindi",
+      "input": "मुझे प्याज खरीदना है",
+      "error": "Request failed with status code 401",
+      "passed": false
+    },
+    {
+      "id": "SL2",
+      "intent": "search_listings",
+      "language": "English",
+      "input": "Looking for potatoes",
+      "error": "Request failed with status code 401",
+      "passed": false
+    },
+    {
+      "id": "SL3",
+      "intent": "search_listings",
+      "language": "Hindi",
+      "input": "गेहूं खोज रहा हूं",
+      "error": "Request failed with status code 401",
+      "passed": false
+    },
+    {
+      "id": "SL4",
+      "intent": "search_listings",
+      "language": "English",
+      "input": "Find premium quality tomatoes",
+      "error": "Request failed with status code 401",
+      "passed": false
+    },
+    {
+      "id": "GH1",
+      "intent": "general_help",
+      "language": "Hindi",
+      "input": "यह कैसे काम करता है?",
+      "error": "Request failed with status code 401",
+      "passed": false
+    },
+    {
+      "id": "GH2",
+      "intent": "general_help",
+      "language": "English",
+      "input": "I need help",
+      "error": "Request failed with status code 401",
+      "passed": false
+    },
+    {
+      "id": "GH3",
+      "intent": "general_help",
+      "language": "Hindi",
+      "input": "मुझे मदद चाहिए",
+      "error": "Request failed with status code 401",
+      "passed": false
+    }
+  ]
+}

@@ -24,19 +24,30 @@ export default function Login() {
   const [otpSent, setOtpSent] = useState(false);
   const [translations, setTranslations] = useState({});
   const [translating, setTranslating] = useState(false);
-  
+
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  // Load saved language preference on mount
+  useEffect(() => {
+    const savedLang = localStorage.getItem('i18nextLng');
+    if (savedLang && savedLang !== languagePreference) {
+      setLanguagePreference(savedLang);
+    }
+  }, []);
+
   // Translate content when language changes (ONLY if not English)
   useEffect(() => {
+    // Save language preference to localStorage immediately
+    localStorage.setItem('i18nextLng', languagePreference);
+
     // CRITICAL: Do NOT translate if English is selected
     if (languagePreference === 'en') {
       setTranslations({}); // Clear any existing translations
       setTranslating(false);
       return; // Exit early - no translation needed
     }
-    
+
     // Only translate for non-English languages
     translateContent();
   }, [languagePreference]);
@@ -69,7 +80,11 @@ export default function Login() {
         'Find Nearby Vendors',
         'Discover farmers in your area. Team up for bulk orders and better prices',
         'Live Market Prices',
-        'Real-time government market data. Know the right price before you sell'
+        'Real-time government market data. Know the right price before you sell',
+        'Trade in Your Language. Negotiate Fairly. Earn More.',
+        'Sending...',
+        'Verifying...',
+        'OTP Code'
       ];
 
       console.log(`🔄 Translating ${textsToTranslate.length} texts to ${languagePreference}...`);
@@ -77,10 +92,10 @@ export default function Login() {
       // Translate in batches to avoid rate limiting (429 errors)
       const batchSize = 5;
       const translatedTexts = [];
-      
+
       for (let i = 0; i < textsToTranslate.length; i += batchSize) {
         const batch = textsToTranslate.slice(i, i + batchSize);
-        
+
         const batchResults = await Promise.all(
           batch.map(async (text) => {
             try {
@@ -89,12 +104,12 @@ export default function Login() {
                 targetLanguage: languagePreference
               });
               const translated = response.data.translatedText || text;
-              
+
               // Log if we get mock translation (has [HI] prefix)
               if (translated.startsWith('[HI]') || translated.startsWith('[')) {
                 console.warn(`⚠️ Got mock translation for "${text}": ${translated}`);
               }
-              
+
               return translated;
             } catch (err) {
               console.error(`❌ Translation error for "${text}":`, err.response?.status || err.message);
@@ -102,9 +117,9 @@ export default function Login() {
             }
           })
         );
-        
+
         translatedTexts.push(...batchResults);
-        
+
         // Add small delay between batches to avoid rate limiting
         if (i + batchSize < textsToTranslate.length) {
           await new Promise(resolve => setTimeout(resolve, 500));
@@ -139,7 +154,7 @@ export default function Login() {
       const response = await authAPI.sendOTP(phoneNumber);
       setOtpSent(true);
       setStep('otp');
-      
+
       // Always show alert that OTP was sent
       if (response.data.otp) {
         // Development mode - show actual OTP
@@ -165,7 +180,7 @@ export default function Login() {
         role,
         languagePreference
       });
-      
+
       login(response.data.token, response.data.user);
       navigate('/');
     } catch (err) {
@@ -181,7 +196,7 @@ export default function Login() {
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-primary-600 mb-2">🌾 Lokal Mandi</h1>
-          <p className="text-sm sm:text-base text-gray-600">Trade in Your Language. Negotiate Fairly. Earn More.</p>
+          <p className="text-sm sm:text-base text-gray-600">{t('Trade in Your Language. Negotiate Fairly. Earn More.')}</p>
         </div>
 
         {/* Login Card */}
@@ -210,7 +225,7 @@ export default function Login() {
           {step === 'phone' && (
             <form onSubmit={handleSendOTP}>
               <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">{t('Login with Phone')}</h2>
-              
+
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   {t('Phone Number')}
@@ -250,7 +265,7 @@ export default function Login() {
           {step === 'otp' && (
             <form onSubmit={handleVerifyOTP}>
               <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">{t('Enter OTP')}</h2>
-              
+
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   {t('OTP Code')}
@@ -279,25 +294,23 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={() => setRole('vendor')}
-                    className={`p-3 sm:p-4 border-2 rounded-lg min-h-[80px] transition-all ${
-                      role === 'vendor'
-                        ? 'border-primary-600 bg-primary-50'
-                        : 'border-gray-300 hover:border-primary-300'
-                    }`}
+                    className={`p-3 sm:p-4 border-2 rounded-lg min-h-[80px] transition-all ${role === 'vendor'
+                      ? 'border-primary-600 bg-primary-50'
+                      : 'border-gray-300 hover:border-primary-300'
+                      }`}
                   >
                     <div className="text-2xl mb-2">🌾</div>
                     <div className="font-medium text-sm sm:text-base">{t('Vendor')}</div>
                     <div className="text-xs text-gray-500">{t('Sell products')}</div>
                   </button>
-                  
+
                   <button
                     type="button"
                     onClick={() => setRole('buyer')}
-                    className={`p-3 sm:p-4 border-2 rounded-lg min-h-[80px] transition-all ${
-                      role === 'buyer'
-                        ? 'border-primary-600 bg-primary-50'
-                        : 'border-gray-300 hover:border-primary-300'
-                    }`}
+                    className={`p-3 sm:p-4 border-2 rounded-lg min-h-[80px] transition-all ${role === 'buyer'
+                      ? 'border-primary-600 bg-primary-50'
+                      : 'border-gray-300 hover:border-primary-300'
+                      }`}
                   >
                     <div className="text-2xl mb-2">🛒</div>
                     <div className="font-medium text-sm sm:text-base">{t('Buyer')}</div>
@@ -334,38 +347,38 @@ export default function Login() {
         {/* Features */}
         <div className="mt-6 sm:mt-8 space-y-4">
           <h3 className="text-center font-bold text-gray-700 text-lg sm:text-xl mb-4 sm:mb-6">{t('Why Farmers Trust Us')}</h3>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
               <div className="text-4xl mb-3">🎤</div>
               <div className="font-bold text-lg mb-2">{t('Speak in Your Language')}</div>
               <div className="text-sm text-gray-700">{t('No reading needed. Use voice commands in 22 Indian languages to check prices and list products')}</div>
             </div>
-            
+
             <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
               <div className="text-4xl mb-3">💰</div>
               <div className="font-bold text-lg mb-2">{t('Get Fair Prices')}</div>
               <div className="text-sm text-gray-700">{t('Transparent quality-based pricing. See exactly how prices are calculated. No hidden charges')}</div>
             </div>
-            
+
             <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
               <div className="text-4xl mb-3">🤝</div>
               <div className="font-bold text-lg mb-2">{t('Smart Negotiation')}</div>
               <div className="text-sm text-gray-700">{t('AI assistant helps you negotiate better deals based on real market data')}</div>
             </div>
-            
+
             <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
               <div className="text-4xl mb-3">🛡️</div>
               <div className="font-bold text-lg mb-2">{t('Safe & Trusted')}</div>
               <div className="text-sm text-gray-700">{t('Verified vendors with ratings. Dispute resolution system protects both buyers and sellers')}</div>
             </div>
-            
+
             <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
               <div className="text-4xl mb-3">👥</div>
               <div className="font-bold text-lg mb-2">{t('Find Nearby Vendors')}</div>
               <div className="text-sm text-gray-700">{t('Discover farmers in your area. Team up for bulk orders and better prices')}</div>
             </div>
-            
+
             <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
               <div className="text-4xl mb-3">📊</div>
               <div className="font-bold text-lg mb-2">{t('Live Market Prices')}</div>

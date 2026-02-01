@@ -26,27 +26,39 @@ export default function PriceInfo() {
 
   const loadAllPrices = async () => {
     setLoading(true);
-    const priceData = {};
-    
-    for (const crop of crops) {
-      try {
-        const response = await pricesAPI.getCurrent(crop.name.toLowerCase(), 'Delhi');
-        priceData[crop.name] = response.data;
-      } catch (error) {
-        console.error(`Error loading price for ${crop.name}:`, error);
-        // Set default data if API fails
-        priceData[crop.name] = {
-          modalPrice: Math.floor(Math.random() * 3000) + 1000,
-          minPrice: Math.floor(Math.random() * 1000) + 500,
-          maxPrice: Math.floor(Math.random() * 5000) + 3000,
-          source: 'local',
-          location: 'Delhi'
-        };
-      }
+
+    try {
+      const results = await Promise.all(crops.map(async (crop) => {
+        try {
+          const response = await pricesAPI.getCurrent(crop.name.toLowerCase(), 'Delhi');
+          return { name: crop.name, data: response.data };
+        } catch (error) {
+          console.error(`Error loading price for ${crop.name}:`, error);
+          // Fallback data
+          return {
+            name: crop.name,
+            data: {
+              modalPrice: Math.floor(Math.random() * 3000) + 1000,
+              minPrice: Math.floor(Math.random() * 1000) + 500,
+              maxPrice: Math.floor(Math.random() * 5000) + 3000,
+              source: 'fallback',
+              location: 'Delhi'
+            }
+          };
+        }
+      }));
+
+      const priceData = {};
+      results.forEach(res => {
+        priceData[res.name] = res.data;
+      });
+
+      setPrices(priceData);
+    } catch (error) {
+      console.error('Critical error in loadAllPrices:', error);
+    } finally {
+      setLoading(false);
     }
-    
-    setPrices(priceData);
-    setLoading(false);
   };
 
   const handleCropClick = (crop) => {
@@ -114,7 +126,7 @@ export default function PriceInfo() {
                       <div className="text-2xl font-bold">₹{priceData.modalPrice}</div>
                       <div className="text-xs opacity-90">per quintal</div>
                     </div>
-                    
+
                     <div className="flex justify-between text-xs text-gray-600">
                       <span className="bg-blue-50 px-2 py-1 rounded">Min: ₹{priceData.minPrice}</span>
                       <span className="bg-orange-50 px-2 py-1 rounded">Max: ₹{priceData.maxPrice}</span>
@@ -154,7 +166,7 @@ export default function PriceInfo() {
               </div>
               <div className="text-sm text-green-600">per quintal</div>
             </div>
-            
+
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border-2 border-blue-200 shadow-lg">
               <div className="text-sm text-blue-700 mb-2 font-medium">Minimum Price</div>
               <div className="text-4xl font-bold text-blue-600 mb-1">
@@ -162,7 +174,7 @@ export default function PriceInfo() {
               </div>
               <div className="text-sm text-blue-600">per quintal</div>
             </div>
-            
+
             <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-xl border-2 border-orange-200 shadow-lg">
               <div className="text-sm text-orange-700 mb-2 font-medium">Maximum Price</div>
               <div className="text-4xl font-bold text-orange-600 mb-1">
@@ -198,7 +210,7 @@ export default function PriceInfo() {
           <div>
             <h3 className="font-bold text-lg mb-2 text-gray-900">Market Advisory</h3>
             <p className="text-gray-700 leading-relaxed">
-              Prices are updated daily from eNAM and local markets. 
+              Prices are updated daily from eNAM and local markets.
               {selectedCrop ? (
                 <> <strong>{selectedCrop.name}</strong> prices are currently stable. Good time to sell if you have stock.</>
               ) : (
@@ -216,13 +228,13 @@ export default function PriceInfo() {
           <div className="text-2xl font-bold text-blue-600 mb-1">{crops.length}</div>
           <div className="text-sm text-blue-700">Crops Tracked</div>
         </div>
-        
+
         <div className="card bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200">
           <div className="text-3xl mb-2">🌐</div>
           <div className="text-2xl font-bold text-green-600 mb-1">Live</div>
           <div className="text-sm text-green-700">eNAM Integration</div>
         </div>
-        
+
         <div className="card bg-gradient-to-br from-purple-50 to-purple-100 border-2 border-purple-200">
           <div className="text-3xl mb-2">🔄</div>
           <div className="text-2xl font-bold text-purple-600 mb-1">Daily</div>

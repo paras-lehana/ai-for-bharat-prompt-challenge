@@ -324,6 +324,13 @@ export const communityAPI = {
   likePost: (postId) => api.post(`/community/${postId}/like`)
 };
 
+// Government Schemes APIs
+export const schemesAPI = {
+  getSchemes: (params) => api.get('/schemes', { params }),
+  getById: (id) => api.get(`/schemes/${id}`),
+  seed: () => api.post('/schemes/seed')
+};
+
 // Integration APIs (eNAM, ODOP, GeM)
 export const integrationAPI = {
   // ODOP

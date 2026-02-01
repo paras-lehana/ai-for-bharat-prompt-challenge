@@ -30,8 +30,8 @@ export default function NavBar() {
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+      <div className="container py-2">
+        <div className="flex flex-wrap justify-between items-center min-h-[64px] gap-y-2">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 min-h-[44px]">
             <span className="text-2xl font-bold text-primary-600">🌾 Mandi</span>
@@ -116,10 +116,10 @@ export default function NavBar() {
 
             <button
               onClick={handleLogout}
-              className="flex items-center space-x-1 text-gray-700 hover:text-red-600"
+              className="flex items-center space-x-1 text-gray-700 hover:text-red-600 p-2 rounded-lg hover:bg-red-50"
+              title={t('nav.logout')}
             >
-              <FiLogOut className="w-5 h-5" />
-              <span>{t('nav.logout')}</span>
+              <FiLogOut className="w-6 h-6" />
             </button>
           </div>
 
