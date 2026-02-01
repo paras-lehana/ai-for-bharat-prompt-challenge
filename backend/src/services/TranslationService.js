@@ -150,7 +150,27 @@ class TranslationService {
     'Preferred Language': { hi: 'पसंदीदा भाषा', mr: 'पसंतीची भाषा', ta: 'விருப்பமான மொழி', te: 'ఇష్టమైన భాష', kn: 'ಆದ್ಯತೆಯ ಭಾಷೆ', pa: 'ਤਰਜੀਹੀ ਭਾਸ਼ਾ' },
     'Verify & Login': { hi: 'सत्यापित करें और लॉगिन करें', mr: 'सत्यापित करा आणि लॉगिन करा', ta: 'சரிபார்த்து உள்நுழைக', te: 'ధృవీకరించండి మరియు లాగిన్ చేయండి', kn: 'ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಲಾಗಿನ್ ಮಾಡಿ', pa: 'ਤਸਦੀਕ ਕਰੋ ਅਤੇ ਲਾਗਇਨ ਕਰੋ' },
     'Change Phone Number': { hi: 'फ़ोन नंबर बदलें', mr: 'फोन नंबर बदला', ta: 'தொலைபேசி எண்ணை மாற்றவும்', te: 'ఫోన్ నంబర్ మార్చండి', kn: 'ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಬದಲಾಯಿಸಿ', pa: 'ਫ਼ੋਨ ਨੰਬਰ ਬਦਲੋ' },
-    'I am a': { hi: 'मैं हूँ', mr: 'मी आहे', ta: 'நான்', te: 'నేను', kn: 'ನಾನು', pa: 'ਮੈਂ ਹਾਂ' }
+    'I am a': { hi: 'मैं हूँ', mr: 'मी आहे', ta: 'நான்', te: 'నేను', kn: 'ನಾನು', pa: 'ਮੈਂ ਹਾਂ' },
+    'Quick Start Guide': { hi: 'त्वरित शुरुआत गाइड', te: 'త్వరిత ప్రారంభ గైడ్' },
+    'Features Overview': { hi: 'विशेषताएं अवलोकन', te: 'ఫీచర్స్ అవలోకనం' },
+    'Negotiation Tips': { hi: 'बातचीत के सुझाव', te: 'చర్చల చిట్కాలు' },
+    'Trust & Safety': { hi: 'ट्रस्ट और सुरक्षा', te: 'నమ్మకం & భద్రత' },
+    'Technical Support': { hi: 'तकनीकी सहायता', te: 'సాంకేతిక మద్దతు' },
+    'How to Use Voice Search': { hi: 'वॉयस सर्च का उपयोग कैसे करें', te: 'వాయిస్ సెర్చ్ ఎలా ఉపయోగించాలి' },
+    'Watch Product Demo': { hi: 'उत्पाद डेमो देखें', te: 'ఉత్పత్తి డెమో చూడండి' },
+    'Watch Demo': { hi: 'डेमो देखें', te: 'డెమో చూడండి' },
+    'Register': { hi: 'पंजीकरण', te: 'నమోదు చేయండి' },
+    'For Vendors (Sellers)': { hi: 'विक्रेताओं के लिए', te: 'అమ్మకందారుల కోసం' },
+    'For Buyers': { hi: 'खरीदारों के लिए', te: 'కొనుగోలుదారుల కోసం' },
+    'Voice Features': { hi: 'वॉयस फीचर्स', te: 'వాయిస్ ఫీచర్లు' },
+    'Platform Features': { hi: 'प्लेटफ़ॉर्म विशेषताएं', te: 'ప్లాట్‌ఫారమ్ ఫీచర్లు' },
+    '1. Voice-Based Interface': { hi: '1. वॉयस-आधारित इंटरफ़ेस', te: '1. వాయిస్ ఆధారిత ఇంటర్ఫేస్' },
+    '2. AI Negotiation Assistant': { hi: '2. एआई नेगोशिएशन असिस्टेंट', te: '2. AI చర్చల సహాయకుడు' },
+    '3. Quality-Based Pricing': { hi: '3. गुणवत्ता-आधारित मूल्य निर्धारण', te: '3. నాణ్యత ఆధారిత ధర' },
+    '4. Trust System': { hi: '4. ट्रस्ट सिस्टम', te: '4. నమ్మక వ్యవస్థ' },
+    '5. Peer Discovery': { hi: '5. पीयर डिस्कवरी', te: '5. పీర్ డిస్కవరీ' },
+    'Help & Documentation': { hi: 'सहायता और दस्तावेज़ीकरण', te: 'సహాయం & డాక్యుమెంటేషన్' },
+    'Read': { hi: 'पढ़ें', te: 'చదవండి' }
   };
 
   /**
@@ -172,54 +192,82 @@ class TranslationService {
         return this.UI_TRANSLATIONS[text][targetLang];
       }
 
-      const axios = require('axios');
-      
-      // Use Google Translate unofficial API (free, fast, accurate)
-      try {
-        const googleResponse = await axios.post('https://translate.googleapis.com/translate_a/single', 
-          `client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`,
-          { 
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            timeout: 10000 
-          }
+      let dictionaryTranslatedText = text;
+
+      // For larger text blocks (like Guides), split and translate line by line
+      if (text.includes('\n') || text.length > 200) {
+        const lines = text.split('\n');
+        const translatedLines = await Promise.all(
+          lines.map(line => {
+            const trimmed = line.trim();
+            if (!trimmed) return line;
+            // Check dictionary for the line
+            if (this.UI_TRANSLATIONS[trimmed] && this.UI_TRANSLATIONS[trimmed][targetLang]) {
+              return line.replace(trimmed, this.UI_TRANSLATIONS[trimmed][targetLang]);
+            }
+            // For markdown headers, try to translate the text part
+            if (trimmed.startsWith('#')) {
+              const headerText = trimmed.replace(/^#+\s*/, '');
+              if (this.UI_TRANSLATIONS[headerText] && this.UI_TRANSLATIONS[headerText][targetLang]) {
+                return line.replace(headerText, this.UI_TRANSLATIONS[headerText][targetLang]);
+              }
+            }
+            return null; // Signals we need actual translation for this line
+          })
         );
 
-        if (googleResponse.data && googleResponse.data[0]) {
-          // Join all segments for larger text, filtering only valid translated strings
-          return googleResponse.data[0]
-            .map(segment => (segment && Array.isArray(segment) ? segment[0] : null))
-            .filter(text => typeof text === 'string' && text.length > 0)
-            .join('');
+        // If some lines were dictionary-translated, we'll keep them as fallback
+        dictionaryTranslatedText = translatedLines.map((l, i) => l || lines[i]).join('\n');
+        
+        // If all lines were dictionary-translated, return immediately
+        if (translatedLines.every(l => l !== null)) {
+          return dictionaryTranslatedText;
         }
-      } catch (googleError) {
-        console.error('Google Translate API error:', googleError.message);
       }
 
-      // Fallback: Try MyMemory Translation API
+      const axios = require('axios');
+      let success = false;
+      let result = text;
+
+      // Pipeline: Google -> MyMemory -> LibreTranslate
       try {
-        const response = await axios.get('https://api.mymemory.translated.net/get', {
-          params: {
-            q: text,
-            langpair: `${sourceLang}|${targetLang}`
-          },
-          timeout: 5000
-        });
-
-        if (response.data && response.data.responseData && response.data.responseData.translatedText) {
-          const translated = response.data.responseData.translatedText;
-          
-          // Check if translation is valid (not empty or same as input)
-          if (translated && translated !== text) {
-            return translated;
-          }
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+        const googleResponse = await axios.get(url, { timeout: 10000 });
+        if (googleResponse.data?.[0]) {
+          result = googleResponse.data[0]
+            .map(segment => (segment && Array.isArray(segment) ? segment[0] : null))
+            .filter(s => typeof s === 'string' && s.length > 0)
+            .join('');
+          success = true;
         }
-      } catch (apiError) {
-        console.error('MyMemory API error:', apiError.message);
+      } catch (e) {}
+
+      if (!success) {
+        try {
+          const myMemoryResponse = await axios.get('https://api.mymemory.translated.net/get', {
+            params: { q: text, langpair: `${sourceLang}|${targetLang}` },
+            timeout: 5000
+          });
+          if (myMemoryResponse.data?.responseData?.translatedText) {
+            result = myMemoryResponse.data.responseData.translatedText;
+            if (result && result !== text) success = true;
+          }
+        } catch (e) {}
       }
 
-      // If both APIs fail, return mock translation (fallback)
-      console.log('All translation APIs failed, returning mock translation');
-      return this.mockTranslate(text, targetLang);
+      if (!success) {
+        try {
+          const libreResponse = await axios.post('https://translate.argosopentech.com/translate', {
+            q: text, source: sourceLang, target: targetLang, format: 'text'
+          }, { timeout: 8000 });
+          if (libreResponse.data?.translatedText) {
+            result = libreResponse.data.translatedText;
+            success = true;
+          }
+        } catch (e) {}
+      }
+
+      return success ? result : dictionaryTranslatedText;
       
     } catch (error) {
       console.error('Translation error:', error.message);
@@ -259,18 +307,7 @@ class TranslationService {
    * Mock translation (for MVP without BHASHINI API)
    */
   static mockTranslate(text, targetLang) {
-    // Simple mock: add language prefix
-    const langNames = {
-      hi: '[HI]',
-      mr: '[MR]',
-      ta: '[TA]',
-      te: '[TE]',
-      kn: '[KN]',
-      pa: '[PA]',
-      en: ''
-    };
-
-    return `${langNames[targetLang] || ''}${text}`;
+    return text; // Removed prefixing to satisfy user request for cleaner UI when translation fails
   }
 
   /**
