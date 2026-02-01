@@ -83,6 +83,14 @@ const Listing = sequelize.define('Listing', {
     type: DataTypes.TEXT,
     allowNull: true
   },
+  locationDistrict: {
+    type: DataTypes.STRING(100),
+    allowNull: true
+  },
+  locationState: {
+    type: DataTypes.STRING(100),
+    allowNull: true
+  },
   status: {
     type: DataTypes.ENUM('active', 'sold', 'unavailable'),
     defaultValue: 'active'

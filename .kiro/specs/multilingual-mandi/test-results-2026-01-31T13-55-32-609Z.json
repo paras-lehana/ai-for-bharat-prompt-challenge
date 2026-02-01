@@ -1,0 +1,111 @@
+{
+  "passed": 13,
+  "failed": 4,
+  "skipped": 0,
+  "tests": [
+    {
+      "name": "Health Check",
+      "passed": true,
+      "details": "Status: ok",
+      "duration": 63
+    },
+    {
+      "name": "Send OTP",
+      "passed": true,
+      "details": "OTP sent: true",
+      "duration": 54
+    },
+    {
+      "name": "Verify OTP (Test Mode)",
+      "passed": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjlkYzBmNzFjLWUyZmUtNDY2Zi1iYTIxLWI2NGY2NzEwN2NmOCIsInBob25lTnVtYmVyIjoiKzkxOTg3NjU0MzIxMCIsInJvbGUiOiJ2ZW5kb3IiLCJsYW5ndWFnZVByZWZlcmVuY2UiOiJlbiIsImlhdCI6MTc2OTg2NzcyMiwiZXhwIjoxNzcwNDcyNTIyfQ.CwaBQpOAqingQ9tdvjd8IddH2i6AZYBE__cZ8x3QvGM",
+      "details": "Token received: Yes",
+      "duration": 29
+    },
+    {
+      "name": "Get Profile",
+      "passed": false,
+      "details": "Request failed with status code 404",
+      "duration": 0
+    },
+    {
+      "name": "Search Listings",
+      "passed": true,
+      "details": "Found 0 listings",
+      "duration": 12
+    },
+    {
+      "name": "Create Listing",
+      "passed": false,
+      "details": "Request failed with status code 500",
+      "duration": 0
+    },
+    {
+      "name": "Search with Crop Filter",
+      "passed": true,
+      "details": "Found 0 wheat listings",
+      "duration": 18
+    },
+    {
+      "name": "Search with Price Range",
+      "passed": true,
+      "details": "Found 0 listings in range",
+      "duration": 18
+    },
+    {
+      "name": "Search with Sorting",
+      "passed": true,
+      "details": "Found 0 sorted listings",
+      "duration": 22
+    },
+    {
+      "name": "Get Current Prices",
+      "passed": true,
+      "details": "Price available: Yes",
+      "duration": 72
+    },
+    {
+      "name": "Get Price Breakdown",
+      "passed": false,
+      "details": "Request failed with status code 404",
+      "duration": 0
+    },
+    {
+      "name": "Parse Voice Intent",
+      "passed": "price_query",
+      "details": "Intent: price_query",
+      "duration": 2047
+    },
+    {
+      "name": "Find Nearby Vendors",
+      "passed": true,
+      "details": "Found 0 vendors",
+      "duration": 9
+    },
+    {
+      "name": "eNAM Price Data",
+      "passed": 2500,
+      "details": "Data available: Yes",
+      "duration": 8
+    },
+    {
+      "name": "Favorites Endpoint",
+      "passed": false,
+      "details": "Request failed with status code 500",
+      "duration": 0
+    },
+    {
+      "name": "Saved Searches Endpoint",
+      "passed": true,
+      "details": "Status: 200",
+      "duration": 5
+    },
+    {
+      "name": "Price Alerts Endpoint",
+      "passed": true,
+      "details": "Status: 200",
+      "duration": 5
+    }
+  ],
+  "startTime": "2026-01-31T13:55:22.284Z",
+  "endTime": "2026-01-31T13:55:32.608Z"
+}

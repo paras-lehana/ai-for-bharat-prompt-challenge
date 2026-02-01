@@ -1,0 +1,64 @@
+version: '3.8'
+
+# Development-specific Docker Compose configuration
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      target: dependencies  # Use dependencies stage for dev
+    command: npm run dev
+    environment:
+      - NODE_ENV=development
+    volumes:
+      # Mount source code for hot reload
+      - ./backend/src:/app/src:delegated
+      - ./backend/package.json:/app/package.json:ro
+      - ./backend/package-lock.json:/app/package-lock.json:ro
+      # Mount shared data
+      - ./data:/app/shared-data:ro
+      # Prevent node_modules from being overwritten
+      - /app/node_modules
+    ports:
+      # Expose additional ports for debugging
+      - "5000:5000"
+      - "9229:9229"  # Node.js debugger port
+    stdin_open: true
+    tty: true
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      target: builder  # Use builder stage for dev
+    command: npm run dev -- --host 0.0.0.0
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:5000
+    volumes:
+      # Mount source code for hot reload
+      - ./frontend/src:/app/src:delegated
+      - ./frontend/public:/app/public:delegated
+      - ./frontend/index.html:/app/index.html:ro
+      - ./frontend/package.json:/app/package.json:ro
+      - ./frontend/package-lock.json:/app/package-lock.json:ro
+      - ./frontend/vite.config.js:/app/vite.config.js:ro
+      - ./frontend/tailwind.config.js:/app/tailwind.config.js:ro
+      - ./frontend/postcss.config.js:/app/postcss.config.js:ro
+      # Prevent node_modules from being overwritten
+      - /app/node_modules
+    ports:
+      - "3000:3000"  # Vite dev server
+      - "3001:3001"  # Vite HMR port
+    stdin_open: true
+    tty: true
+
+  # SQLite is used in development (no separate db service needed)
+  # Backend will use file-based SQLite database
+  db:
+    # Override to use SQLite in development
+    image: alpine:latest
+    command: echo "Using SQLite for development - no PostgreSQL needed"
+    restart: "no"

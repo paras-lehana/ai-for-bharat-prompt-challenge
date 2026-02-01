@@ -12,6 +12,17 @@ export default function Guide() {
   const [translatedContent, setTranslatedContent] = useState({});
   const [translating, setTranslating] = useState(false);
 
+  // TESTING FEATURE: Support URL query parameter for language testing
+  // Example: /guide?lang=hi
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const langParam = urlParams.get('lang');
+    if (langParam) {
+      console.log('[Guide] URL parameter detected:', { langParam });
+      setSelectedLanguage(langParam);
+    }
+  }, []);
+
   const languages = [
     { code: 'en', name: 'English' },
     { code: 'hi', name: 'हिंदी (Hindi)' },
@@ -282,15 +293,27 @@ export default function Guide() {
 
   // Translate content when language changes (ONLY if not English)
   useEffect(() => {
+    console.log('[Guide] Language/Guide changed:', {
+      selectedLanguage,
+      guideTitle: selectedGuide?.title,
+      contentLength: selectedGuide?.content?.length,
+      isEnglish: selectedLanguage === 'en'
+    });
+
     // CRITICAL: Do NOT translate if English is selected
     if (selectedLanguage === 'en') {
+      console.log('[Guide] English selected - clearing translations');
       setTranslatedContent({}); // Clear any existing translations
       setTranslating(false);
       return; // Exit early - no translation needed
     }
     
     // Only translate for non-English languages AND when a guide is selected
-    if (selectedGuide) {
+    if (selectedGuide && selectedGuide.content) {
+      console.log('[Guide] Starting translation for:', {
+        language: selectedLanguage,
+        guideTitle: selectedGuide.title
+      });
       translateContent(selectedGuide.content, selectedGuide.title);
     }
   }, [selectedLanguage, selectedGuide]);
@@ -298,55 +321,128 @@ export default function Guide() {
   const translateContent = async (text, title) => {
     const cacheKey = `${title}-${selectedLanguage}`;
     
+    console.log('[Guide] translateContent called:', {
+      title,
+      language: selectedLanguage,
+      cacheKey,
+      textLength: text?.length,
+      alreadyCached: !!translatedContent[cacheKey]
+    });
+    
     // Check if already translated
     if (translatedContent[cacheKey]) {
+      console.log('[Guide] Using cached translation');
       return;
     }
 
     setTranslating(true);
+    console.log('[Guide] Calling translation API...');
+    
     try {
-      const response = await axios.post(`${API_BASE_URL}/voice/translate`, {
+      const requestData = {
         text: text,
+        targetLanguage: selectedLanguage
+      };
+      
+      console.log('[Guide] Translation request:', {
+        url: `${API_BASE_URL}/voice/translate`,
+        textLength: text.length,
         targetLanguage: selectedLanguage
       });
       
+      const response = await axios.post(`${API_BASE_URL}/voice/translate`, requestData);
+      
+      console.log('[Guide] Translation response:', {
+        status: response.status,
+        hasData: !!response.data,
+        translatedLength: response.data?.translatedText?.length,
+        firstChars: response.data?.translatedText?.substring(0, 100)
+      });
+      
       const translated = response.data.translatedText || text;
+      
+      if (!translated || translated.trim().length === 0) {
+        console.error('[Guide] Translation returned empty string!');
+      }
+      
       setTranslatedContent(prev => ({
         ...prev,
         [cacheKey]: translated
       }));
+      
+      console.log('[Guide] Translation cached successfully');
     } catch (error) {
-      console.error('Translation error:', error);
+      console.error('[Guide] Translation error:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
       // Keep original text on error
     } finally {
       setTranslating(false);
+      console.log('[Guide] Translation complete');
     }
   };
 
   const getDisplayContent = () => {
-    if (!selectedGuide) return '';
-    if (selectedLanguage === 'en') return selectedGuide.content;
+    if (!selectedGuide || !selectedGuide.content) {
+      console.log('[Guide] getDisplayContent: No guide selected');
+      return '';
+    }
     
+    // Always show English content if English is selected
+    if (selectedLanguage === 'en') {
+      console.log('[Guide] getDisplayContent: Showing English content');
+      return selectedGuide.content;
+    }
+    
+    // For non-English, show translated content if available, otherwise show original
     const cacheKey = `${selectedGuide.title}-${selectedLanguage}`;
-    return translatedContent[cacheKey] || selectedGuide.content;
+    const translated = translatedContent[cacheKey];
+    
+    console.log('[Guide] getDisplayContent:', {
+      cacheKey,
+      hasTranslated: !!translated,
+      translatedLength: translated?.length,
+      originalLength: selectedGuide.content.length,
+      willShowTranslated: !!(translated && translated.trim().length > 0)
+    });
+    
+    // If we have translated content and it's not empty, use it
+    if (translated && translated.trim().length > 0) {
+      console.log('[Guide] Showing translated content');
+      return translated;
+    }
+    
+    // Otherwise, show original English content
+    console.log('[Guide] Showing original English content (fallback)');
+    return selectedGuide.content;
   };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
       {/* Header */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">📚 Help & Documentation</h1>
-        <p className="text-xl text-gray-600 mb-6">
-          Everything you need to know about Lokal Mandi
+      <div className="text-center mb-12 animate-fade-in">
+        <div className="inline-block mb-4">
+          <div className="text-6xl mb-4 animate-bounce-subtle">📚</div>
+        </div>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
+          Help & Documentation
+        </h1>
+        <p className="text-xl text-gray-600 mb-6 max-w-2xl mx-auto">
+          Everything you need to know about Lokal Mandi - Your multilingual agricultural marketplace
         </p>
 
         {/* Language Selector */}
-        <div className="inline-flex items-center space-x-4 bg-white rounded-lg shadow-md p-4">
-          <label className="font-medium text-gray-700">Language:</label>
+        <div className="inline-flex items-center space-x-4 bg-white rounded-xl shadow-lg p-4 hover:shadow-xl transition-shadow duration-300">
+          <label className="font-medium text-gray-700 flex items-center space-x-2">
+            <span className="text-2xl">🌐</span>
+            <span>Language:</span>
+          </label>
           <select
             value={selectedLanguage}
             onChange={(e) => setSelectedLanguage(e.target.value)}
-            className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="border-2 border-primary-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 cursor-pointer hover:border-primary-400"
           >
             {languages.map((lang) => (
               <option key={lang.code} value={lang.code}>
@@ -354,63 +450,71 @@ export default function Guide() {
               </option>
             ))}
           </select>
-          <span className="text-sm text-gray-500">
-            Content automatically translated
+          <span className="text-sm text-gray-500 bg-blue-50 px-3 py-1 rounded-full">
+            ✨ Auto-translated
           </span>
         </div>
       </div>
 
       {/* Guide Cards or Selected Guide */}
       {!selectedGuide ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 animate-slide-up">
           {guides.map((guide, idx) => (
             <button
               key={idx}
               onClick={() => setSelectedGuide(guide)}
-              className="block bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden text-left"
+              className="block bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 hover:scale-105 overflow-hidden text-left group"
             >
-              <div className={`bg-gradient-to-r ${guide.color} p-6 text-white`}>
-                <div className="flex items-center justify-between mb-4">
-                  {guide.icon}
-                  <span className="text-sm font-medium bg-white/20 px-3 py-1 rounded-full">
+              <div className={`bg-gradient-to-r ${guide.color} p-6 text-white relative overflow-hidden`}>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
+                <div className="flex items-center justify-between mb-4 relative z-10">
+                  <div className="transform group-hover:scale-110 transition-transform duration-300">
+                    {guide.icon}
+                  </div>
+                  <span className="text-sm font-medium bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm group-hover:bg-white/30 transition-colors">
                     Read →
                   </span>
                 </div>
-                <h3 className="text-xl font-bold mb-2">{guide.title}</h3>
+                <h3 className="text-xl font-bold mb-2 relative z-10">{guide.title}</h3>
               </div>
-              <div className="p-6">
-                <p className="text-gray-600">{guide.description}</p>
+              <div className="p-6 bg-gradient-to-br from-white to-gray-50 group-hover:from-gray-50 group-hover:to-white transition-colors duration-300">
+                <p className="text-gray-600 group-hover:text-gray-800 transition-colors">{guide.description}</p>
               </div>
             </button>
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+        <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 animate-fade-in border border-gray-100">
           <button
             onClick={() => setSelectedGuide(null)}
-            className="mb-6 text-primary-600 hover:text-primary-700 font-medium"
+            className="mb-6 text-primary-600 hover:text-primary-700 font-medium flex items-center space-x-2 group transition-all duration-200"
           >
-            ← Back to all guides
+            <span className="transform group-hover:-translate-x-1 transition-transform">←</span>
+            <span>Back to all guides</span>
           </button>
           
           {translating && selectedLanguage !== 'en' && (
-            <div className="mb-4 bg-blue-50 border border-blue-200 rounded-lg p-4 text-blue-700">
-              🔄 Translating to {languages.find(l => l.code === selectedLanguage)?.name}...
+            <div className="mb-4 bg-gradient-to-r from-blue-50 to-blue-100 border-2 border-blue-200 rounded-xl p-4 text-blue-700 flex items-center space-x-3 animate-pulse">
+              <div className="text-2xl">🔄</div>
+              <div>
+                <div className="font-medium">Translating content...</div>
+                <div className="text-sm">Converting to {languages.find(l => l.code === selectedLanguage)?.name}</div>
+              </div>
             </div>
           )}
           
           <div className="prose prose-lg max-w-none">
             <ReactMarkdown
               components={{
-                h1: ({node, ...props}) => <h1 className="text-3xl font-bold mb-4 text-gray-900" {...props} />,
-                h2: ({node, ...props}) => <h2 className="text-2xl font-bold mb-3 mt-6 text-gray-800" {...props} />,
-                h3: ({node, ...props}) => <h3 className="text-xl font-bold mb-2 mt-4 text-gray-700" {...props} />,
-                p: ({node, ...props}) => <p className="mb-4 text-gray-700 leading-relaxed" {...props} />,
-                ul: ({node, ...props}) => <ul className="list-disc list-inside mb-4 space-y-2" {...props} />,
-                ol: ({node, ...props}) => <ol className="list-decimal list-inside mb-4 space-y-2" {...props} />,
-                li: ({node, ...props}) => <li className="text-gray-700" {...props} />,
-                strong: ({node, ...props}) => <strong className="font-bold text-gray-900" {...props} />,
-                code: ({node, ...props}) => <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono" {...props} />,
+                h1: ({node, ...props}) => <h1 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900 border-b-4 border-primary-500 pb-3" {...props} />,
+                h2: ({node, ...props}) => <h2 className="text-2xl md:text-3xl font-bold mb-4 mt-8 text-gray-800 flex items-center space-x-2" {...props} />,
+                h3: ({node, ...props}) => <h3 className="text-xl md:text-2xl font-bold mb-3 mt-6 text-gray-700" {...props} />,
+                p: ({node, ...props}) => <p className="mb-4 text-gray-700 leading-relaxed text-lg" {...props} />,
+                ul: ({node, ...props}) => <ul className="list-disc list-inside mb-4 space-y-2 ml-4" {...props} />,
+                ol: ({node, ...props}) => <ol className="list-decimal list-inside mb-4 space-y-2 ml-4" {...props} />,
+                li: ({node, ...props}) => <li className="text-gray-700 text-lg pl-2" {...props} />,
+                strong: ({node, ...props}) => <strong className="font-bold text-gray-900 bg-yellow-50 px-1 rounded" {...props} />,
+                code: ({node, ...props}) => <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono text-primary-600 border border-gray-200" {...props} />,
               }}
             >
               {getDisplayContent()}

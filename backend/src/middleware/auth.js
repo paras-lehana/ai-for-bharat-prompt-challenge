@@ -33,6 +33,18 @@ function authenticateToken(req, res, next) {
       throw createError('Access token required', 401);
     }
 
+    // TEST MODE: Allow test token to bypass JWT verification
+    if (process.env.TEST_MODE === 'true' && token === 'test-token-12345') {
+      console.log('🧪 TEST MODE: Using test user');
+      req.user = {
+        id: 1,
+        phoneNumber: process.env.TEST_USER_PHONE || '+919876543210',
+        role: 'vendor',
+        languagePreference: 'en'
+      };
+      return next();
+    }
+
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     

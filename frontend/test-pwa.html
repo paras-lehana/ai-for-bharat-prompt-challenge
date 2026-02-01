@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PWA Feature Test - Lokal Mandi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .test-section {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .test-result {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+    .pass {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .fail {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+    button {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background: #059669;
+    }
+    h1 {
+      color: #10b981;
+    }
+    h2 {
+      color: #333;
+      border-bottom: 2px solid #10b981;
+      padding-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌾 Lokal Mandi PWA Feature Test</h1>
+  
+  <div class="test-section">
+    <h2>1. Service Worker Status</h2>
+    <div id="sw-status"></div>
+    <button onclick="checkServiceWorker()">Check Service Worker</button>
+  </div>
+
+  <div class="test-section">
+    <h2>2. Cache Storage</h2>
+    <div id="cache-status"></div>
+    <button onclick="checkCaches()">Check Caches</button>
+    <button onclick="clearAllCaches()">Clear All Caches</button>
+  </div>
+
+  <div class="test-section">
+    <h2>3. Offline Queue</h2>
+    <div id="queue-status"></div>
+    <button onclick="testOfflineQueue()">Test Queue</button>
+    <button onclick="clearQueue()">Clear Queue</button>
+  </div>
+
+  <div class="test-section">
+    <h2>4. Cache Manager</h2>
+    <div id="cache-manager-status"></div>
+    <button onclick="testCacheManager()">Test Cache Manager</button>
+  </div>
+
+  <div class="test-section">
+    <h2>5. Network Status</h2>
+    <div id="network-status"></div>
+    <button onclick="simulateOffline()">Simulate Offline</button>
+    <button onclick="simulateOnline()">Simulate Online</button>
+  </div>
+
+  <div class="test-section">
+    <h2>6. PWA Install Capability</h2>
+    <div id="install-status"></div>
+    <button onclick="checkInstallability()">Check Installability</button>
+  </div>
+
+  <script>
+    // Test 1: Service Worker
+    async function checkServiceWorker() {
+      const output = document.getElementById('sw-status');
+      output.innerHTML = '';
+
+      if ('serviceWorker' in navigator) {
+        try {
+          const registration = await navigator.serviceWorker.getRegistration();
+          if (registration) {
+            output.innerHTML += `<div class="test-result pass">✓ Service Worker registered</div>`;
+            output.innerHTML += `<div class="test-result info">Scope: ${registration.scope}</div>`;
+            output.innerHTML += `<div class="test-result info">State: ${registration.active ? 'Active' : 'Not Active'}</div>`;
+            
+            if (registration.waiting) {
+              output.innerHTML += `<div class="test-result info">Update available - waiting to activate</div>`;
+            }
+          } else {
+            output.innerHTML += `<div class="test-result fail">✗ No service worker registered</div>`;
+          }
+        } catch (error) {
+          output.innerHTML += `<div class="test-result fail">✗ Error: ${error.message}</div>`;
+        }
+      } else {
+        output.innerHTML += `<div class="test-result fail">✗ Service Workers not supported</div>`;
+      }
+    }
+
+    // Test 2: Cache Storage
+    async function checkCaches() {
+      const output = document.getElementById('cache-status');
+      output.innerHTML = '';
+
+      if ('caches' in window) {
+        try {
+          const cacheNames = await caches.keys();
+          output.innerHTML += `<div class="test-result pass">✓ Cache API available</div>`;
+          output.innerHTML += `<div class="test-result info">Found ${cacheNames.length} caches:</div>`;
+          
+          for (const cacheName of cacheNames) {
+            const cache = await caches.open(cacheName);
+            const keys = await cache.keys();
+            output.innerHTML += `<div class="test-result info">- ${cacheName}: ${keys.length} entries</div>`;
+          }
+        } catch (error) {
+          output.innerHTML += `<div class="test-result fail">✗ Error: ${error.message}</div>`;
+        }
+      } else {
+        output.innerHTML += `<div class="test-result fail">✗ Cache API not supported</div>`;
+      }
+    }
+
+    async function clearAllCaches() {
+      const output = document.getElementById('cache-status');
+      try {
+        const cacheNames = await caches.keys();
+        await Promise.all(cacheNames.map(name => caches.delete(name)));
+        output.innerHTML += `<div class="test-result pass">✓ All caches cleared</div>`;
+      } catch (error) {
+        output.innerHTML += `<div class="test-result fail">✗ Error: ${error.message}</div>`;
+      }
+    }
+
+    // Test 3: Offline Queue
+    function testOfflineQueue() {
+      const output = document.getElementById('queue-status');
+      output.innerHTML = '';
+
+      try {
+        const queueData = localStorage.getItem('offline_action_queue');
+        if (queueData) {
+          const queue = JSON.parse(queueData);
+          output.innerHTML += `<div class="test-result pass">✓ Offline queue exists</div>`;
+          output.innerHTML += `<div class="test-result info">Queue length: ${queue.length}</div>`;
+          
+          if (queue.length > 0) {
+            output.innerHTML += `<div class="test-result info">Actions:</div>`;
+            queue.forEach((action, i) => {
+              output.innerHTML += `<div class="test-result info">  ${i + 1}. ${action.type} - ${action.status}</div>`;
+            });
+          }
+        } else {
+          output.innerHTML += `<div class="test-result info">Queue is empty</div>`;
+        }
+      } catch (error) {
+        output.innerHTML += `<div class="test-result fail">✗ Error: ${error.message}</div>`;
+      }
+    }
+
+    function clearQueue() {
+      const output = document.getElementById('queue-status');
+      try {
+        localStorage.removeItem('offline_action_queue');
+        output.innerHTML += `<div class="test-result pass">✓ Queue cleared</div>`;
+      } catch (error) {
+        output.innerHTML += `<div class="test-result fail">✗ Error: ${error.message}</div>`;
+      }
+    }
+
+    // Test 4: Cache Manager
+    function testCacheManager() {
+      const output = document.getElementById('cache-manager-status');
+      output.innerHTML = '';
+
+      try {
+        const cacheKeys = [
+          'cached_listings',
+          'cached_messages',
+          'cached_user_profile',
+          'cached_negotiations',
+          'last_sync_time'
+        ];
+
+        let totalSize = 0;
+        let foundCaches = 0;
+
+        cacheKeys.forEach(key => {
+          const data = localStorage.getItem(key);
+          if (data) {
+            foundCaches++;
+            totalSize += data.length;
+            const parsed = JSON.parse(data);
+            output.innerHTML += `<div class="test-result info">${key}: ${(data.length / 1024).toFixed(2)} KB</div>`;
+          }
+        });
+
+        output.innerHTML += `<div class="test-result pass">✓ Found ${foundCaches} cached items</div>`;
+        output.innerHTML += `<div class="test-result info">Total size: ${(totalSize / 1024).toFixed(2)} KB</div>`;
+      } catch (error) {
+        output.innerHTML += `<div class="test-result fail">✗ Error: ${error.message}</div>`;
+      }
+    }
+
+    // Test 5: Network Status
+    function updateNetworkStatus() {
+      const output = document.getElementById('network-status');
+      const isOnline = navigator.onLine;
+      
+      if (isOnline) {
+        output.innerHTML = `<div class="test-result pass">✓ Online</div>`;
+      } else {
+        output.innerHTML = `<div class="test-result fail">✗ Offline</div>`;
+      }
+    }
+
+    function simulateOffline() {
+      const output = document.getElementById('network-status');
+      output.innerHTML += `<div class="test-result info">Note: Cannot actually change network status from JavaScript. Use browser DevTools Network tab to simulate offline mode.</div>`;
+    }
+
+    function simulateOnline() {
+      updateNetworkStatus();
+    }
+
+    // Test 6: PWA Installability
+    function checkInstallability() {
+      const output = document.getElementById('install-status');
+      output.innerHTML = '';
+
+      // Check if already installed
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone ||
+        document.referrer.includes('android-app://');
+
+      if (isStandalone) {
+        output.innerHTML += `<div class="test-result pass">✓ App is installed</div>`;
+      } else {
+        output.innerHTML += `<div class="test-result info">App is not installed</div>`;
+      }
+
+      // Check manifest
+      const manifestLink = document.querySelector('link[rel="manifest"]');
+      if (manifestLink) {
+        output.innerHTML += `<div class="test-result pass">✓ Manifest link found</div>`;
+      } else {
+        output.innerHTML += `<div class="test-result fail">✗ No manifest link</div>`;
+      }
+
+      // Check HTTPS
+      if (location.protocol === 'https:' || location.hostname === 'localhost') {
+        output.innerHTML += `<div class="test-result pass">✓ Secure context (HTTPS or localhost)</div>`;
+      } else {
+        output.innerHTML += `<div class="test-result fail">✗ Not a secure context (HTTPS required)</div>`;
+      }
+
+      // Check iOS
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      if (isIOS) {
+        output.innerHTML += `<div class="test-result info">iOS detected - Manual installation required</div>`;
+      }
+    }
+
+    // Event listeners
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+
+    // Initial status
+    window.addEventListener('load', () => {
+      updateNetworkStatus();
+      checkServiceWorker();
+    });
+  </script>
+</body>
+</html>

@@ -176,16 +176,16 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50 px-4 py-6">
       <div className="max-w-md w-full">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-primary-600 mb-2">🌾 Lokal Mandi</h1>
-          <p className="text-gray-600">Trade in Your Language. Negotiate Fairly. Earn More.</p>
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-3xl sm:text-4xl font-bold text-primary-600 mb-2">🌾 Lokal Mandi</h1>
+          <p className="text-sm sm:text-base text-gray-600">Trade in Your Language. Negotiate Fairly. Earn More.</p>
         </div>
 
         {/* Login Card */}
-        <div className="card">
+        <div className="card p-4 sm:p-6">
           {/* Language Selector at top */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -209,7 +209,7 @@ export default function Login() {
 
           {step === 'phone' && (
             <form onSubmit={handleSendOTP}>
-              <h2 className="text-2xl font-bold mb-6">{t('Login with Phone')}</h2>
+              <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">{t('Login with Phone')}</h2>
               
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -219,10 +219,12 @@ export default function Login() {
                   <FiPhone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <input
                     type="tel"
+                    inputMode="tel"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     placeholder="+919876543210"
                     className="input-field pl-10"
+                    autoComplete="tel"
                     required
                   />
                 </div>
@@ -238,7 +240,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="btn-primary w-full"
+                className="btn-primary w-full text-base sm:text-lg"
               >
                 {loading ? 'Sending...' : t('Send OTP')}
               </button>
@@ -247,7 +249,7 @@ export default function Login() {
 
           {step === 'otp' && (
             <form onSubmit={handleVerifyOTP}>
-              <h2 className="text-2xl font-bold mb-6">{t('Enter OTP')}</h2>
+              <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">{t('Enter OTP')}</h2>
               
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -257,10 +259,12 @@ export default function Login() {
                   <FiKey className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <input
                     type="text"
+                    inputMode="numeric"
                     value={otp}
                     onChange={(e) => setOTP(e.target.value)}
                     placeholder="Enter OTP or 1104"
-                    className="input-field pl-10 text-center text-2xl tracking-widest"
+                    className="input-field pl-10 text-center text-xl sm:text-2xl tracking-widest"
+                    autoComplete="one-time-code"
                     required
                   />
                 </div>
@@ -271,32 +275,32 @@ export default function Login() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   {t('I am a')}
                 </label>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
                   <button
                     type="button"
                     onClick={() => setRole('vendor')}
-                    className={`p-4 border-2 rounded-lg ${
+                    className={`p-3 sm:p-4 border-2 rounded-lg min-h-[80px] transition-all ${
                       role === 'vendor'
                         ? 'border-primary-600 bg-primary-50'
-                        : 'border-gray-300'
+                        : 'border-gray-300 hover:border-primary-300'
                     }`}
                   >
                     <div className="text-2xl mb-2">🌾</div>
-                    <div className="font-medium">{t('Vendor')}</div>
+                    <div className="font-medium text-sm sm:text-base">{t('Vendor')}</div>
                     <div className="text-xs text-gray-500">{t('Sell products')}</div>
                   </button>
                   
                   <button
                     type="button"
                     onClick={() => setRole('buyer')}
-                    className={`p-4 border-2 rounded-lg ${
+                    className={`p-3 sm:p-4 border-2 rounded-lg min-h-[80px] transition-all ${
                       role === 'buyer'
                         ? 'border-primary-600 bg-primary-50'
-                        : 'border-gray-300'
+                        : 'border-gray-300 hover:border-primary-300'
                     }`}
                   >
                     <div className="text-2xl mb-2">🛒</div>
-                    <div className="font-medium">{t('Buyer')}</div>
+                    <div className="font-medium text-sm sm:text-base">{t('Buyer')}</div>
                     <div className="text-xs text-gray-500">{t('Buy products')}</div>
                   </button>
                 </div>
@@ -311,7 +315,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="btn-primary w-full"
+                className="btn-primary w-full text-base sm:text-lg"
               >
                 {loading ? 'Verifying...' : t('Verify & Login')}
               </button>
@@ -328,10 +332,10 @@ export default function Login() {
         </div>
 
         {/* Features */}
-        <div className="mt-8 space-y-4">
-          <h3 className="text-center font-bold text-gray-700 text-xl mb-6">{t('Why Farmers Trust Us')}</h3>
+        <div className="mt-6 sm:mt-8 space-y-4">
+          <h3 className="text-center font-bold text-gray-700 text-lg sm:text-xl mb-4 sm:mb-6">{t('Why Farmers Trust Us')}</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow">
               <div className="text-4xl mb-3">🎤</div>
               <div className="font-bold text-lg mb-2">{t('Speak in Your Language')}</div>

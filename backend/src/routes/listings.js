@@ -9,6 +9,7 @@ const AIService = require('../services/AIService');
 
 // Get all listings with filters
 router.get('/search', asyncHandler(async (req, res) => {
+  const IntegrationService = require('../services/IntegrationService');
   const { cropType, qualityTier, minPrice, maxPrice, lat, lng, radius = 50, sortBy = 'relevance' } = req.query;
 
   const where = { status: 'active' };
@@ -28,11 +29,26 @@ router.get('/search', asyncHandler(async (req, res) => {
     limit: 50
   });
 
-  res.json({ listings, count: listings.length });
+  // Add ODOP badge information to each listing
+  const listingsWithBadges = listings.map(listing => {
+    const odpBadge = IntegrationService.getODOPBadgeInfo(
+      listing.cropType,
+      listing.locationDistrict || ''
+    );
+    
+    return {
+      ...listing.toJSON(),
+      odpBadge: odpBadge.isODOP ? odpBadge.badge : null
+    };
+  });
+
+  res.json({ listings: listingsWithBadges, count: listingsWithBadges.length });
 }));
 
 // Get single listing
 router.get('/:id', asyncHandler(async (req, res) => {
+  const IntegrationService = require('../services/IntegrationService');
+  
   const listing = await Listing.findByPk(req.params.id, {
     include: [{ model: User, as: 'vendor', attributes: ['id', 'name', 'phoneNumber', 'languagePreference'] }]
   });
@@ -41,7 +57,16 @@ router.get('/:id', asyncHandler(async (req, res) => {
     throw createError('Listing not found', 404);
   }
 
-  res.json(listing);
+  // Add ODOP badge information if applicable
+  const odpBadge = IntegrationService.getODOPBadgeInfo(
+    listing.cropType,
+    listing.locationDistrict || ''
+  );
+
+  res.json({
+    ...listing.toJSON(),
+    odpBadge: odpBadge.isODOP ? odpBadge.badge : null
+  });
 }));
 
 // Create listing
@@ -122,6 +147,38 @@ router.delete('/:id', authenticateToken, requireRole('vendor'), asyncHandler(asy
 
   await listing.destroy();
   res.json({ message: 'Listing deleted successfully' });
+}));
+
+// DEBUG ENDPOINT: Audit image mappings
+router.get('/audit/images', asyncHandler(async (req, res) => {
+  const listings = await Listing.findAll({
+    attributes: ['id', 'cropType', 'images', 'vendorId', 'status'],
+    include: [{ model: User, as: 'vendor', attributes: ['name'] }],
+    limit: 100
+  });
+  
+  const audit = listings.map(l => {
+    const images = JSON.parse(l.images || '[]');
+    return {
+      id: l.id,
+      cropType: l.cropType,
+      vendor: l.vendor?.name || 'Unknown',
+      status: l.status,
+      images: images,
+      imageCount: images.length,
+      firstImage: images[0] || null
+    };
+  });
+  
+  res.json({
+    totalListings: audit.length,
+    audit: audit,
+    summary: {
+      withImages: audit.filter(a => a.imageCount > 0).length,
+      withoutImages: audit.filter(a => a.imageCount === 0).length,
+      cropTypes: [...new Set(audit.map(a => a.cropType))]
+    }
+  });
 }));
 
 module.exports = router;

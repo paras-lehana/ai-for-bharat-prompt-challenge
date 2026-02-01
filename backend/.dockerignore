@@ -1,0 +1,58 @@
+# Dependencies
+node_modules
+npm-debug.log
+package-lock.json
+
+# Testing
+coverage
+*.test.js
+*.pbt.test.js
+test-*.js
+
+# Development files
+.env
+.env.local
+.env.development
+.env.test
+
+# Logs
+logs
+*.log
+
+# Database files (will be mounted as volume)
+*.db
+*.sqlite
+*.sqlite3
+mandi.db
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+*.md
+docs
+
+# Temporary files
+tmp
+temp
+*.tmp
+
+# Build artifacts
+dist
+build
+
+# Other
+.dockerignore
+Dockerfile
+docker-compose.yml

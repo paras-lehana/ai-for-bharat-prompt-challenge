@@ -39,9 +39,15 @@ const discoveryRoutes = require('./routes/discovery');
 const transactionsRoutes = require('./routes/transactions');
 const advisoryRoutes = require('./routes/advisory');
 const analyticsRoutes = require('./routes/analytics');
+const favoritesRoutes = require('./routes/favorites');
+const savedSearchesRoutes = require('./routes/savedSearches');
+const shareRoutes = require('./routes/share');
+const integrationRoutes = require('./routes/integration');
+const priceAlertsRoutes = require('./routes/priceAlerts');
 
 // Import database
 const { initializeDatabase } = require('./utils/database');
+const { initializeCronJobs } = require('./utils/cronJobs');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -106,6 +112,16 @@ app.use('/api/discovery', discoveryRoutes);
 app.use('/api/transactions', transactionsRoutes);
 app.use('/api/advisory', advisoryRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/favorites', favoritesRoutes);
+app.use('/api/saved-searches', savedSearchesRoutes);
+app.use('/api/share', shareRoutes);
+app.use('/api/integration', integrationRoutes);
+app.use('/api/price-alerts', priceAlertsRoutes);
+app.use('/api/weather', require('./routes/weather'));
+app.use('/api/predictions', require('./routes/predictions'));
+app.use('/api/quality', require('./routes/quality'));
+app.use('/api/logistics', require('./routes/logistics'));
+app.use('/api/community', require('./routes/community'));
 
 // 404 handler
 app.use((req, res) => {
@@ -123,6 +139,10 @@ async function startServer() {
   try {
     await initializeDatabase();
     console.log('✅ Database initialized successfully');
+    
+    // Initialize cron jobs for price alerts
+    initializeCronJobs();
+    console.log('✅ Cron jobs initialized successfully');
     
     app.listen(PORT, () => {
       console.log(`🚀 Lokal Mandi API running on port ${PORT}`);

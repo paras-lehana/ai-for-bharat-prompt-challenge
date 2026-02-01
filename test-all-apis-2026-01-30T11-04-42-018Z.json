@@ -1,0 +1,184 @@
+{
+  "timestamp": "2026-01-30T11:04:33.537Z",
+  "backend": {
+    "total": 8,
+    "passed": 7,
+    "failed": 1,
+    "tests": [
+      {
+        "name": "Health Check",
+        "passed": true,
+        "message": "Health endpoint returned 200",
+        "details": {
+          "status": "ok",
+          "timestamp": "2026-01-30T11:04:33.625Z",
+          "service": "Lokal Mandi API"
+        }
+      },
+      {
+        "name": "Auth - Send OTP",
+        "passed": true,
+        "message": "OTP sent successfully",
+        "details": {
+          "success": true,
+          "expiresAt": "2026-01-30T11:09:33.728Z",
+          "otp": "448974"
+        }
+      },
+      {
+        "name": "Listings - Search",
+        "passed": true,
+        "message": "Found 2 wheat listings",
+        "details": {
+          "count": 2,
+          "sample": {
+            "images": [
+              "/images/crops/wheat.jpg"
+            ],
+            "id": "32fa53a3-e4c4-4dda-af90-9775907087d1",
+            "vendorId": "5397585f-b631-4b8f-ab2c-ab067ca0726d",
+            "cropType": "Wheat",
+            "quantity": 5000,
+            "unit": "kg",
+            "basePrice": 2500,
+            "qualityTier": "premium",
+            "qualityMultiplier": 1.2,
+            "demandAdjuster": 1,
+            "finalPrice": 3000,
+            "description": "Premium wheat grains, excellent for flour milling",
+            "locationLat": 28.66621319228386,
+            "locationLng": 77.0698836986367,
+            "locationAddress": "Azadpur Mandi, Delhi",
+            "status": "active",
+            "createdAt": "2026-01-30T11:04:12.552Z",
+            "updatedAt": "2026-01-30T11:04:12.552Z",
+            "vendor": {
+              "id": "5397585f-b631-4b8f-ab2c-ab067ca0726d",
+              "name": "Rajesh Kumar",
+              "phoneNumber": "+919876543210"
+            }
+          }
+        }
+      },
+      {
+        "name": "Listings - Get All (via search)",
+        "passed": true,
+        "message": "Found 16 total listings",
+        "details": {
+          "total": 16,
+          "byCrop": {
+            "Groundnut": 2,
+            "Cotton": 2,
+            "Maize": 2,
+            "Rice": 2,
+            "Wheat": 2,
+            "Potato": 2,
+            "Onion": 2,
+            "Tomato": 2
+          }
+        }
+      },
+      {
+        "name": "Voice - Parse Intent",
+        "passed": false,
+        "message": "Some intent parsing tests failed",
+        "details": [
+          {
+            "input": "मुझे गेहूं की कीमत बताओ",
+            "passed": false,
+            "intent": "general_help",
+            "crop": "wheat"
+          },
+          {
+            "input": "मैं 100 किलो टमाटर बेचना चाहता हूं",
+            "passed": true,
+            "intent": "create_listing",
+            "crop": "tomato"
+          },
+          {
+            "input": "मुझे प्याज खरीदना है",
+            "passed": true,
+            "intent": "search_listings",
+            "crop": "onion"
+          }
+        ]
+      },
+      {
+        "name": "Prices - Get Current",
+        "passed": true,
+        "message": "Got price for wheat in Delhi: ₹1342.8-1641.2",
+        "details": {
+          "cropType": "wheat",
+          "location": "Delhi",
+          "modalPrice": 1492,
+          "minPrice": 1342.8,
+          "maxPrice": 1641.2,
+          "source": "enam_cached",
+          "timestamp": "2026-01-30T10:54:46.168Z"
+        }
+      },
+      {
+        "name": "Vendors - Get Nearby",
+        "passed": true,
+        "message": "Found undefined nearby vendors",
+        "details": {}
+      },
+      {
+        "name": "Ratings - Get Vendor Ratings",
+        "passed": true,
+        "message": "Got ratings for vendor 5397585f-b631-4b8f-ab2c-ab067ca0726d",
+        "details": {
+          "vendorId": "5397585f-b631-4b8f-ab2c-ab067ca0726d",
+          "vendorName": "Rajesh Kumar",
+          "trustScore": {
+            "overallScore": 0,
+            "totalRatings": 0
+          },
+          "badges": [],
+          "transactionCount": 2,
+          "recentRatings": [
+            {
+              "deliveryRating": 4.047999142672011,
+              "qualityRating": 4.745866603656669,
+              "comment": "Good quality products, timely delivery",
+              "buyerName": "Amit Patel",
+              "createdAt": "2026-01-30T11:04:12.921Z"
+            },
+            {
+              "deliveryRating": 4.02834758458452,
+              "qualityRating": 4.6698613299637,
+              "comment": "Good quality products, timely delivery",
+              "buyerName": "Amit Patel",
+              "createdAt": "2026-01-30T10:54:45.691Z"
+            }
+          ],
+          "flaggedForReview": false
+        }
+      }
+    ]
+  },
+  "frontend": {
+    "total": 2,
+    "passed": 2,
+    "failed": 0,
+    "tests": [
+      {
+        "name": "Homepage Loads",
+        "passed": true,
+        "message": "Frontend loads successfully",
+        "details": {
+          "hasTitle": true,
+          "hasRoot": true
+        }
+      },
+      {
+        "name": "API Proxy Works",
+        "passed": true,
+        "message": "API proxy working - found 2 listings",
+        "details": {
+          "count": 2
+        }
+      }
+    ]
+  }
+}

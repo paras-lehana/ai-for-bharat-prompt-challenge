@@ -1,0 +1,297 @@
+{
+  "timestamp": "2026-01-30T11:06:30.795Z",
+  "categories": {
+    "authentication": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "Send OTP - Valid Phone",
+          "passed": true,
+          "message": "OTP sent successfully",
+          "details": {
+            "success": true,
+            "expiresAt": "2026-01-30T11:11:31.444Z",
+            "otp": "126743"
+          }
+        },
+        {
+          "name": "Send OTP - Invalid Phone",
+          "passed": true,
+          "message": "Correctly rejected invalid phone number",
+          "details": {
+            "error": "Phone number must be in format +91XXXXXXXXXX"
+          }
+        },
+        {
+          "name": "Verify OTP - Valid",
+          "passed": true,
+          "message": "OTP verified successfully",
+          "details": {
+            "hasToken": true
+          }
+        }
+      ]
+    },
+    "listings": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "Search - By Crop Type",
+          "passed": true,
+          "message": "Found 2 wheat listings",
+          "details": {
+            "count": 2
+          }
+        },
+        {
+          "name": "Search - No Results",
+          "passed": true,
+          "message": "Correctly returned empty results",
+          "details": {
+            "count": 0
+          }
+        },
+        {
+          "name": "Get By ID - Valid",
+          "passed": true,
+          "message": "Retrieved listing by ID",
+          "details": {
+            "images": [
+              "/images/crops/wheat.jpg"
+            ],
+            "id": "32fa53a3-e4c4-4dda-af90-9775907087d1",
+            "vendorId": "5397585f-b631-4b8f-ab2c-ab067ca0726d",
+            "cropType": "Wheat",
+            "quantity": 5000,
+            "unit": "kg",
+            "basePrice": 2500,
+            "qualityTier": "premium",
+            "qualityMultiplier": 1.2,
+            "demandAdjuster": 1,
+            "finalPrice": 3000,
+            "description": "Premium wheat grains, excellent for flour milling",
+            "locationLat": 28.66621319228386,
+            "locationLng": 77.0698836986367,
+            "locationAddress": "Azadpur Mandi, Delhi",
+            "status": "active",
+            "createdAt": "2026-01-30T11:04:12.552Z",
+            "updatedAt": "2026-01-30T11:04:12.552Z",
+            "vendor": {
+              "id": "5397585f-b631-4b8f-ab2c-ab067ca0726d",
+              "name": "Rajesh Kumar",
+              "phoneNumber": "+919876543210",
+              "languagePreference": "hi"
+            }
+          }
+        }
+      ]
+    },
+    "negotiations": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "tests": []
+    },
+    "transactions": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "tests": []
+    },
+    "voice": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "Parse Intent - Price Query",
+          "passed": true,
+          "message": "Parsed intent: price_query",
+          "details": {
+            "intent": "price_query",
+            "cropType": "wheat",
+            "quantity": null,
+            "price": null,
+            "location": null,
+            "qualityTier": null,
+            "confidence": "medium"
+          }
+        },
+        {
+          "name": "Parse Intent - Create Listing",
+          "passed": true,
+          "message": "Parsed create listing intent",
+          "details": {
+            "intent": "create_listing",
+            "cropType": "tomato",
+            "quantity": "100 kg",
+            "price": 100,
+            "location": null,
+            "qualityTier": null,
+            "confidence": "medium"
+          }
+        }
+      ]
+    },
+    "prices": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "Get Current Price - Valid Crop",
+          "passed": true,
+          "message": "Got price for wheat",
+          "details": {
+            "cropType": "wheat",
+            "location": "Delhi",
+            "modalPrice": 1492,
+            "minPrice": 1342.8,
+            "maxPrice": 1641.2,
+            "source": "enam_cached",
+            "timestamp": "2026-01-30T10:54:46.168Z"
+          }
+        },
+        {
+          "name": "Get Prices - Multiple Crops",
+          "passed": true,
+          "message": "Retrieved prices for 5 crops",
+          "details": [
+            {
+              "crop": "wheat",
+              "price": 1492,
+              "source": "enam_cached"
+            },
+            {
+              "crop": "rice",
+              "price": 3701,
+              "source": "enam_cached"
+            },
+            {
+              "crop": "maize",
+              "price": 1650,
+              "source": "enam_cached"
+            },
+            {
+              "crop": "cotton",
+              "price": 3906,
+              "source": "enam_cached"
+            },
+            {
+              "crop": "onion",
+              "price": 2794,
+              "source": "enam_cached"
+            }
+          ]
+        }
+      ]
+    },
+    "ratings": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "tests": []
+    },
+    "errorHandling": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "404 - Invalid Endpoint",
+          "passed": true,
+          "message": "Correctly returned 404",
+          "details": {
+            "error": "Not Found",
+            "message": "Route GET /api/nonexistent not found"
+          }
+        },
+        {
+          "name": "Missing Required Parameters",
+          "passed": true,
+          "message": "Correctly rejected missing parameters",
+          "details": {
+            "error": "Phone number is required"
+          }
+        },
+        {
+          "name": "Invalid Data Types",
+          "passed": true,
+          "message": "Correctly rejected invalid data type",
+          "details": {
+            "error": "\"value\" must be a string"
+          }
+        }
+      ]
+    },
+    "edgeCases": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "Large Query String",
+          "passed": true,
+          "message": "Handled large query string",
+          "details": {
+            "length": 1000
+          }
+        },
+        {
+          "name": "Special Characters in Input",
+          "passed": true,
+          "message": "Handled special characters",
+          "details": {
+            "intent": "price_query",
+            "cropType": "wheat",
+            "quantity": null,
+            "price": null,
+            "location": null,
+            "qualityTier": null,
+            "confidence": "medium"
+          }
+        },
+        {
+          "name": "Concurrent Requests",
+          "passed": true,
+          "message": "Handled 10 concurrent requests",
+          "details": {
+            "count": 10
+          }
+        }
+      ]
+    },
+    "database": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "Data Consistency",
+          "passed": true,
+          "message": "All data consistent",
+          "details": {
+            "listings": 16,
+            "issues": []
+          }
+        },
+        {
+          "name": "Foreign Key Relationships",
+          "passed": true,
+          "message": "Foreign key relationships working",
+          "details": {
+            "hasVendorInfo": {
+              "id": "5397585f-b631-4b8f-ab2c-ab067ca0726d",
+              "name": "Rajesh Kumar",
+              "phoneNumber": "+919876543210"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

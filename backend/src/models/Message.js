@@ -30,6 +30,10 @@ const Message = sequelize.define('Message', {
     type: DataTypes.TEXT,
     allowNull: true
   },
+  audioData: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
   images: {
     type: DataTypes.TEXT,
     allowNull: true,

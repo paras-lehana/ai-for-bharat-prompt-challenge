@@ -10,8 +10,15 @@
     "build": "cd backend && npm run build && cd ../frontend && npm run build",
     "start": "cd backend && npm start",
     "docker:build": "docker-compose build",
-    "docker:up": "docker-compose up",
-    "docker:down": "docker-compose down"
+    "docker:build:prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml build",
+    "docker:up": "docker-compose up -d",
+    "docker:up:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
+    "docker:up:prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:ps": "docker-compose ps",
+    "docker:restart": "docker-compose restart",
+    "docker:clean": "docker-compose down -v && docker system prune -f"
   },
   "keywords": [
     "agriculture",
@@ -27,6 +34,7 @@
   },
   "dependencies": {
     "axios": "^1.13.3",
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.2.3",
+    "puppeteer": "^24.36.1"
   }
 }

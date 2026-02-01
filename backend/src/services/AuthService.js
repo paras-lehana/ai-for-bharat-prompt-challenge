@@ -75,6 +75,47 @@ class AuthService {
    */
   async verifyOTP(phoneNumber, otpCode, userData = {}) {
     try {
+      // TEST MODE: Allow OTP "000000" to bypass verification
+      const isTestMode = process.env.TEST_MODE === 'true' && otpCode === '000000';
+      
+      if (isTestMode) {
+        console.log('🧪 TEST MODE: Bypassing OTP verification');
+        
+        // Find or create user
+        let user = await User.findOne({ where: { phoneNumber } });
+
+        if (!user) {
+          // Create test user
+          user = await User.create({
+            phoneNumber,
+            role: userData.role || 'vendor',
+            languagePreference: userData.languagePreference || 'en',
+            name: userData.name || 'Test User',
+            locationLat: userData.location?.latitude || 28.6139,
+            locationLng: userData.location?.longitude || 77.2090,
+            locationAddress: userData.location?.address || 'Delhi',
+            locationDistrict: userData.location?.district || 'Central Delhi',
+            locationState: userData.location?.state || 'Delhi'
+          });
+        }
+
+        // Generate JWT token
+        const token = this.generateToken(user);
+
+        return {
+          success: true,
+          token,
+          user: {
+            id: user.id,
+            phoneNumber: user.phoneNumber,
+            role: user.role,
+            languagePreference: user.languagePreference,
+            name: user.name
+          }
+        };
+      }
+      
+      // NORMAL MODE: Standard OTP verification
       // Find OTP record
       const otpRecord = await OTP.findOne({
         where: { phoneNumber, verified: false },

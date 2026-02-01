@@ -2,16 +2,30 @@
 
 ## Overview
 
-The Multilingual Mandi is a full-stack web application that bridges the language gap in agricultural trading across India. The system consists of a React-based frontend, Node.js/Express backend, SQLite/PostgreSQL database, and integrations with BHASHINI APIs for multilingual voice and text processing, plus eNAM APIs for market data.
+The Multilingual Mandi is a comprehensive full-stack web application that bridges the language gap in agricultural trading across India, serving 146 million farmers with particular focus on the 85% who don't use digital platforms due to language barriers. The system consists of a React-based frontend with modern UI/UX, Node.js/Express backend, SQLite/PostgreSQL database, and integrations with SARVAM AI for multilingual voice and text processing, plus eNAM APIs for market data.
 
-The architecture follows a three-tier model with clear separation between presentation (React UI), business logic (Express API), and data persistence (SQL database). The system emphasizes mobile-first design, offline capability, and voice-first interactions to serve users with varying literacy levels.
+The architecture follows a three-tier model with clear separation between presentation (React UI), business logic (Express API), and data persistence (SQL database). The system emphasizes mobile-first design, offline capability, voice-first interactions through the unified Kisaan Bot assistant, and modern engaging user interfaces to serve users with varying literacy levels.
+
+**Core Problem Addressed**: 85% of India's 146 million farmers don't use digital trading platforms due to language barriers, lack of negotiation support, and trust deficits in existing systems like eNAM.
+
+**Solution Approach**: Enhancement rather than replacement of existing platforms through:
+- Voice-first interface in 6+ local languages (Hindi, Marathi, Tamil, Telugu, Kannada, Punjabi)
+- AI-assisted peer-to-peer negotiation (not auction-based)
+- Transparent quality-based pricing formulas
+- Direct peer discovery and micro-aggregation capabilities
+- Comprehensive trust system with objective metrics
+- Seamless integration with government platforms (eNAM, ODOP, GeM)
 
 Key design principles:
-- **Language-first**: Every interaction supports multiple local languages
-- **Voice-enabled**: Critical features accessible via voice commands
-- **Transparent**: All pricing and algorithms are explainable
-- **Trust-building**: Objective metrics and dispute resolution
+- **Voice-first**: Unified Kisaan Bot handles all major tasks through natural conversation
+- **Language-inclusive**: Every interaction supports 6+ local languages with automatic translation
+- **Transparent**: All pricing formulas and trust algorithms are explainable and visible
+- **Trust-building**: Objective metrics, dispute resolution, and peer discovery
+- **Modern & Engaging**: Vibrant UI with animations, smooth transitions, and visual feedback
+- **Business-focused**: Clear value propositions and farmer-friendly language throughout
 - **Progressive enhancement**: Works on basic devices, better on modern ones
+- **Accessible**: Comprehensive user guide, discoverable help, and error-free navigation
+- **Enhancement-focused**: Improves access to existing platforms rather than competing
 
 ## Architecture
 
@@ -19,55 +33,74 @@ Key design principles:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     Client Layer                             │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │ React Web UI │  │ Voice Input  │  │ PWA Offline  │      │
-│  │ (Tailwind)   │  │ Component    │  │ Storage      │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
+│                     Client Layer                            │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │ React Web UI │  │ Kisaan Bot   │  │ PWA Offline  │       │
+│  │ (Tailwind)   │  │ Voice Assist │  │ Storage      │       │
+│  │ Modern UI    │  │ (Unified)    │  │ Guide System │       │
+│  └──────────────┘  └──────────────┘  └──────────────┘       │
 └─────────────────────────────────────────────────────────────┘
                             │
                             │ HTTPS/REST
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                   API Gateway Layer                          │
+│                   API Gateway Layer                         │
 │  ┌──────────────────────────────────────────────────────┐   │
 │  │         Express.js REST API Server                   │   │
-│  │  - Authentication Middleware                         │   │
-│  │  - Rate Limiting                                     │   │
+│  │  - Authentication Middleware (JWT + OTP)             │   │
+│  │  - Rate Limiting & Spam Prevention                   │   │
 │  │  - Request Validation                                │   │
+│  │  - Error Handling & Logging                          │   │
+│  │  - CORS Configuration                                │   │
 │  └──────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                  Business Logic Layer                        │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │ Negotiation  │  │ Pricing      │  │ Trust        │      │
-│  │ Engine       │  │ Calculator   │  │ System       │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │ Discovery    │  │ Advisory     │  │ Messaging    │      │
-│  │ Service      │  │ Service      │  │ Service      │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
+│                  Business Logic Layer                       │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │ Negotiation  │  │ Pricing      │  │ Trust        │       │
+│  │ Engine       │  │ Calculator   │  │ System       │       │
+│  └──────────────┘  └──────────────┘  └──────────────┘       │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │ Discovery    │  │ Advisory     │  │ Messaging    │       │
+│  │ Service      │  │ Service      │  │ Service      │       │
+│  └──────────────┘  └──────────────┘  └──────────────┘       │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │ Kisaan Bot   │  │ Guide        │  │ Analytics    │       │
+│  │ AI Service   │  │ Service      │  │ Service      │       │
+│  └──────────────┘  └──────────────┘  └──────────────┘       │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │ Image        │  │ UI           │  │ Integration  │       │
+│  │ Management   │  │ Enhancement  │  │ Layer        │       │
+│  └──────────────┘  └──────────────┘  └──────────────┘       │
 └─────────────────────────────────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                    Data Layer                                │
+│                    Data Layer                               │
 │  ┌──────────────────────────────────────────────────────┐   │
 │  │  SQLite (MVP) / PostgreSQL (Production)              │   │
 │  │  - Users, Listings, Transactions, Messages           │   │
 │  │  - Negotiations, Ratings, Disputes                   │   │
+│  │  - Guide Content, Voice Logs, Analytics              │   │
+│  │  - Translation Cache, Image Metadata                 │   │
 │  └──────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                  External Services                           │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │ BHASHINI     │  │ eNAM API     │  │ SMS/OTP      │      │
-│  │ Translation  │  │ (Mocked)     │  │ Gateway      │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
+│                  External Services                          │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │ SARVAM AI    │  │ OpenRouter   │  │ eNAM API     │       │
+│  │ STT/TTS      │  │ Intent AI    │  │ (Mocked)     │       │
+│  │ Translation  │  │ NLP          │  │ Price Data   │       │
+│  └──────────────┘  └──────────────┘  └──────────────┘       │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │ Google       │  │ SMS/OTP      │  │ Local Image  │       │
+│  │ Translate    │  │ Gateway      │  │ Storage      │       │
+│  │ (Fallback)   │  │ (Phone Auth) │  │ (Frontend)   │       │
+│  └──────────────┘  └──────────────┘  └──────────────┘       │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -75,30 +108,38 @@ Key design principles:
 
 **Frontend:**
 - React.js 18+ with functional components and hooks
-- Tailwind CSS for responsive styling
-- React Router for navigation
-- Axios for API communication
-- Web Speech API for voice input (with BHASHINI fallback)
+- Tailwind CSS for responsive styling and modern UI
+- React Router DOM for navigation
+- Axios for API communication with interceptors
+- Web Speech API for voice input (with SARVAM fallback)
 - Service Workers for PWA offline capability
 - LocalStorage for caching and offline data
+- React Icons for consistent iconography
+- React Markdown for guide content rendering
 
 **Backend:**
 - Node.js 18+ with Express.js framework
 - JWT for authentication and session management
-- Bcrypt for password hashing (if needed)
-- Multer for file uploads
+- Sequelize ORM for database abstraction
+- Multer for file uploads and image handling
 - Node-cron for scheduled tasks (advisory notifications)
-- Winston for logging
+- Winston for comprehensive logging
+- Rate limiting middleware for spam prevention
+- CORS configuration for cross-origin requests
 
 **Database:**
 - SQLite for MVP/development (single file, easy deployment)
 - PostgreSQL for production (better concurrency, scalability)
-- Sequelize ORM for database abstraction
+- 14 main tables with proper indexing and relationships
+- Translation caching for performance optimization
+- Analytics data caching for dashboard performance
 
 **External APIs:**
-- BHASHINI API for speech-to-text, text-to-speech, and translation
-- Abstraction layer to support SARVAM API swap
+- SARVAM AI for speech-to-text, text-to-speech, and translation
+- OpenRouter AI for intent extraction and natural language processing
+- Google Translate API as fallback for translation services
 - eNAM API (mocked initially) for market price data
+- SMS gateway for OTP delivery and notifications
 
 **Deployment:**
 - Docker for containerization
@@ -106,6 +147,7 @@ Key design principles:
 - Vercel for frontend hosting
 - Render/Railway for backend hosting
 - Environment-based configuration
+- Local image storage in frontend/public/images/crops/
 
 ## Components and Interfaces
 
@@ -113,9 +155,10 @@ Key design principles:
 
 **Responsibilities:**
 - Phone number validation and OTP generation
-- OTP verification and session creation
+- OTP verification with 3-retry limit and 5-minute expiration
 - JWT token generation and validation
-- User profile management
+- User profile management with role selection
+- Language preference persistence
 
 **Interface:**
 ```typescript
@@ -124,6 +167,7 @@ interface AuthService {
   verifyOTP(phoneNumber: string, otp: string): Promise<{token: string, user: User}>
   validateToken(token: string): Promise<User>
   updateProfile(userId: string, updates: Partial<UserProfile>): Promise<User>
+  checkRetryLimit(phoneNumber: string): Promise<{attemptsRemaining: number}>
 }
 
 interface User {
@@ -134,6 +178,7 @@ interface User {
   name?: string
   location?: Location
   createdAt: Date
+  updatedAt: Date
 }
 
 interface Location {
@@ -149,10 +194,11 @@ interface Location {
 
 **Responsibilities:**
 - Audio recording and streaming
-- Speech-to-text conversion via BHASHINI
-- Text-to-speech conversion via BHASHINI
+- Speech-to-text conversion via SARVAM API
+- Text-to-speech conversion via SARVAM API
 - Language detection and translation
 - Query parsing and intent extraction
+- Support for 6+ local languages (Hindi, Marathi, Tamil, Telugu, Kannada, Punjabi)
 
 **Interface:**
 ```typescript
@@ -161,6 +207,8 @@ interface VoiceService {
   synthesizeSpeech(text: string, language: string): Promise<Blob>
   translateText(text: string, fromLang: string, toLang: string): Promise<string>
   parseQuery(text: string, language: string): Promise<QueryIntent>
+  getSupportedLanguages(): string[]
+  detectLanguage(text: string): Promise<string>
 }
 
 interface QueryIntent {
@@ -168,6 +216,7 @@ interface QueryIntent {
   cropName?: string
   location?: string
   parameters: Record<string, any>
+  confidence: number
 }
 ```
 
@@ -175,10 +224,11 @@ interface QueryIntent {
 
 **Responsibilities:**
 - CRUD operations for product listings
-- Image upload and storage
-- Quality tier assignment
-- Listing search and filtering
-- Availability management
+- Image upload and local storage management
+- Quality tier assignment and validation
+- Listing search and filtering with multilingual support
+- Availability management and status updates
+- Price calculation integration
 
 **Interface:**
 ```typescript
@@ -189,6 +239,8 @@ interface ListingService {
   getListing(listingId: string): Promise<Listing>
   searchListings(criteria: SearchCriteria): Promise<Listing[]>
   updateAvailability(listingId: string, available: boolean): Promise<Listing>
+  getVendorActiveListings(vendorId: string): Promise<Listing[]>
+  validateRequiredFields(data: ListingInput): ValidationResult
 }
 
 interface ListingInput {
@@ -219,16 +271,23 @@ interface SearchCriteria {
   qualityTier?: string[]
   priceRange?: {min: number, max: number}
   sortBy?: 'price' | 'distance' | 'trust_score' | 'relevance'
+  language?: string
+}
+
+interface ValidationResult {
+  isValid: boolean
+  errors: string[]
 }
 ```
 
 ### 4. Pricing Calculator Service
 
 **Responsibilities:**
-- Calculate final prices using transparent formula
-- Determine quality multipliers
-- Calculate demand adjusters
-- Provide price breakdowns
+- Calculate final prices using transparent formula: Final_Price = Base_Price × Quality_Multiplier × Demand_Adjuster
+- Determine quality multipliers (Premium: 1.2, Standard: 1.0, Basic: 0.85)
+- Calculate demand adjusters with bounds (0.8 - 1.3)
+- Provide complete price breakdowns with explanations
+- Real-time price recalculation on component changes
 
 **Interface:**
 ```typescript
@@ -237,6 +296,8 @@ interface PricingService {
   getQualityMultiplier(qualityTier: string): number
   getDemandAdjuster(cropType: string, location: Location): Promise<number>
   getPriceBreakdown(listingId: string): Promise<PriceBreakdown>
+  recalculatePrice(listingId: string): Promise<PriceResult>
+  validatePricingBounds(demandAdjuster: number): boolean
 }
 
 interface PriceResult {
@@ -250,17 +311,19 @@ interface PriceBreakdown {
   demandAdjuster: number
   finalPrice: number
   explanation: string
+  formula: string
 }
 ```
 
 ### 5. Negotiation Engine Service
 
 **Responsibilities:**
-- Create and manage negotiation sessions
-- Analyze offers and suggest counter-offers
-- Track negotiation history
-- Handle session expiration
-- Finalize agreements
+- Create and manage 24-hour negotiation sessions
+- Analyze offers and suggest counter-offers with reasoning
+- Track negotiation history and multiple rounds
+- Handle session expiration and notifications
+- Finalize agreements and create transactions
+- Consider regional pricing variations
 
 **Interface:**
 ```typescript
@@ -272,6 +335,8 @@ interface NegotiationService {
   rejectOffer(negotiationId: string, userId: string): Promise<Negotiation>
   getNegotiation(negotiationId: string): Promise<Negotiation>
   expireNegotiations(): Promise<void>
+  getUserNegotiations(userId: string): Promise<Negotiation[]>
+  withdrawNegotiation(negotiationId: string, userId: string): Promise<void>
 }
 
 interface Negotiation {
@@ -279,10 +344,11 @@ interface Negotiation {
   listingId: string
   buyerId: string
   vendorId: string
-  status: 'active' | 'accepted' | 'rejected' | 'expired'
+  status: 'active' | 'accepted' | 'rejected' | 'expired' | 'withdrawn'
   offers: Offer[]
   createdAt: Date
   expiresAt: Date
+  timeRemaining: number
 }
 
 interface Offer {
@@ -301,6 +367,7 @@ interface OfferAnalysis {
     averagePrice: number
     recentTransactions: number
     regionalVariation: number
+    qualityTier: string
   }
 }
 ```
@@ -308,10 +375,12 @@ interface OfferAnalysis {
 ### 6. Discovery Service
 
 **Responsibilities:**
-- Find nearby vendors with similar products
+- Find nearby vendors with similar products within 50km radius
 - Calculate distances between vendors
 - Identify micro-aggregation opportunities
-- Manage vendor collaborations
+- Manage vendor collaborations and combined listings
+- Calculate weighted average pricing for aggregations
+- Handle proportional payment distribution
 
 **Interface:**
 ```typescript
@@ -320,6 +389,8 @@ interface DiscoveryService {
   identifyAggregationOpportunities(listingId: string): Promise<AggregationSuggestion[]>
   createAggregatedListing(vendorIds: string[], listingDetails: AggregatedListingInput): Promise<AggregatedListing>
   calculateCombinedPricing(listings: Listing[]): Promise<number>
+  getVendorContactInfo(vendorId: string): Promise<VendorContact>
+  suggestBulkOrderAggregation(orderId: string): Promise<AggregationSuggestion[]>
 }
 
 interface VendorMatch {
@@ -328,6 +399,14 @@ interface VendorMatch {
   listing: Listing
   distanceKm: number
   trustScore: number
+  contactInfo: VendorContact
+}
+
+interface VendorContact {
+  name: string
+  phoneNumber: string
+  location: Location
+  preferredLanguage: string
 }
 
 interface AggregationSuggestion {
@@ -335,6 +414,7 @@ interface AggregationSuggestion {
   combinedQuantity: number
   weightedPrice: number
   potentialBuyers: string[]
+  estimatedSavings: number
 }
 
 interface AggregatedListing extends Listing {
@@ -342,6 +422,7 @@ interface AggregatedListing extends Listing {
     vendorId: string
     quantity: number
     contribution: number
+    paymentShare: number
   }[]
 }
 ```
@@ -349,11 +430,12 @@ interface AggregatedListing extends Listing {
 ### 7. Trust System Service
 
 **Responsibilities:**
-- Calculate trust scores
-- Manage ratings and reviews
-- Award badges
-- Handle dispute creation and resolution
-- Monitor vendor performance
+- Calculate trust scores using formula: 40% delivery + 30% quality + 20% response + 10% fair pricing
+- Manage ratings and reviews with 1-5 star system
+- Award badges (Trusted Vendor: 4.5+ score, 20+ transactions; Verified Seller: 4.0+ score, 50+ transactions)
+- Handle dispute creation and AI-powered resolution
+- Monitor vendor performance and flag low-trust accounts
+- Track response times automatically
 
 **Interface:**
 ```typescript
@@ -365,6 +447,8 @@ interface TrustService {
   analyzeDispute(disputeId: string): Promise<DisputeResolution>
   resolveDispute(disputeId: string, resolution: DisputeResolution): Promise<void>
   getVendorReputation(vendorId: string): Promise<Reputation>
+  flagLowTrustAccount(vendorId: string): Promise<void>
+  trackResponseTime(vendorId: string, responseTimeMs: number): Promise<void>
 }
 
 interface TrustScore {
@@ -377,8 +461,8 @@ interface TrustScore {
 }
 
 interface Rating {
-  deliveryRating: number
-  qualityRating: number
+  deliveryRating: number // 1-5 stars
+  qualityRating: number  // 1-5 stars
 }
 
 interface DisputeInput {
@@ -396,6 +480,7 @@ interface Dispute {
   details: DisputeInput
   evidence: Evidence[]
   createdAt: Date
+  resolutionDeadline: Date
 }
 
 interface Evidence {
@@ -410,6 +495,12 @@ interface DisputeResolution {
   reasoning: string
   refundAmount?: number
   confidence: number
+  factors: {
+    deliveryProof: boolean
+    qualityEvidence: boolean
+    communicationLogs: boolean
+    pastBehavior: string
+  }
 }
 
 interface Reputation {
@@ -418,16 +509,18 @@ interface Reputation {
   totalTransactions: number
   disputeRate: number
   responseTimeAvg: number
+  flagged: boolean
 }
 ```
 
 ### 8. Integration Layer Service
 
 **Responsibilities:**
-- Fetch eNAM market prices
-- Cache external data
-- Provide GeM documentation assistance
-- Sync transaction data
+- Fetch live market prices from eNAM API with caching
+- Provide GeM documentation assistance in local languages
+- Sync transaction data with eNAM (opt-in)
+- Handle ODOP product identification and badging
+- Manage API failures with cached data fallback
 
 **Interface:**
 ```typescript
@@ -436,6 +529,8 @@ interface IntegrationService {
   getCachedPrice(cropType: string, mandiLocation: string): Promise<ENAMPrice | null>
   getGeMDocumentationGuide(language: string): Promise<DocumentGuide>
   syncTransactionToENAM(transactionId: string): Promise<void>
+  identifyODOPProduct(cropType: string, location: Location): Promise<boolean>
+  handleAPIFailure(service: string, fallbackData: any): Promise<any>
 }
 
 interface ENAMPrice {
@@ -447,12 +542,14 @@ interface ENAMPrice {
   maxPrice: number
   timestamp: Date
   source: 'enam_api' | 'cached'
+  freshness: 'fresh' | 'stale'
 }
 
 interface DocumentGuide {
   steps: DocumentStep[]
   requiredDocuments: string[]
   language: string
+  estimatedTime: string
 }
 
 interface DocumentStep {
@@ -460,16 +557,18 @@ interface DocumentStep {
   title: string
   description: string
   helpText: string
+  requiredDocuments: string[]
 }
 ```
 
 ### 9. Advisory Service
 
 **Responsibilities:**
-- Analyze market trends
-- Generate personalized insights
-- Send notifications
-- Provide seasonal guidance
+- Analyze market trends and generate personalized insights
+- Send notifications for significant market changes in user's language
+- Provide weekly market summaries via SMS/app notifications
+- Generate seasonal guidance based on market forecasts
+- Consider regional variations and local mandi data
 
 **Interface:**
 ```typescript
@@ -478,6 +577,8 @@ interface AdvisoryService {
   sendPriceAlert(vendorId: string, cropType: string, priceChange: number): Promise<void>
   getWeeklyReport(vendorId: string): Promise<WeeklyReport>
   getSeasonalGuidance(cropType: string, location: Location): Promise<SeasonalAdvice>
+  analyzeMarketConditions(): Promise<MarketCondition[]>
+  sendProactiveGuidance(vendorId: string, season: string): Promise<void>
 }
 
 interface MarketInsight {
@@ -488,9 +589,11 @@ interface MarketInsight {
     currentPrice: number
     historicalAverage: number
     changePercent: number
+    regionalVariation: number
   }
   actionable: boolean
   recommendation?: string
+  language: string
 }
 
 interface WeeklyReport {
@@ -502,6 +605,8 @@ interface WeeklyReport {
   }
   marketTrends: MarketInsight[]
   recommendations: string[]
+  language: string
+  visualCharts: ChartData[]
 }
 
 interface SeasonalAdvice {
@@ -511,17 +616,33 @@ interface SeasonalAdvice {
   harvestWindow?: {start: Date, end: Date}
   expectedDemand: 'high' | 'medium' | 'low'
   priceForecasts: {month: string, expectedPrice: number}[]
+  marketForecast: string
+}
+
+interface MarketCondition {
+  cropType: string
+  condition: 'high_demand' | 'price_drop' | 'seasonal_change'
+  severity: 'low' | 'medium' | 'high'
+  affectedVendors: string[]
+}
+
+interface ChartData {
+  type: 'line' | 'bar' | 'pie'
+  data: any[]
+  title: string
+  description: string
 }
 ```
 
 ### 10. Messaging Service
 
 **Responsibilities:**
-- Send and receive messages
-- Translate messages between languages
-- Track read receipts
-- Monitor response times
-- Prevent spam
+- Send and receive messages with automatic translation
+- Track read receipts and typing indicators
+- Monitor response times for trust score calculation
+- Prevent spam with rate limiting (10 messages/hour for new users)
+- Support image sharing within message threads
+- Create listing-associated message threads
 
 **Interface:**
 ```typescript
@@ -532,6 +653,9 @@ interface MessagingService {
   translateMessage(messageId: string, targetLanguage: string): Promise<string>
   getResponseTime(vendorId: string): Promise<number>
   checkSpamLimit(userId: string): Promise<boolean>
+  createListingThread(buyerId: string, vendorId: string, listingId: string): Promise<string>
+  sendRealTimeMessage(message: Message): Promise<void>
+  queueOfflineMessage(message: Message): Promise<void>
 }
 
 interface MessageContent {
@@ -550,18 +674,21 @@ interface Message {
   timestamp: Date
   readAt?: Date
   threadId: string
+  deliveryStatus: 'sent' | 'delivered' | 'read'
 }
 ```
 
 ### 11. Unified Voice Assistant Service (Kisaan Bot)
 
 **Responsibilities:**
-- Capture and process voice input
-- Transcribe audio using SARVAM STT
+- Capture and process voice input from users
+- Transcribe audio using SARVAM STT API
 - Extract intent and parameters using OpenRouter AI
-- Execute appropriate API calls based on intent
+- Execute appropriate API calls based on extracted intent
 - Provide user-friendly confirmations and error messages
-- Handle microphone permissions and errors
+- Handle microphone permissions and errors gracefully
+- Support all major platform functions through voice
+- Provide detailed logging for debugging
 
 **Interface:**
 ```typescript
@@ -572,6 +699,9 @@ interface KisaanBotService {
   executeIntent(intent: VoiceIntent, userId: string): Promise<IntentResult>
   formatConfirmation(intent: VoiceIntent, language: string): Promise<string>
   handleError(error: Error, language: string): Promise<string>
+  logVoiceInteraction(userId: string, intent: VoiceIntent, result: IntentResult): Promise<void>
+  handleMicrophonePermission(): Promise<boolean>
+  getSupportedIntents(): string[]
 }
 
 interface VoiceIntent {
@@ -587,6 +717,7 @@ interface VoiceIntent {
   }
   confidence: number
   rawText: string
+  language: string
 }
 
 interface IntentResult {
@@ -594,16 +725,20 @@ interface IntentResult {
   data?: any
   redirectUrl?: string
   errorMessage?: string
+  apiCallsMade: string[]
+  executionTime: number
 }
 ```
 
 ### 12. Guide Service
 
 **Responsibilities:**
-- Serve guide content
-- Translate guide content based on user language
-- Cache translations
-- Organize guide sections
+- Serve comprehensive guide content to users
+- Automatically translate guide content based on user language preference
+- Cache translations for performance optimization
+- Organize guide content into discoverable sections (Getting Started, Features, Troubleshooting)
+- Ensure error-free navigation to guide pages
+- Provide guide highlights and call-to-actions
 
 **Interface:**
 ```typescript
@@ -612,6 +747,9 @@ interface GuideService {
   translateGuide(content: string, targetLanguage: string): Promise<string>
   getCachedTranslation(section: string, language: string): Promise<string | null>
   getAllSections(): Promise<GuideSection[]>
+  validateGuideRouting(): Promise<boolean>
+  getGuideHighlights(language: string): Promise<GuideHighlight[]>
+  organizeContentSections(): Promise<GuideOrganization>
 }
 
 interface GuideContent {
@@ -620,19 +758,232 @@ interface GuideContent {
   content: string
   language: string
   lastUpdated: Date
+  subsections?: GuideSection[]
 }
 
 interface GuideSection {
   id: string
   title: string
   order: number
+  description?: string
   subsections?: GuideSection[]
+}
+
+interface GuideHighlight {
+  title: string
+  description: string
+  icon: string
+  section: string
+  callToAction: string
+}
+
+interface GuideOrganization {
+  gettingStarted: GuideSection[]
+  features: GuideSection[]
+  troubleshooting: GuideSection[]
+}
+```
+
+### 13. UI Enhancement Service
+
+**Responsibilities:**
+- Manage modern UI components and animations
+- Handle loading states and smooth transitions
+- Provide consistent visual feedback for user interactions
+- Manage vibrant, farmer-friendly color schemes
+- Handle image loading and fallback mechanisms
+- Ensure accessibility compliance (contrast ratios, focus indicators)
+- Support mobile-optimized layouts and touch interactions
+
+**Interface:**
+```typescript
+interface UIEnhancementService {
+  getColorScheme(): ColorScheme
+  generateLoadingAnimation(type: string): AnimationConfig
+  createTransition(fromState: string, toState: string): TransitionConfig
+  handleImageFallback(imagePath: string): string
+  validateAccessibility(component: UIComponent): AccessibilityReport
+  getHoverEffects(elementType: string): EffectConfig
+  optimizeForMobile(component: UIComponent): UIComponent
+  ensureTouchTargetSize(element: UIElement): boolean
+}
+
+interface ColorScheme {
+  primary: string
+  secondary: string
+  accent: string
+  background: string
+  text: string
+  success: string
+  warning: string
+  error: string
+  farmerFriendly: boolean
+}
+
+interface AnimationConfig {
+  type: 'spinner' | 'pulse' | 'fade' | 'slide'
+  duration: number
+  easing: string
+  smooth: boolean
+}
+
+interface TransitionConfig {
+  duration: number
+  timing: string
+  properties: string[]
+  smooth: boolean
+}
+
+interface AccessibilityReport {
+  contrastRatio: number
+  focusIndicators: boolean
+  keyboardNavigation: boolean
+  screenReaderCompatible: boolean
+  touchTargetSize: boolean
+  issues: string[]
+}
+
+interface UIComponent {
+  type: string
+  properties: Record<string, any>
+  accessibility: AccessibilityReport
+}
+
+interface UIElement {
+  width: number
+  height: number
+  interactive: boolean
+}
+
+interface EffectConfig {
+  hover: boolean
+  focus: boolean
+  active: boolean
+  transition: TransitionConfig
+}
+```
+
+### 14. Image Management Service
+
+**Responsibilities:**
+- Store and serve crop images locally from frontend/public/images/crops/
+- Handle image fallbacks for missing images with generic placeholders
+- Ensure consistent image display across all pages (Home, Browse Listings, Listing Detail)
+- Manage image optimization and loading
+- Update seed data with correct local image paths
+- Support all major crops (wheat, rice, maize, cotton, groundnut, sugarcane, soybean, onion, potato, tomato)
+
+**Interface:**
+```typescript
+interface ImageManagementService {
+  getLocalImagePath(cropType: string): string
+  validateImageExists(imagePath: string): boolean
+  getPlaceholderImage(): string
+  optimizeImage(imagePath: string, dimensions: ImageDimensions): Promise<string>
+  updateSeedDataImagePaths(): Promise<void>
+  preloadCriticalImages(): Promise<void>
+  handleImageLoadError(imagePath: string): string
+  ensureMajorCropImages(): Promise<boolean>
+  validateImageConsistency(): Promise<ImageValidationReport>
+}
+
+interface ImageDimensions {
+  width: number
+  height: number
+  quality?: number
+}
+
+interface ImageValidationReport {
+  missingImages: string[]
+  brokenPaths: string[]
+  seedDataInconsistencies: string[]
+  allMajorCropsPresent: boolean
+}
+```
+
+### 15. Analytics Service
+
+**Responsibilities:**
+- Generate vendor dashboards with sales metrics and trust scores
+- Calculate best-selling crops and most profitable quality tiers
+- Compare vendor prices to regional averages
+- Track negotiation success rates and discount percentages
+- Provide buyer demographics and repeat customer analysis
+- Export transaction data in CSV format
+- Cache analytics data for performance
+
+**Interface:**
+```typescript
+interface AnalyticsService {
+  generateVendorDashboard(vendorId: string): Promise<VendorDashboard>
+  calculateBestSellingCrops(vendorId: string): Promise<CropAnalysis[]>
+  comparePricesToRegionalAverage(vendorId: string): Promise<PriceComparison[]>
+  calculateNegotiationMetrics(vendorId: string): Promise<NegotiationMetrics>
+  getBuyerDemographics(vendorId: string): Promise<BuyerDemographics>
+  exportTransactionData(vendorId: string, format: 'csv' | 'json'): Promise<string>
+  generateSalesTrends(vendorId: string, period: string): Promise<TrendData>
+  cacheAnalyticsData(vendorId: string, data: any): Promise<void>
+}
+
+interface VendorDashboard {
+  totalSales: number
+  activeListings: number
+  pendingNegotiations: number
+  trustScore: TrustScore
+  salesTrends: TrendData
+  recentActivity: ActivityItem[]
+}
+
+interface CropAnalysis {
+  cropType: string
+  totalSales: number
+  averagePrice: number
+  transactionCount: number
+  profitability: number
+}
+
+interface PriceComparison {
+  cropType: string
+  vendorPrice: number
+  regionalAverage: number
+  difference: number
+  percentageDifference: number
+}
+
+interface NegotiationMetrics {
+  successRate: number
+  averageDiscount: number
+  totalNegotiations: number
+  acceptedOffers: number
+  averageNegotiationTime: number
+}
+
+interface BuyerDemographics {
+  locationDistribution: {location: string, count: number}[]
+  repeatCustomerRate: number
+  averageOrderValue: number
+  topBuyers: {buyerId: string, totalPurchases: number}[]
+}
+
+interface TrendData {
+  period: string
+  data: {date: string, value: number}[]
+  trend: 'increasing' | 'decreasing' | 'stable'
+}
+
+interface ActivityItem {
+  type: string
+  description: string
+  timestamp: Date
+  importance: 'high' | 'medium' | 'low'
 }
 ```
 
 ## Data Models
 
 ### Database Schema
+
+The database consists of 14 main tables designed to support all platform functionality with proper indexing and relationships. The schema supports both SQLite (MVP) and PostgreSQL (production) with Sequelize ORM abstraction.
 
 **Users Table:**
 ```sql
@@ -653,6 +1004,7 @@ CREATE TABLE users (
 
 CREATE INDEX idx_users_phone ON users(phone_number);
 CREATE INDEX idx_users_role ON users(role);
+CREATE INDEX idx_users_language ON users(language_preference);
 ```
 
 **OTP Table:**
@@ -663,6 +1015,7 @@ CREATE TABLE otps (
   otp_code VARCHAR(6) NOT NULL,
   expires_at TIMESTAMP NOT NULL,
   verified BOOLEAN DEFAULT FALSE,
+  retry_count INTEGER DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -683,7 +1036,7 @@ CREATE TABLE listings (
   quality_multiplier DECIMAL(4, 2) NOT NULL,
   demand_adjuster DECIMAL(4, 2) NOT NULL,
   final_price DECIMAL(10, 2) NOT NULL,
-  images TEXT, -- JSON array of image URLs
+  images TEXT, -- JSON array of local image paths
   description TEXT,
   location_lat DECIMAL(10, 8) NOT NULL,
   location_lng DECIMAL(11, 8) NOT NULL,
@@ -698,6 +1051,8 @@ CREATE INDEX idx_listings_vendor ON listings(vendor_id);
 CREATE INDEX idx_listings_crop ON listings(crop_type);
 CREATE INDEX idx_listings_status ON listings(status);
 CREATE INDEX idx_listings_location ON listings(location_lat, location_lng);
+CREATE INDEX idx_listings_quality ON listings(quality_tier);
+CREATE INDEX idx_listings_price ON listings(final_price);
 ```
 
 **Negotiations Table:**
@@ -707,7 +1062,7 @@ CREATE TABLE negotiations (
   listing_id VARCHAR(36) NOT NULL,
   buyer_id VARCHAR(36) NOT NULL,
   vendor_id VARCHAR(36) NOT NULL,
-  status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'accepted', 'rejected', 'expired')),
+  status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'accepted', 'rejected', 'expired', 'withdrawn')),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   expires_at TIMESTAMP NOT NULL,
   FOREIGN KEY (listing_id) REFERENCES listings(id),
@@ -738,6 +1093,7 @@ CREATE TABLE offers (
 
 CREATE INDEX idx_offers_negotiation ON offers(negotiation_id);
 CREATE INDEX idx_offers_created ON offers(created_at);
+CREATE INDEX idx_offers_type ON offers(offer_type);
 ```
 
 **Transactions Table:**
@@ -765,6 +1121,7 @@ CREATE TABLE transactions (
 CREATE INDEX idx_transactions_buyer ON transactions(buyer_id);
 CREATE INDEX idx_transactions_vendor ON transactions(vendor_id);
 CREATE INDEX idx_transactions_status ON transactions(status);
+CREATE INDEX idx_transactions_created ON transactions(created_at);
 ```
 
 **Ratings Table:**
@@ -798,12 +1155,14 @@ CREATE TABLE trust_scores (
   fair_pricing_score DECIMAL(3, 2) NOT NULL,
   transaction_count INTEGER DEFAULT 0,
   badges TEXT, -- JSON array of badge names
+  flagged BOOLEAN DEFAULT FALSE,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (vendor_id) REFERENCES users(id)
 );
 
 CREATE INDEX idx_trust_vendor ON trust_scores(vendor_id);
 CREATE INDEX idx_trust_overall ON trust_scores(overall_score);
+CREATE INDEX idx_trust_flagged ON trust_scores(flagged);
 ```
 
 **Disputes Table:**
@@ -819,6 +1178,7 @@ CREATE TABLE disputes (
   resolution_type VARCHAR(30),
   resolution_reasoning TEXT,
   refund_amount DECIMAL(10, 2),
+  evidence_deadline TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   resolved_at TIMESTAMP,
   FOREIGN KEY (transaction_id) REFERENCES transactions(id),
@@ -828,6 +1188,7 @@ CREATE TABLE disputes (
 
 CREATE INDEX idx_disputes_transaction ON disputes(transaction_id);
 CREATE INDEX idx_disputes_status ON disputes(status);
+CREATE INDEX idx_disputes_deadline ON disputes(evidence_deadline);
 ```
 
 **Evidence Table:**
@@ -844,6 +1205,7 @@ CREATE TABLE evidence (
 );
 
 CREATE INDEX idx_evidence_dispute ON evidence(dispute_id);
+CREATE INDEX idx_evidence_type ON evidence(evidence_type);
 ```
 
 **Messages Table:**
@@ -858,6 +1220,7 @@ CREATE TABLE messages (
   images TEXT, -- JSON array
   original_language VARCHAR(10) NOT NULL,
   translated_versions TEXT, -- JSON object
+  delivery_status VARCHAR(20) DEFAULT 'sent' CHECK (delivery_status IN ('sent', 'delivered', 'read')),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   read_at TIMESTAMP,
   FOREIGN KEY (sender_id) REFERENCES users(id),
@@ -869,6 +1232,7 @@ CREATE INDEX idx_messages_thread ON messages(thread_id);
 CREATE INDEX idx_messages_sender ON messages(sender_id);
 CREATE INDEX idx_messages_recipient ON messages(recipient_id);
 CREATE INDEX idx_messages_created ON messages(created_at);
+CREATE INDEX idx_messages_status ON messages(delivery_status);
 ```
 
 **ENAM Prices Cache Table:**
@@ -881,6 +1245,8 @@ CREATE TABLE enam_prices (
   modal_price DECIMAL(10, 2) NOT NULL,
   min_price DECIMAL(10, 2) NOT NULL,
   max_price DECIMAL(10, 2) NOT NULL,
+  source VARCHAR(20) DEFAULT 'enam_api' CHECK (source IN ('enam_api', 'cached')),
+  freshness VARCHAR(10) DEFAULT 'fresh' CHECK (freshness IN ('fresh', 'stale')),
   fetched_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   expires_at TIMESTAMP NOT NULL
 );
@@ -888,38 +1254,187 @@ CREATE TABLE enam_prices (
 CREATE INDEX idx_enam_crop ON enam_prices(crop_type);
 CREATE INDEX idx_enam_location ON enam_prices(mandi_location);
 CREATE INDEX idx_enam_expires ON enam_prices(expires_at);
+CREATE INDEX idx_enam_source ON enam_prices(source);
+```
+
+**Voice Interaction Logs Table:**
+```sql
+CREATE TABLE voice_logs (
+  id VARCHAR(36) PRIMARY KEY,
+  user_id VARCHAR(36) NOT NULL,
+  raw_audio_path VARCHAR(500),
+  transcribed_text TEXT,
+  detected_language VARCHAR(10),
+  extracted_intent VARCHAR(50),
+  intent_parameters TEXT, -- JSON
+  confidence_score DECIMAL(4, 3),
+  api_calls_made TEXT, -- JSON array
+  success BOOLEAN DEFAULT FALSE,
+  error_message TEXT,
+  response_time_ms INTEGER,
+  execution_time_ms INTEGER,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE INDEX idx_voice_user ON voice_logs(user_id);
+CREATE INDEX idx_voice_intent ON voice_logs(extracted_intent);
+CREATE INDEX idx_voice_created ON voice_logs(created_at);
+CREATE INDEX idx_voice_success ON voice_logs(success);
+```
+
+**Guide Content Table:**
+```sql
+CREATE TABLE guide_content (
+  id VARCHAR(36) PRIMARY KEY,
+  section_id VARCHAR(100) NOT NULL,
+  title VARCHAR(200) NOT NULL,
+  content TEXT NOT NULL,
+  language VARCHAR(10) NOT NULL,
+  order_index INTEGER DEFAULT 0,
+  parent_section VARCHAR(100),
+  section_type VARCHAR(20) DEFAULT 'content' CHECK (section_type IN ('getting_started', 'features', 'troubleshooting', 'content')),
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_guide_section ON guide_content(section_id);
+CREATE INDEX idx_guide_language ON guide_content(language);
+CREATE INDEX idx_guide_parent ON guide_content(parent_section);
+CREATE INDEX idx_guide_order ON guide_content(order_index);
+CREATE INDEX idx_guide_type ON guide_content(section_type);
+```
+
+**Translation Cache Table:**
+```sql
+CREATE TABLE translation_cache (
+  id VARCHAR(36) PRIMARY KEY,
+  source_text_hash VARCHAR(64) NOT NULL, -- SHA-256 hash of source text
+  source_language VARCHAR(10) NOT NULL,
+  target_language VARCHAR(10) NOT NULL,
+  translated_text TEXT NOT NULL,
+  translation_service VARCHAR(50) NOT NULL, -- 'google', 'sarvam'
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  expires_at TIMESTAMP NOT NULL
+);
+
+CREATE UNIQUE INDEX idx_translation_unique ON translation_cache(source_text_hash, source_language, target_language);
+CREATE INDEX idx_translation_expires ON translation_cache(expires_at);
+CREATE INDEX idx_translation_service ON translation_cache(translation_service);
+```
+
+**Analytics Cache Table:**
+```sql
+CREATE TABLE analytics_cache (
+  id VARCHAR(36) PRIMARY KEY,
+  user_id VARCHAR(36) NOT NULL,
+  metric_type VARCHAR(50) NOT NULL, -- 'sales_summary', 'price_trends', 'buyer_demographics'
+  time_period VARCHAR(20) NOT NULL, -- 'daily', 'weekly', 'monthly'
+  data TEXT NOT NULL, -- JSON
+  calculated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  expires_at TIMESTAMP NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE INDEX idx_analytics_user ON analytics_cache(user_id);
+CREATE INDEX idx_analytics_type ON analytics_cache(metric_type);
+CREATE INDEX idx_analytics_expires ON analytics_cache(expires_at);
 ```
 
 ### Data Validation Rules
 
 **User Data:**
 - Phone numbers must match Indian format: +91XXXXXXXXXX
-- Language preference must be one of: 'en', 'hi', 'mr', 'ta', 'te', 'kn', 'gu', 'bn'
+- Language preference must be one of: 'en', 'hi', 'mr', 'ta', 'te', 'kn', 'pa' (minimum 6 supported languages)
 - Role must be either 'vendor' or 'buyer'
+- Name must be non-empty string when provided
+- Location coordinates must be valid latitude/longitude pairs
 
 **Listing Data:**
-- Quantity must be positive
-- Base price must be positive
+- Quantity must be positive decimal
+- Base price must be positive decimal
 - Quality tier must be 'premium', 'standard', or 'basic'
 - Quality multiplier: premium=1.2, standard=1.0, basic=0.85
-- Demand adjuster must be between 0.8 and 1.3
+- Demand adjuster must be between 0.8 and 1.3 (inclusive)
 - Final price = base_price × quality_multiplier × demand_adjuster
+- Images must be valid local paths in /images/crops/ directory
+- Crop type must match supported crops in assets-config.json
+- All required fields (crop type, quantity, unit, base price, quality tier) must be present
 
 **Negotiation Data:**
-- Expiration must be 24 hours from creation
+- Expiration must be exactly 24 hours from creation
 - Offers must be positive amounts
-- Status transitions: active → (accepted | rejected | expired)
+- Status transitions: active → (accepted | rejected | expired | withdrawn)
+- Only buyer and vendor can participate in negotiation
+- Maximum 10 offers per negotiation session
 
 **Rating Data:**
-- All ratings must be integers between 1 and 5
+- All ratings must be integers between 1 and 5 (inclusive)
 - Ratings can only be submitted after transaction status is 'delivered'
+- One rating per transaction per buyer
+- Delivery and quality ratings are mandatory
 
 **Trust Score Data:**
 - All scores must be between 0.0 and 5.0
 - Overall score = 0.4×delivery + 0.3×quality + 0.2×response + 0.1×fair_pricing
+- Response time calculated from message timestamps
+- Fair pricing score based on market price comparison
 - Badges awarded based on thresholds:
   - "Trusted Vendor": overall_score ≥ 4.5 AND transaction_count ≥ 20
   - "Verified Seller": overall_score ≥ 4.0 AND transaction_count ≥ 50
+- Accounts flagged when overall_score < 3.0
+
+**Voice Interaction Data:**
+- Intent must be one of: 'price_query', 'create_listing', 'make_offer', 'search_listings', 'general_help'
+- Confidence score must be between 0.0 and 1.0
+- Language must be supported language code
+- Audio files must be in supported formats (wav, mp3, m4a)
+- Transcribed text must be non-empty for successful interactions
+
+**Message Data:**
+- Text content or images must be present (not both empty)
+- Original language must be valid language code
+- Thread ID must be consistent for conversation
+- Rate limiting: max 10 messages per hour for new users (< 7 days old)
+- Image attachments must be valid image formats
+- Delivery status must be valid: 'sent', 'delivered', 'read'
+
+**Guide Content Data:**
+- Section ID must be unique per language
+- Content must be non-empty
+- Language must be supported language code
+- Order index must be non-negative integer
+- Parent section must exist if specified
+- Section type must be 'getting_started', 'features', or 'troubleshooting'
+
+**Translation Cache Data:**
+- Source text hash must be SHA-256 format
+- Source and target languages must be different
+- Translation service must be 'google' or 'sarvam'
+- Expiration must be future timestamp
+- Translated text must be non-empty
+
+**Image Management Data:**
+- All crop images must be stored locally in frontend/public/images/crops/
+- Major crops must have images: wheat, rice, maize, cotton, groundnut, sugarcane, soybean, onion, potato, tomato
+- Image paths in listings must reference local storage, not external URLs
+- Missing images must fallback to generic placeholder
+- Seed data must reference correct local image paths
+
+**Transaction Management Data:**
+- Status must be one of: 'pending', 'confirmed', 'in_transit', 'delivered', 'disputed'
+- Agreed price must be positive
+- Quantity must match negotiated amount
+- Status transitions must follow logical flow: pending → confirmed → in_transit → delivered
+- Inventory must be updated on transaction completion
+
+**Analytics Data:**
+- Metric types must be valid: 'sales_summary', 'price_trends', 'buyer_demographics'
+- Time periods must be valid: 'daily', 'weekly', 'monthly'
+- Data must be valid JSON format
+- Cache expiration must be future timestamp
+- User must exist in users table
 
 
 ## Correctness Properties
@@ -944,7 +1459,7 @@ A property is a characteristic or behavior that should hold true across all vali
 *For any* new user completing OTP verification, the system should create a user profile with the selected role (vendor or buyer).
 **Validates: Requirements 1.4**
 
-**Property 5: Language Preference Persistence**
+**Property 5: Language Preference Round-Trip**
 *For any* user, setting a language preference and then retrieving the user profile should return the same language preference (round-trip property).
 **Validates: Requirements 1.5**
 
@@ -954,11 +1469,11 @@ A property is a characteristic or behavior that should hold true across all vali
 
 ### Voice Interface Properties
 
-**Property 7: Voice Query Language Consistency**
-*For any* voice query in a supported language, the response audio should be in the same language as the input query.
-**Validates: Requirements 2.4**
+**Property 7: Voice Transcription via SARVAM**
+*For any* voice query in a supported language, the system should successfully transcribe the audio to text using SARVAM STT API.
+**Validates: Requirements 2.1**
 
-**Property 8: Query Parsing Extraction**
+**Property 8: Query Parsing and Extraction**
 *For any* valid voice query containing a crop name and location, the system should successfully extract both the crop name and location.
 **Validates: Requirements 2.2**
 
@@ -966,458 +1481,687 @@ A property is a characteristic or behavior that should hold true across all vali
 *For any* valid crop and location combination, the system should return at least one price (from database or eNAM).
 **Validates: Requirements 2.3**
 
-**Property 10: Malformed Query Clarification**
+**Property 10: Voice Query Language Consistency**
+*For any* voice query in a supported language, the response audio should be in the same language as the input query.
+**Validates: Requirements 2.4**
+
+**Property 11: Text-to-Speech Response Generation**
+*For any* generated response text, the system should convert it to speech and return audio to the user.
+**Validates: Requirements 2.5**
+
+**Property 12: Minimum Language Support**
+*For any* of the minimum required languages (Hindi, Marathi, Tamil, Telugu, Kannada, Punjabi), the system should support voice queries and responses.
+**Validates: Requirements 2.6**
+
+**Property 13: Malformed Query Clarification**
 *For any* voice query that cannot be parsed, the system should request clarification in the user's language.
 **Validates: Requirements 2.7**
 
 ### Listing Management Properties
 
-**Property 11: Required Fields Validation**
+**Property 14: Required Fields Validation**
 *For any* listing creation attempt, if any required field (crop type, quantity, unit, base price, quality tier) is missing, the system should reject the listing.
 **Validates: Requirements 3.1**
 
-**Property 12: Image Association Round-Trip**
+**Property 15: Image Association Round-Trip**
 *For any* listing with an uploaded image, retrieving the listing should return the same image URL (round-trip property).
 **Validates: Requirements 3.2**
 
-**Property 13: Quality Tier Validation**
+**Property 16: AI Quality Tier Suggestion**
+*For any* uploaded product photo with available quality analysis, the system should suggest a quality tier based on image analysis.
+**Validates: Requirements 3.3**
+
+**Property 17: Quality Tier Validation**
 *For any* listing, the quality tier must be one of: 'premium', 'standard', or 'basic'.
 **Validates: Requirements 3.4**
 
-**Property 14: Automatic Price Calculation**
+**Property 18: Automatic Price Calculation**
 *For any* listing creation, the final price should equal base_price × quality_multiplier × demand_adjuster.
 **Validates: Requirements 3.5**
 
-**Property 15: Listing Update Round-Trip**
+**Property 19: Listing Update Round-Trip**
 *For any* listing update, immediately retrieving the listing should reflect all updated fields (round-trip property).
 **Validates: Requirements 3.6**
 
-**Property 16: Unavailable Listings Exclusion from Search**
+**Property 20: Unavailable Listings Exclusion from Search**
 *For any* search query, listings marked as 'sold' or 'unavailable' should not appear in the search results.
 **Validates: Requirements 3.7**
 
-**Property 17: Active Listings on Vendor Profile**
+**Property 21: Active Listings on Vendor Profile**
 *For any* vendor profile, only listings with status 'active' should be displayed.
 **Validates: Requirements 3.8**
 
 ### Pricing Calculator Properties
 
-**Property 18: Pricing Formula Correctness**
+**Property 22: Pricing Formula Correctness**
 *For any* listing with base price B, quality multiplier Q, and demand adjuster D, the final price should equal B × Q × D.
 **Validates: Requirements 4.1**
 
-**Property 19: Demand Adjuster Bounds**
+**Property 23: Premium Quality Multiplier**
+*For any* listing with premium quality tier, the quality multiplier should be exactly 1.2.
+**Validates: Requirements 4.2**
+
+**Property 24: Standard Quality Multiplier**
+*For any* listing with standard quality tier, the quality multiplier should be exactly 1.0.
+**Validates: Requirements 4.3**
+
+**Property 25: Basic Quality Multiplier**
+*For any* listing with basic quality tier, the quality multiplier should be exactly 0.85.
+**Validates: Requirements 4.4**
+
+**Property 26: Demand Adjuster Calculation**
+*For any* crop and location, the demand adjuster should be calculated based on recent transaction volume and seasonal patterns.
+**Validates: Requirements 4.5**
+
+**Property 27: Demand Adjuster Bounds**
 *For any* listing, the demand adjuster must be between 0.8 and 1.3 (inclusive).
 **Validates: Requirements 4.6**
 
-**Property 20: Price Breakdown Completeness**
+**Property 28: Price Breakdown Completeness**
 *For any* listing, the price breakdown should include base price, quality multiplier, demand adjuster, final price, and explanation text.
 **Validates: Requirements 4.7**
 
-**Property 21: Price Recalculation on Component Change**
+**Property 29: Price Recalculation on Component Change**
 *For any* listing, if any pricing component (base price, quality tier, or demand factors) changes, the final price should be recalculated immediately.
 **Validates: Requirements 4.8**
 
-
 ### Negotiation Engine Properties
 
-**Property 22: Negotiation Session Creation with 24-Hour Expiration**
+**Property 30: Negotiation Session Creation with 24-Hour Expiration**
 *For any* initial offer on a listing, the system should create a negotiation session that expires exactly 24 hours from creation.
 **Validates: Requirements 5.1**
 
-**Property 23: Counter-Offer Suggestion for Low Offers**
+**Property 31: Counter-Offer Suggestion for Low Offers**
 *For any* buyer offer below the fair price range, the system should generate a counter-offer suggestion with reasoning.
-**Validates: Requirements 5.2, 5.3**
+**Validates: Requirements 5.2**
 
-**Property 24: Multiple Negotiation Rounds**
+**Property 32: Counter-Offer Reasoning Generation**
+*For any* generated counter-offer, the system should provide reasoning based on quality tier, recent transactions, and regional pricing.
+**Validates: Requirements 5.3**
+
+**Property 33: Vendor Counter-Offer Options**
+*For any* counter-offer suggestion received by a vendor, the system should allow the vendor to accept, reject, or modify the suggestion.
+**Validates: Requirements 5.4**
+
+**Property 34: Multiple Negotiation Rounds**
 *For any* negotiation session, the system should support multiple back-and-forth offers within the 24-hour window.
 **Validates: Requirements 5.5**
 
-**Property 25: Transaction Creation on Acceptance**
+**Property 35: Transaction Creation on Acceptance**
 *For any* negotiation where either party accepts an offer, the system should create a transaction record with the agreed price.
 **Validates: Requirements 5.6**
 
-**Property 26: Negotiation Expiration After 24 Hours**
+**Property 36: Negotiation Expiration After 24 Hours**
 *For any* negotiation session, if 24 hours elapse without acceptance, the status should be updated to 'expired'.
 **Validates: Requirements 5.7**
 
-**Property 27: Regional Pricing Consideration**
+**Property 37: Regional Pricing Consideration**
 *For any* two identical listings in different regions, the counter-offer suggestions should differ based on regional pricing data.
 **Validates: Requirements 5.8**
 
-**Property 28: Listing Status Update on Finalization**
+**Property 38: Listing Status Update on Finalization**
 *For any* finalized negotiation, the associated listing status should be updated to reflect reduced availability or 'sold' status.
 **Validates: Requirements 5.9**
 
 ### Discovery Service Properties
 
-**Property 29: Nearby Vendor Discovery Within Radius**
+**Property 39: Nearby Vendor Discovery Within Radius**
 *For any* vendor viewing their listing, all vendors shown on the map should be within 50km and selling the same crop type.
 **Validates: Requirements 6.1**
 
-**Property 30: Vendor Messaging Delivery**
+**Property 40: Vendor Contact Information Display**
+*For any* vendor selected on the map, the system should display that vendor's contact information and listing details.
+**Validates: Requirements 6.2**
+
+**Property 41: Vendor Messaging Delivery**
 *For any* message sent between vendors, the message should be delivered and stored in the message thread.
 **Validates: Requirements 6.3**
 
-**Property 31: Micro-Aggregation Opportunity Identification**
+**Property 42: Micro-Aggregation Opportunity Identification**
 *For any* set of vendors with similar listings (same crop, similar quality, nearby location), the system should identify them as aggregation opportunities.
 **Validates: Requirements 6.4**
 
-**Property 32: Bulk Order Aggregation Suggestion**
+**Property 43: Bulk Order Aggregation Suggestion**
 *For any* bulk order that exceeds a single vendor's quantity, the system should suggest combining inventory from nearby vendors.
 **Validates: Requirements 6.5**
 
-**Property 33: Weighted Average Pricing for Aggregation**
+**Property 44: Weighted Average Pricing for Aggregation**
 *For any* aggregated listing, the combined price should be the weighted average of participating vendors' prices based on their quantity contributions.
 **Validates: Requirements 6.6**
 
-**Property 34: Combined Listing Creation on Agreement**
+**Property 45: Combined Listing Creation on Agreement**
 *For any* set of vendors agreeing to aggregate, the system should create a combined listing with all participating vendors listed.
 **Validates: Requirements 6.7**
 
-**Property 35: Proportional Payment Distribution**
+**Property 46: Proportional Payment Distribution**
 *For any* aggregated order payment, each vendor should receive payment proportional to their quantity contribution.
 **Validates: Requirements 6.8**
 
 ### Trust System Properties
 
-**Property 36: Trust Score Formula Correctness**
+**Property 47: Trust Score Formula Correctness**
 *For any* vendor with ratings, the overall trust score should equal (0.4 × delivery_score) + (0.3 × quality_score) + (0.2 × response_score) + (0.1 × fair_pricing_score).
 **Validates: Requirements 7.1**
 
-**Property 37: Response Time Calculation from Messages**
+**Property 48: Delivery Rating Prompt on Transaction Completion**
+*For any* completed transaction, the system should prompt the buyer to rate delivery timeliness (1-5 stars).
+**Validates: Requirements 7.2**
+
+**Property 49: Quality Rating Prompt on Transaction Completion**
+*For any* completed transaction, the system should prompt the buyer to rate product quality match (1-5 stars).
+**Validates: Requirements 7.3**
+
+**Property 50: Response Time Calculation from Messages**
 *For any* vendor, the response score should be calculated automatically from message timestamp differences.
 **Validates: Requirements 7.4**
 
-**Property 38: Fair Pricing Score Calculation**
+**Property 51: Fair Pricing Score Calculation**
 *For any* transaction, the fair pricing score should be based on comparing the final negotiated price to the market average for that crop and quality.
 **Validates: Requirements 7.5**
 
-**Property 39: Trusted Vendor Badge Award**
+**Property 52: Trusted Vendor Badge Award**
 *For any* vendor with overall trust score ≥ 4.5 and transaction count ≥ 20, the system should award a "Trusted Vendor" badge.
 **Validates: Requirements 7.6**
 
-**Property 40: Verified Seller Badge Award**
+**Property 53: Verified Seller Badge Award**
 *For any* vendor with overall trust score ≥ 4.0 and transaction count ≥ 50, the system should award a "Verified Seller" badge.
 **Validates: Requirements 7.7**
 
-**Property 41: Low Trust Score Flagging**
+**Property 54: Trust Score and Badge Display**
+*For any* vendor profile or listing, the trust score and badges should be displayed prominently.
+**Validates: Requirements 7.8**
+
+**Property 55: Low Trust Score Flagging**
 *For any* vendor whose trust score falls below 3.0, the system should flag the account for review.
 **Validates: Requirements 7.9**
 
 ### Dispute Resolution Properties
 
-**Property 42: Dispute Case Creation**
+**Property 56: Dispute Case Creation**
 *For any* buyer or vendor raising a dispute on a transaction, the system should create a dispute case with all transaction details.
 **Validates: Requirements 8.1**
 
-**Property 43: Evidence Submission Notification**
+**Property 57: Evidence Submission Notification**
 *For any* newly created dispute, both parties should be notified and given 48 hours to submit evidence.
 **Validates: Requirements 8.2**
 
-**Property 44: Resolution Recommendation Generation**
-*For any* dispute with evidence from both parties, the system should generate a resolution recommendation with detailed reasoning.
+**Property 58: Dispute Analysis with Evidence**
+*For any* dispute with evidence from both parties, the system should analyze transaction history, messages, ratings, and submitted evidence.
+**Validates: Requirements 8.3**
+
+**Property 59: Resolution Recommendation Generation**
+*For any* dispute with completed analysis, the system should generate a resolution recommendation with detailed reasoning.
 **Validates: Requirements 8.4**
 
-**Property 45: Resolution Execution on Acceptance**
+**Property 60: Comprehensive Factor Analysis**
+*For any* dispute analysis, the system should consider delivery proof, quality evidence, communication logs, and past behavior.
+**Validates: Requirements 8.5**
+
+**Property 61: Resolution Options Availability**
+*For any* dispute resolution recommendation, both parties should be able to accept or escalate to human review.
+**Validates: Requirements 8.6**
+
+**Property 62: Resolution Execution on Acceptance**
 *For any* dispute resolution accepted by both parties, the system should execute the recommended action (refund, partial payment, etc.).
 **Validates: Requirements 8.7**
 
-**Property 46: Trust Score Update on Dispute Resolution**
+**Property 63: Trust Score Update on Dispute Resolution**
 *For any* resolved dispute, the trust scores of involved parties should be updated based on the outcome and their behavior.
 **Validates: Requirements 8.8**
 
 ### Integration Layer Properties
 
-**Property 47: eNAM Price Fetching**
+**Property 64: eNAM Price Fetching**
 *For any* supported crop type, the system should be able to fetch or retrieve cached eNAM prices.
 **Validates: Requirements 9.1**
 
-**Property 48: Price Source Indication**
+**Property 65: Price Source Indication**
 *For any* displayed price, the system should indicate whether the source is 'enam_api', 'cached', or 'local_transactions'.
 **Validates: Requirements 9.2**
 
-**Property 49: Cached Data Fallback on API Failure**
+**Property 66: Cached Data Fallback on API Failure**
 *For any* eNAM API request that fails, the system should return cached data with a timestamp indicating when it was fetched.
 **Validates: Requirements 9.3**
 
-**Property 50: ODOP Badge Display**
+**Property 67: ODOP Badge Display**
 *For any* listing of an ODOP-registered product, the system should display an ODOP badge on the listing.
 **Validates: Requirements 9.4**
 
-**Property 51: GeM Assistance Language Consistency**
+**Property 68: GeM Documentation Assistance**
+*For any* vendor requesting GeM assistance, the system should provide AI-assisted documentation support.
+**Validates: Requirements 9.5**
+
+**Property 69: GeM Assistance Language Consistency**
 *For any* vendor requesting GeM assistance, the guidance should be provided in the vendor's preferred language.
 **Validates: Requirements 9.6**
 
-**Property 52: Opt-In eNAM Data Sync**
+**Property 70: Opt-In eNAM Data Sync**
 *For any* vendor who opts in to data sharing, their transaction data should be synced with eNAM.
 **Validates: Requirements 9.7**
 
-**Property 53: eNAM Price Metadata Display**
+**Property 71: eNAM Price Metadata Display**
 *For any* displayed eNAM price, the system should show the mandi location and last updated timestamp.
 **Validates: Requirements 9.8**
 
-
 ### Advisory Service Properties
 
-**Property 54: Market Change Notification in Preferred Language**
+**Property 72: Market Change Notification in Preferred Language**
 *For any* significant market condition change, affected vendors should receive notifications in their preferred language.
 **Validates: Requirements 10.1**
 
-**Property 55: High Demand Notification**
+**Property 73: Market Data Analysis for Insights**
+*For any* market insight generation, the system should analyze eNAM data, peer transactions, and seasonal patterns.
+**Validates: Requirements 10.2**
+
+**Property 74: High Demand Notification**
 *For any* vendor whose crop experiences high demand, the system should send a notification with current price trends.
 **Validates: Requirements 10.3**
 
-**Property 56: Price Drop Alert**
+**Property 75: Price Drop Alert**
 *For any* crop price that drops below historical average, vendors selling that crop should receive an alert with context.
 **Validates: Requirements 10.4**
 
-**Property 57: Weekly Summary Language Consistency**
+**Property 76: Weekly Summary Language Consistency**
 *For any* vendor, weekly market summaries should be delivered in the vendor's preferred language.
 **Validates: Requirements 10.5**
 
-**Property 58: Regional Variation in Recommendations**
+**Property 77: Advisory Content Display Format**
+*For any* vendor viewing advisory content, the information should be displayed in simple language with visual charts.
+**Validates: Requirements 10.6**
+
+**Property 78: Regional Variation in Recommendations**
 *For any* two vendors in different regions selling the same crop, the advisory recommendations should differ based on regional market data.
 **Validates: Requirements 10.7**
 
-**Property 59: Seasonal Guidance Timing**
+**Property 79: Seasonal Guidance Timing**
 *For any* crop with defined planting or harvest seasons, vendors should receive proactive guidance as those periods approach.
 **Validates: Requirements 10.8**
 
 ### Mobile and Responsive Interface Properties
 
-**Property 60: Poor Connectivity Cached Content**
+**Property 80: Responsive Screen Size Support**
+*For any* screen size from 320px to 1920px width, all interfaces should render responsively.
+**Validates: Requirements 11.1**
+
+**Property 81: Mobile-Optimized Layout Priority**
+*For any* user accessing the platform on mobile, the system should prioritize mobile-optimized layouts and touch interactions.
+**Validates: Requirements 11.2**
+
+**Property 82: Data Usage Optimization**
+*For any* page load, the system should lazy-load images and use compressed formats to minimize data usage.
+**Validates: Requirements 11.3**
+
+**Property 83: Poor Connectivity Cached Content**
 *For any* user with poor network connectivity, the system should display cached content rather than failing to load.
 **Validates: Requirements 11.4**
 
-**Property 61: Offline Listing Access**
+**Property 84: Offline Listing Access**
 *For any* saved listing, users should be able to view it even when offline.
 **Validates: Requirements 11.5**
 
-**Property 62: UI Language Preference Application**
+**Property 85: UI Language Preference Application**
 *For any* user, when the UI loads, all content should be displayed in the user's preferred language.
 **Validates: Requirements 11.6**
 
+**Property 86: Touch Target Size Compliance**
+*For any* interactive element, the touch target should be at least 44px in size.
+**Validates: Requirements 11.7**
+
+**Property 87: Mobile Form Optimization**
+*For any* form displayed on mobile, the system should use appropriate input types and validation for mobile keyboards.
+**Validates: Requirements 11.8**
+
 ### Search and Discovery Properties
 
-**Property 63: Search Criteria Matching**
+**Property 88: Search Criteria Matching**
 *For any* search with specified criteria (crop type, location, quality tier, price range), all returned listings should match ALL specified criteria.
 **Validates: Requirements 12.1**
 
-**Property 64: Multilingual Search Equivalence**
+**Property 89: Multilingual Search Equivalence**
 *For any* search query, searching in different supported languages for the same crop should return equivalent results.
 **Validates: Requirements 12.2**
 
-**Property 65: Search Result Sorting**
+**Property 90: Search Result Sorting**
 *For any* search with a specified sort preference (price, distance, trust_score, relevance), results should be correctly ordered by that criterion.
 **Validates: Requirements 12.3**
 
-**Property 66: Search Result Completeness**
+**Property 91: Search Result Completeness**
 *For any* search result listing, it should include crop name, vendor name, price, quality tier, distance, and trust score.
 **Validates: Requirements 12.4**
 
-**Property 67: Real-Time Filter Updates**
+**Property 92: Real-Time Filter Updates**
 *For any* applied filter change, the search results should update to reflect the new filter without requiring a page reload.
 **Validates: Requirements 12.5**
 
-**Property 68: Recent Search Persistence**
+**Property 93: Recent Search Persistence**
 *For any* search performed by a user, it should be saved and retrievable from recent searches.
 **Validates: Requirements 12.6**
 
-**Property 69: Alternative Suggestions on No Results**
+**Property 94: Alternative Suggestions on No Results**
 *For any* search query that returns no results, the system should provide alternative suggestions or similar crops.
 **Validates: Requirements 12.7**
 
-**Property 70: Voice Search Integration**
+**Property 95: Voice Search Integration**
 *For any* voice-based search query, the system should produce the same search results as an equivalent text-based query.
 **Validates: Requirements 12.8**
 
 ### Messaging Properties
 
-**Property 71: Message Thread Creation on Contact**
+**Property 96: Message Thread Creation on Contact**
 *For any* buyer contacting a vendor about a listing, the system should create a message thread associated with that listing.
 **Validates: Requirements 13.1**
 
-**Property 72: Message Translation Between Languages**
+**Property 97: Message Translation Between Languages**
 *For any* message sent in one language to a recipient with a different language preference, the message should be automatically translated.
 **Validates: Requirements 13.2**
 
-**Property 73: Real-Time Message Delivery**
+**Property 98: Real-Time Message Delivery**
 *For any* message sent when both parties are online, the message should be delivered in real-time (within seconds).
 **Validates: Requirements 13.3**
 
-**Property 74: Offline Message Queuing**
+**Property 99: Offline Message Queuing**
 *For any* message sent to an offline user, the message should be queued and delivered when the user comes online, with a push notification sent.
 **Validates: Requirements 13.4**
 
-**Property 75: Message Persistence with Timestamp**
+**Property 100: Message Read Receipts and Typing Indicators**
+*For any* message thread, the system should display read receipts and typing indicators.
+**Validates: Requirements 13.5**
+
+**Property 101: Message Persistence with Timestamp**
 *For any* sent message, it should be stored in the database with a timestamp and sender identification.
 **Validates: Requirements 13.6**
 
-**Property 76: Image Sharing in Messages**
+**Property 102: Image Sharing in Messages**
 *For any* image shared in a message thread, the image should be stored and retrievable by both parties.
 **Validates: Requirements 13.7**
 
-**Property 77: Response Time Tracking**
+**Property 103: Response Time Tracking**
 *For any* vendor, the response time score should be calculated from the time differences between received messages and sent replies.
 **Validates: Requirements 13.8**
 
-**Property 78: New User Message Rate Limiting**
+**Property 104: New User Message Rate Limiting**
 *For any* new user (account age < 7 days), the system should limit them to 10 messages per hour.
 **Validates: Requirements 13.9**
 
 ### Transaction Management Properties
 
-**Property 79: Transaction Creation on Negotiation Finalization**
+**Property 105: Transaction Creation on Negotiation Finalization**
 *For any* finalized negotiation, the system should create a transaction record with the agreed price, quantity, and delivery terms.
 **Validates: Requirements 14.1**
 
-**Property 80: Transaction Status Assignment**
+**Property 106: Transaction Status Assignment**
 *For any* created transaction, it should have a valid status from: 'pending', 'confirmed', 'in_transit', 'delivered', or 'disputed'.
 **Validates: Requirements 14.2**
 
-**Property 81: Vendor Confirmation Notification and Status Update**
+**Property 107: Vendor Confirmation Notification and Status Update**
 *For any* vendor confirming a transaction, the buyer should be notified and the transaction status should update to 'confirmed'.
 **Validates: Requirements 14.3**
 
-**Property 82: Shipment Status Update and Notification**
+**Property 108: Shipment Status Update and Notification**
 *For any* vendor marking goods as shipped, the transaction status should update to 'in_transit' and the buyer should be notified.
 **Validates: Requirements 14.4**
 
-**Property 83: Delivery Confirmation Triggers Rating**
+**Property 109: Delivery Confirmation Triggers Rating**
 *For any* buyer confirming receipt, the transaction status should update to 'delivered' and rating prompts should be triggered.
 **Validates: Requirements 14.5**
 
-**Property 84: Transaction History Filtering**
+**Property 110: Transaction History Filtering**
 *For any* user viewing transaction history, filtering by status or date should return only transactions matching the filter criteria.
 **Validates: Requirements 14.6**
 
-**Property 85: Inventory Update on Transaction Completion**
+**Property 111: Inventory Update on Transaction Completion**
 *For any* completed transaction, the vendor's listing quantity should be reduced by the transaction quantity.
 **Validates: Requirements 14.7**
 
-**Property 86: Transaction Summary Generation**
+**Property 112: Transaction Summary Generation**
 *For any* transaction, the system should be able to generate a summary including all key details for accounting purposes.
 **Validates: Requirements 14.8**
 
+**Property 113: Payment Processing and Escrow**
+*For any* transaction with payment gateway integration, the system should process payments and hold funds in escrow until delivery confirmation.
+**Validates: Requirements 14.9**
+
 ### Analytics Properties
 
-**Property 87: Best-Selling Crop Identification**
+**Property 114: Vendor Dashboard Metrics Display**
+*For any* vendor, the dashboard should display total sales, active listings, pending negotiations, and trust score.
+**Validates: Requirements 15.1**
+
+**Property 115: Sales Trends Visualization**
+*For any* vendor viewing analytics, the system should show sales trends over time with visual charts.
+**Validates: Requirements 15.2**
+
+**Property 116: Best-Selling Crop Identification**
 *For any* vendor with multiple crop types sold, the analytics should correctly identify the crop with the highest total sales value.
 **Validates: Requirements 15.3**
 
-**Property 88: Price Comparison to Regional Average**
+**Property 117: Price Comparison to Regional Average**
 *For any* vendor's listing, the pricing analytics should compare the vendor's price to the calculated regional average for that crop and quality.
 **Validates: Requirements 15.4**
 
-**Property 89: Negotiation Success Rate Calculation**
+**Property 118: Negotiation Success Rate Calculation**
 *For any* vendor, the negotiation success rate should equal (accepted negotiations / total negotiations) × 100.
 **Validates: Requirements 15.5**
 
-**Property 90: Buyer Demographics Calculation**
+**Property 119: Buyer Demographics Calculation**
 *For any* vendor, buyer demographics should be calculated from actual transaction data including location distribution and repeat customer rates.
 **Validates: Requirements 15.6**
 
-**Property 91: CSV Export Validity**
+**Property 120: Predictive Analytics Generation**
+*For any* vendor with sufficient data, the system should generate predictive insights for optimal pricing and timing.
+**Validates: Requirements 15.7**
+
+**Property 121: CSV Export Validity**
 *For any* vendor exporting transaction data, the generated CSV file should be valid and contain all transaction records with proper formatting.
 **Validates: Requirements 15.8**
 
 ### Unified Voice Assistant (Kisaan Bot) Properties
 
-**Property 92: Voice Input Capture**
+**Property 122: Voice Input Capture**
 *For any* user activating Kisaan Bot, the system should successfully capture audio from the device microphone.
 **Validates: Requirements 16.1**
 
-**Property 93: Audio Transcription via SARVAM**
+**Property 123: Audio Transcription via SARVAM**
 *For any* captured audio, the system should transcribe it to text using SARVAM STT API.
 **Validates: Requirements 16.2**
 
-**Property 94: Intent Extraction via OpenRouter**
+**Property 124: Intent Extraction via OpenRouter**
 *For any* transcribed text, the system should extract user intent and parameters using OpenRouter AI.
 **Validates: Requirements 16.3**
 
-**Property 95: Intent Support Completeness**
+**Property 125: Intent Support Completeness**
 *For any* supported intent (price_query, create_listing, make_offer, search_listings, general_help), the system should correctly identify and process it.
 **Validates: Requirements 16.4**
 
-**Property 96: User Confirmation Display**
+**Property 126: User Confirmation Display**
 *For any* extracted intent and parameters, the system should display them in business-friendly language for user confirmation.
 **Validates: Requirements 16.5**
 
-**Property 97: API Execution After Confirmation**
+**Property 127: API Execution After Confirmation**
 *For any* confirmed intent, the system should execute the appropriate API call with extracted parameters.
 **Validates: Requirements 16.6**
 
-**Property 98: Successful Redirection**
+**Property 128: Successful Redirection**
 *For any* successful API call, the system should redirect the user to the relevant page.
 **Validates: Requirements 16.7**
 
-**Property 99: Error Handling in User Language**
+**Property 129: Error Handling in User Language**
 *For any* failed API call, the system should explain the error in the user's language.
 **Validates: Requirements 16.8**
 
+**Property 130: Microphone Permission Error Handling**
+*For any* microphone permission error, the system should handle it gracefully with clear instructions.
+**Validates: Requirements 16.9**
+
+**Property 131: Voice Processing Logging**
+*For any* voice processing interaction, the system should provide detailed logging for debugging purposes.
+**Validates: Requirements 16.10**
+
 ### User Guide Properties
 
-**Property 100: Guide Page Routing**
+**Property 132: Guide Page Routing**
 *For any* user navigating to the Guide page, the system should display content without routing errors.
 **Validates: Requirements 17.1**
 
-**Property 101: Automatic Guide Translation**
+**Property 133: Automatic Guide Translation**
 *For any* user with a non-English language preference, guide content should be automatically translated.
 **Validates: Requirements 17.2**
 
-**Property 102: No Manual Translation Prompts**
+**Property 134: No Manual Translation Prompts**
 *For any* guide page, the system should NOT display "use google translate" messages.
 **Validates: Requirements 17.3**
 
-**Property 103: Guide Discoverability**
-*For any* page in the application, users should have access to guide links (home page CTA, footer link, or floating button).
-**Validates: Requirements 17.4, 17.5, 17.6**
+**Property 135: Guide Home Page Highlights**
+*For any* home page view, guide highlights and call-to-action should be displayed.
+**Validates: Requirements 17.4**
+
+**Property 136: Guide Footer Links**
+*For any* page in the application, a guide link should be present in the footer.
+**Validates: Requirements 17.5**
+
+**Property 137: Floating Guide Button**
+*For any* page in the application, a floating guide button should be accessible.
+**Validates: Requirements 17.6**
+
+**Property 138: Translation Caching**
+*For any* translated guide content, the translation should be cached for performance optimization.
+**Validates: Requirements 17.7**
+
+**Property 139: Guide Content Organization**
+*For any* guide content, it should be organized into clear sections: Getting Started, Features, Troubleshooting.
+**Validates: Requirements 17.8**
 
 ### Login Experience Properties
 
-**Property 104: Business Benefits Display**
+**Property 140: Business Benefits Display**
 *For any* user viewing the login page, at least 6 business benefits should be displayed.
 **Validates: Requirements 18.1**
 
-**Property 105: No Technical Jargon**
+**Property 141: Farmer Value Proposition Focus**
+*For any* content on the login page, it should focus on farmer value propositions, not technical implementation details.
+**Validates: Requirements 18.2**
+
+**Property 142: No Technical Jargon**
 *For any* text on the login page, technical terms (API names, model names) should NOT be displayed.
 **Validates: Requirements 18.3**
 
-**Property 106: Farmer-Friendly Language**
+**Property 143: Farmer-Friendly Language**
 *For any* feature description on the login page, language should be clear and farmer-friendly.
 **Validates: Requirements 18.4**
 
+**Property 144: Visual Icons for Benefits**
+*For any* business benefit displayed on the login page, it should include a visual icon.
+**Validates: Requirements 18.5**
+
+**Property 145: Specific Benefits Highlighting**
+*For any* login page view, the system should highlight benefits such as fair pricing, voice assistance, local language support, trust system, market intelligence, and easy negotiation.
+**Validates: Requirements 18.6**
+
+**Property 146: Engaging Visual Design**
+*For any* login page view, the system should use engaging visual design with good color contrast and spacing.
+**Validates: Requirements 18.7**
+
 ### Modern UI Properties
 
-**Property 107: Consistent Color Scheme**
+**Property 147: Consistent Color Scheme**
 *For any* page in the application, the color scheme should be consistent and vibrant.
 **Validates: Requirements 19.1**
 
-**Property 108: Smooth Transitions**
+**Property 148: Smooth Transitions**
 *For any* page navigation or state change, transitions should be smooth and animated.
 **Validates: Requirements 19.2**
 
-**Property 109: Interactive Feedback**
+**Property 149: Interactive Feedback**
 *For any* interactive element (button, card), hover effects should provide visual feedback.
 **Validates: Requirements 19.3**
 
-**Property 110: Loading State Indication**
+**Property 150: Loading State Indication**
 *For any* data fetching operation, loading animations should be displayed.
 **Validates: Requirements 19.4**
 
+**Property 151: Micro-Interaction Feedback**
+*For any* user action, micro-interactions should provide feedback to the user.
+**Validates: Requirements 19.5**
+
+**Property 152: Card-Based Design Consistency**
+*For any* card-based element, the design should be consistent with shadows and depth.
+**Validates: Requirements 19.6**
+
+**Property 153: Typography Hierarchy**
+*For any* text content, proper typography hierarchy should be used with readable fonts.
+**Validates: Requirements 19.7**
+
+**Property 154: Consistent Iconography**
+*For any* page in the application, iconography should be consistent across all pages.
+**Validates: Requirements 19.8**
+
+**Property 155: Mobile Animation Performance**
+*For any* animation or effect, it should work smoothly on mobile devices.
+**Validates: Requirements 19.9**
+
+**Property 156: Accessibility Compliance**
+*For any* UI element, good accessibility should be maintained (contrast ratios, focus indicators).
+**Validates: Requirements 19.10**
+
 ### Image Management Properties
 
-**Property 111: Local Image Storage**
+**Property 157: Local Image Storage**
 *For any* crop image, it should be stored locally in frontend/public/images/crops/.
-**Validates: Requirements 20.1, 20.2**
+**Validates: Requirements 20.1**
 
-**Property 112: Local Image Path Usage**
+**Property 158: Major Crop Image Availability**
+*For any* major crop (wheat, rice, maize, cotton, groundnut, sugarcane, soybean, onion, potato, tomato), images should be downloaded and stored locally.
+**Validates: Requirements 20.2**
+
+**Property 159: Local Image Path Usage**
 *For any* displayed listing, the image path should reference local storage, NOT external URLs.
 **Validates: Requirements 20.3**
 
-**Property 113: Image Fallback Handling**
+**Property 160: Image Fallback Handling**
 *For any* missing crop image, a generic placeholder should be displayed without breaking the UI.
+**Validates: Requirements 20.4**
+
+**Property 161: Image Loading Consistency**
+*For any* listing displayed on Home page, Browse Listings page, or Listing Detail page, images should load correctly.
+**Validates: Requirements 20.5**
+
+**Property 162: Seed Data Image Path Updates**
+*For any* seeded listing data, it should reference local image paths rather than external URLs.
+**Validates: Requirements 20.6**
+
+**Property 163: Graceful Image Error Handling**
+*For any* image loading error, the system should handle it gracefully without breaking the UI.
+**Validates: Requirements 20.7**
+
+### Functional Negotiations Management Properties
+
+**Property 164: Negotiation Detail Navigation**
+*For any* "View Details" click on a negotiation, the system should navigate to the negotiation detail page.
+**Validates: Requirements 21.1**
+
+**Property 165: Negotiation Withdrawal API Call**
+*For any* "Withdraw" click on a negotiation, the system should call the appropriate API to cancel the negotiation.
+**Validates: Requirements 21.2**
+
+**Property 166: Loading State Display During Data Fetching**
+*For any* negotiation data fetching operation, loading states should be displayed.
+**Validates: Requirements 21.3**
+
+**Property 167: API Error Handling with User-Friendly Messages**
+*For any* negotiation API error, the system should handle it gracefully with user-friendly error messages.
+**Validates: Requirements 21.4**
+
+**Property 168: Negotiations List Update After Withdrawal**
+*For any* withdrawal action, the negotiations list should be updated to reflect the change.
+**Validates: Requirements 21.5**
+
+**Property 169: Negotiation Detail Information Completeness**
+*For any* negotiation detail view, it should display listing info, offer history, time remaining, and status.
+**Validates: Requirements 21.6**
+
+**Property 170: Console Error Prevention**
+*For any* message channel operation, the system should prevent browser console errors related to message channel closures.
+**Validates: Requirements 21.7**reaking the UI.
 **Validates: Requirements 20.4**
 
 **Property 114: Consistent Image Display**
@@ -1541,7 +2285,7 @@ Property-based testing is the primary method for validating correctness properti
 
 **Example Property Test:**
 ```javascript
-// Feature: multilingual-mandi, Property 18: Pricing Formula Correctness
+// Feature: multilingual-mandi, Property 22: Pricing Formula Correctness
 test('pricing formula calculates correctly for all inputs', () => {
   fc.assert(
     fc.property(
@@ -1664,24 +2408,30 @@ Given hackathon constraints, we aim for:
 ### Testing Priorities for Hackathon
 
 **TIER 1 (Must Test):**
-1. Pricing formula correctness (Property 18, 19, 21)
-2. Trust score calculation (Property 36)
-3. Negotiation expiration (Property 26)
-4. Search criteria matching (Property 63)
+1. Pricing formula correctness (Properties 22, 27, 28)
+2. Trust score calculation (Property 47)
+3. Negotiation expiration (Property 36)
+4. Search criteria matching (Property 88)
 5. Authentication flow (Properties 1-6)
+6. Voice interface core functionality (Properties 7-13)
+7. OTP generation and validation (Properties 1-3)
 
 **TIER 2 (Should Test):**
-6. Round-trip properties for data persistence
-7. Message translation and delivery
-8. Dispute resolution logic
-9. Inventory updates on transactions
-10. Rate limiting
+8. Round-trip properties for data persistence (Properties 5, 6, 15, 19)
+9. Message translation and delivery (Properties 96-104)
+10. Dispute resolution logic (Properties 56-63)
+11. Inventory updates on transactions (Property 111)
+12. Rate limiting (Property 104)
+13. Image management (Properties 157-163)
+14. Kisaan Bot voice processing (Properties 122-131)
 
 **TIER 3 (Nice to Have):**
-11. Analytics calculations
-12. Advisory service notifications
-13. Vendor discovery algorithms
-14. UI component interactions
+15. Analytics calculations (Properties 114-121)
+16. Advisory service notifications (Properties 72-79)
+17. Vendor discovery algorithms (Properties 39-46)
+18. UI component interactions (Properties 147-156)
+19. Guide system functionality (Properties 132-139)
+20. Login experience validation (Properties 140-146)
 
 ### Continuous Integration
 

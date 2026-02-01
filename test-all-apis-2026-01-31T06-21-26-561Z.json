@@ -1,0 +1,67 @@
+{
+  "timestamp": "2026-01-31T06:21:26.290Z",
+  "backend": {
+    "total": 8,
+    "passed": 0,
+    "failed": 8,
+    "tests": [
+      {
+        "name": "Health Check",
+        "passed": false,
+        "error": "connect ECONNREFUSED 172.18.0.30:5000"
+      },
+      {
+        "name": "Auth - Send OTP",
+        "passed": false,
+        "error": "connect ECONNREFUSED 172.18.0.30:5000"
+      },
+      {
+        "name": "Listings - Search",
+        "passed": false,
+        "error": "connect ECONNREFUSED 172.18.0.30:5000"
+      },
+      {
+        "name": "Listings - Get All (via search)",
+        "passed": false,
+        "error": "connect ECONNREFUSED 172.18.0.30:5000"
+      },
+      {
+        "name": "Voice - Parse Intent",
+        "passed": false,
+        "error": "connect ECONNREFUSED 172.18.0.30:5000"
+      },
+      {
+        "name": "Prices - Get Current",
+        "passed": false,
+        "error": "connect ECONNREFUSED 172.18.0.30:5000"
+      },
+      {
+        "name": "Vendors - Get Nearby",
+        "passed": false,
+        "error": "connect ECONNREFUSED 172.18.0.30:5000"
+      },
+      {
+        "name": "Ratings - Get Vendor Ratings",
+        "passed": false,
+        "error": "connect ECONNREFUSED 172.18.0.30:5000"
+      }
+    ]
+  },
+  "frontend": {
+    "total": 2,
+    "passed": 0,
+    "failed": 2,
+    "tests": [
+      {
+        "name": "Homepage Loads",
+        "passed": false,
+        "error": "Request failed with status code 404"
+      },
+      {
+        "name": "API Proxy Works",
+        "passed": false,
+        "error": "Request failed with status code 502"
+      }
+    ]
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "common": {
+    "loading": "लोड होत आहे...",
+    "error": "त्रुटी",
+    "success": "यश",
+    "save": "जतन करा",
+    "cancel": "रद्द करा",
+    "delete": "हटवा",
+    "edit": "संपादित करा",
+    "submit": "सबमिट करा",
+    "search": "शोधा",
+    "filter": "फिल्टर",
+    "sort": "क्रमवारी लावा",
+    "back": "मागे",
+    "next": "पुढे",
+    "previous": "मागील",
+    "close": "बंद करा",
+    "confirm": "पुष्टी करा",
+    "yes": "होय",
+    "no": "नाही"
+  },
+  "nav": {
+    "home": "होम",
+    "browse": "लिस्टिंग ब्राउझ करा",
+    "createListing": "लिस्टिंग तयार करा",
+    "negotiations": "माझे वाटाघाटी",
+    "prices": "किंमत माहिती",
+    "messages": "संदेश",
+    "transactions": "व्यवहार",
+    "analytics": "विश्लेषण",
+    "disputes": "विवाद",
+    "guide": "मार्गदर्शक",
+    "profile": "प्रोफाइल",
+    "logout": "लॉगआउट"
+  },
+  "auth": {
+    "login": "लॉगिन",
+    "phoneNumber": "फोन नंबर",
+    "enterPhone": "तुमचा फोन नंबर प्रविष्ट करा",
+    "sendOTP": "OTP पाठवा",
+    "verifyOTP": "OTP सत्यापित करा",
+    "enterOTP": "OTP प्रविष्ट करा",
+    "otpSent": "OTP यशस्वीरित्या पाठवला",
+    "otpVerified": "OTP यशस्वीरित्या सत्यापित",
+    "invalidOTP": "अवैध OTP",
+    "selectRole": "तुमची भूमिका निवडा",
+    "vendor": "विक्रेता (विक्री करणारा)",
+    "buyer": "खरेदीदार",
+    "selectLanguage": "भाषा निवडा",
+    "name": "नाव",
+    "location": "स्थान",
+    "completeProfile": "प्रोफाइल पूर्ण करा",
+    "welcome": "बहुभाषिक मंडीमध्ये आपले स्वागत आहे"
+  },
+  "home": {
+    "dashboard": "डॅशबोर्ड",
+    "welcomeBack": "परत स्वागत आहे",
+    "quickActions": "द्रुत क्रिया",
+    "recentListings": "अलीकडील लिस्टिंग",
+    "activeNegotiations": "सक्रिय वाटाघाटी"
+  },
+  "listings": {
+    "title": "लिस्टिंग",
+    "createNew": "नवीन लिस्टिंग तयार करा",
+    "myListings": "माझी लिस्टिंग",
+    "browseAll": "सर्व लिस्टिंग ब्राउझ करा",
+    "cropType": "पीक प्रकार",
+    "quantity": "प्रमाण",
+    "unit": "एकक",
+    "basePrice": "मूळ किंमत",
+    "finalPrice": "अंतिम किंमत",
+    "qualityTier": "गुणवत्ता स्तर",
+    "description": "वर्णन",
+    "images": "चित्रे",
+    "uploadImage": "चित्र अपलोड करा",
+    "status": "स्थिती",
+    "active": "सक्रिय",
+    "sold": "विकले",
+    "unavailable": "अनुपलब्ध",
+    "viewDetails": "तपशील पहा",
+    "makeOffer": "ऑफर द्या",
+    "contactVendor": "विक्रेत्याशी संपर्क साधा",
+    "noListings": "कोणतीही लिस्टिंग आढळली नाही"
+  },
+  "negotiations": {
+    "title": "वाटाघाटी",
+    "active": "सक्रिय",
+    "completed": "पूर्ण",
+    "expired": "कालबाह्य",
+    "withdraw": "मागे घ्या",
+    "timeRemaining": "उर्वरित वेळ",
+    "noNegotiations": "कोणतीही वाटाघाटी आढळली नाही"
+  },
+  "messages": {
+    "title": "संदेश",
+    "typeMessage": "संदेश टाइप करा...",
+    "send": "पाठवा",
+    "noMessages": "अद्याप कोणतेही संदेश नाहीत"
+  },
+  "transactions": {
+    "title": "व्यवहार",
+    "pending": "प्रलंबित",
+    "confirmed": "पुष्टी केली",
+    "delivered": "वितरित",
+    "noTransactions": "कोणतेही व्यवहार आढळले नाहीत"
+  },
+  "trust": {
+    "trustScore": "विश्वास स्कोअर",
+    "trustedVendor": "विश्वासार्ह विक्रेता",
+    "verifiedSeller": "सत्यापित विक्रेता"
+  },
+  "voice": {
+    "kisaanBot": "किसान बॉट",
+    "startRecording": "रेकॉर्डिंग सुरू करा",
+    "stopRecording": "रेकॉर्डिंग थांबवा",
+    "listening": "ऐकत आहे...",
+    "processing": "प्रक्रिया करत आहे..."
+  },
+  "guide": {
+    "title": "वापरकर्ता मार्गदर्शक"
+  },
+  "prices": {
+    "title": "किंमत माहिती"
+  },
+  "errors": {
+    "generic": "काहीतरी चूक झाली",
+    "networkError": "नेटवर्क त्रुटी. कृपया तुमचे कनेक्शन तपासा"
+  },
+  "offline": {
+    "online": "ऑनलाइन",
+    "offline": "ऑफलाइन",
+    "pendingActions": "प्रलंबित क्रिया",
+    "syncingActions": "तुमच्या क्रिया सिंक करत आहे...",
+    "actionsWillSync": "ऑनलाइन झाल्यावर क्रिया सिंक होतील",
+    "syncNow": "आता सिंक करा",
+    "waitingForConnection": "कनेक्शनची प्रतीक्षा करत आहे",
+    "installApp": "लोकल मंडी इंस्टॉल करा",
+    "installInstructions": "जलद प्रवेश आणि ऑफलाइन समर्थनासाठी आमचे अॅप इंस्टॉल करा",
+    "installInstructionsIOS": "शेअर बटण टॅप करा आणि 'होम स्क्रीनवर जोडा' निवडा",
+    "install": "इंस्टॉल करा",
+    "tapShareButton": "शेअर बटण टॅप करा",
+    "selectAddToHome": "'होम स्क्रीनवर जोडा' निवडा",
+    "tapAdd": "'जोडा' टॅप करा",
+    "cachedContent": "कॅश केलेली सामग्री दाखवत आहे",
+    "actionQueued": "सिंकसाठी क्रिया रांगेत"
+  }
+}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate PWA Icons</title>
+</head>
+<body>
+    <h1>PWA Icon Generator</h1>
+    <p>This will generate placeholder icons for the PWA</p>
+    <button onclick="generateIcons()">Generate Icons</button>
+    <div id="output"></div>
+
+    <script>
+        function generateIcons() {
+            const sizes = [192, 512];
+            const output = document.getElementById('output');
+            output.innerHTML = '<h2>Generated Icons:</h2>';
+
+            sizes.forEach(size => {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+
+                // Background gradient
+                const gradient = ctx.createLinearGradient(0, 0, size, size);
+                gradient.addColorStop(0, '#10b981'); // Green
+                gradient.addColorStop(1, '#059669'); // Darker green
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, size, size);
+
+                // Add text
+                ctx.fillStyle = 'white';
+                ctx.font = `bold ${size / 4}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('LM', size / 2, size / 2);
+
+                // Convert to download link
+                canvas.toBlob(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `pwa-${size}x${size}.png`;
+                    link.textContent = `Download ${size}x${size} icon`;
+                    link.style.display = 'block';
+                    link.style.margin = '10px';
+                    output.appendChild(link);
+                });
+            });
+
+            // Generate apple touch icon
+            const appleSize = 180;
+            const appleCanvas = document.createElement('canvas');
+            appleCanvas.width = appleSize;
+            appleCanvas.height = appleSize;
+            const appleCtx = appleCanvas.getContext('2d');
+
+            const appleGradient = appleCtx.createLinearGradient(0, 0, appleSize, appleSize);
+            appleGradient.addColorStop(0, '#10b981');
+            appleGradient.addColorStop(1, '#059669');
+            appleCtx.fillStyle = appleGradient;
+            appleCtx.fillRect(0, 0, appleSize, appleSize);
+
+            appleCtx.fillStyle = 'white';
+            appleCtx.font = `bold ${appleSize / 4}px Arial`;
+            appleCtx.textAlign = 'center';
+            appleCtx.textBaseline = 'middle';
+            appleCtx.fillText('LM', appleSize / 2, appleSize / 2);
+
+            appleCanvas.toBlob(blob => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'apple-touch-icon.png';
+                link.textContent = 'Download Apple Touch Icon (180x180)';
+                link.style.display = 'block';
+                link.style.margin = '10px';
+                output.appendChild(link);
+            });
+        }
+    </script>
+</body>
+</html>

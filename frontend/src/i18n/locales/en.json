@@ -1,0 +1,172 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "submit": "Submit",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "nav": {
+    "home": "Home",
+    "browse": "Browse Listings",
+    "createListing": "Create Listing",
+    "negotiations": "My Negotiations",
+    "prices": "Price Info",
+    "messages": "Messages",
+    "transactions": "Transactions",
+    "analytics": "Analytics",
+    "disputes": "Disputes",
+    "guide": "Guide",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Login",
+    "loginWithPhone": "Login with Phone",
+    "phoneNumber": "Phone Number",
+    "enterPhone": "Enter your phone number",
+    "sendOTP": "Send OTP",
+    "verifyOTP": "Verify OTP",
+    "enterOTP": "Enter OTP",
+    "otpSent": "OTP sent successfully",
+    "otpVerified": "OTP verified successfully",
+    "invalidOTP": "Invalid OTP",
+    "selectRole": "Select Your Role",
+    "vendor": "Vendor (Seller)",
+    "buyer": "Buyer",
+    "selectLanguage": "Select Language",
+    "name": "Name",
+    "location": "Location",
+    "completeProfile": "Complete Profile",
+    "welcome": "Welcome to Multilingual Mandi"
+  },
+  "home": {
+    "dashboard": "Dashboard",
+    "welcomeBack": "Welcome back",
+    "quickActions": "Quick Actions",
+    "recentListings": "Recent Listings",
+    "activeNegotiations": "Active Negotiations",
+    "featuredListings": "Featured Listings",
+    "viewAll": "View All"
+  },
+  "listings": {
+    "title": "Listings",
+    "createNew": "Create New Listing",
+    "myListings": "My Listings",
+    "browseAll": "Browse All Listings",
+    "browseListings": "Browse Listings",
+    "cropType": "Crop Type",
+    "quantity": "Quantity",
+    "unit": "Unit",
+    "basePrice": "Base Price",
+    "finalPrice": "Final Price",
+    "qualityTier": "Quality Tier",
+    "description": "Description",
+    "images": "Images",
+    "uploadImage": "Upload Image",
+    "status": "Status",
+    "active": "Active",
+    "sold": "Sold",
+    "unavailable": "Unavailable",
+    "viewDetails": "View Details",
+    "makeOffer": "Make Offer",
+    "contactVendor": "Contact Vendor",
+    "noListings": "No listings found",
+    "filters": "Filters",
+    "minPrice": "Min Price",
+    "maxPrice": "Max Price",
+    "searchPlaceholder": "e.g., tomato",
+    "perUnit": "per",
+    "vendor": "Vendor",
+    "distance": "Distance",
+    "quality": {
+      "premium": "Premium",
+      "standard": "Standard",
+      "basic": "Basic"
+    }
+  },
+  "negotiations": {
+    "title": "Negotiations",
+    "myNegotiations": "My Negotiations",
+    "active": "Active",
+    "completed": "Completed",
+    "expired": "Expired",
+    "withdraw": "Withdraw",
+    "viewDetails": "View Details",
+    "timeRemaining": "Time Remaining",
+    "noNegotiations": "No negotiations found",
+    "offer": "Offer",
+    "counterOffer": "Counter Offer",
+    "accept": "Accept",
+    "reject": "Reject",
+    "makeOffer": "Make an Offer",
+    "yourOffer": "Your Offer",
+    "submitOffer": "Submit Offer"
+  },
+  "messages": {
+    "title": "Messages",
+    "typeMessage": "Type a message...",
+    "send": "Send",
+    "noMessages": "No messages yet"
+  },
+  "transactions": {
+    "title": "Transactions",
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "delivered": "Delivered",
+    "noTransactions": "No transactions found"
+  },
+  "trust": {
+    "trustScore": "Trust Score",
+    "trustedVendor": "Trusted Vendor",
+    "verifiedSeller": "Verified Seller"
+  },
+  "voice": {
+    "kisaanBot": "Kisaan Bot",
+    "startRecording": "Start Recording",
+    "stopRecording": "Stop Recording",
+    "listening": "Listening...",
+    "processing": "Processing..."
+  },
+  "guide": {
+    "title": "User Guide"
+  },
+  "prices": {
+    "title": "Price Information"
+  },
+  "errors": {
+    "generic": "Something went wrong",
+    "networkError": "Network error. Please check your connection"
+  },
+  "offline": {
+    "online": "Online",
+    "offline": "Offline",
+    "pendingActions": "pending actions",
+    "syncingActions": "Syncing your actions...",
+    "actionsWillSync": "Actions will sync when online",
+    "syncNow": "Sync Now",
+    "waitingForConnection": "Waiting for connection",
+    "installApp": "Lokal Mandi",
+    "installInstructions": "Register Interest to get early access to the platform",
+    "installInstructionsIOS": "Tap the share button and select 'Add to Home Screen'",
+    "install": "Install",
+    "tapShareButton": "Tap the Share button",
+    "selectAddToHome": "Select 'Add to Home Screen'",
+    "tapAdd": "Tap 'Add'",
+    "cachedContent": "Showing cached content",
+    "actionQueued": "Action queued for sync"
+  }
+}

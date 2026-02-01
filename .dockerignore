@@ -1,12 +1,132 @@
-node_modules
-npm-debug.log
+# Git
 .git
 .gitignore
-README.md
-.env
-.DS_Store
+.gitattributes
+
+# Documentation
 *.md
+!README.md
 docs/
-test/
+CHANGES_SUMMARY.md
+CLEANUP_SUMMARY.md
+DEPLOYMENT_GUIDE.md
+DOCKER.md
+DOCKERFILE_SUMMARY.md
+FINAL_FIXES_SUMMARY.md
+FRONTEND_CHECKPOINT_REPORT.md
+HACKATHON_RESEARCH_SUMMARY.md
+IMPLEMENTATION_PLAN.md
+IMPROVEMENTS.md
+INTEGRATION_TEST_REPORT.md
+LINKEDIN_POST.txt
+MULTILINGUAL_IMPLEMENTATION.md
+PHASE_1_QUICK_WINS_SUMMARY.md
+PROJECT_STATUS.md
+PWA_FEATURES.md
+RESPONSIVE_AUDIT.md
+SESSION_3_COMPLETION_SUMMARY.md
+SHORTLIST_READY.md
+TASK_*.md
+TESTING_CHECKLIST.md
+VOICE_QUICK_START.pdf
+
+# Node modules (will be installed in container)
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Environment files
+.env
+.env.*
+!.env.example
+!.env.docker
+
+# IDE and Editor
 .vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+coverage/
+.nyc_output/
+test/
+tests/
+*.test.js
+*.spec.js
+*.pbt.test.js
+
+# Build artifacts
+dist/
+build/
+.cache/
+.parcel-cache/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Database files (use volumes instead)
+*.db
+*.sqlite
+*.sqlite3
+backend/mandi.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Docker files
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Scripts
+scripts/
+*.sh
+*.bat
+
+# Kiro configuration
 .kiro/
+
+# Test data and results
+test-*.json
+test-all-apis-*.json
+
+# Downloads and uploads (use volumes)
+downloads/
+uploads/
+backend/uploads/
+
+# Frontend specific
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+
+# Backend specific
+backend/node_modules/
+backend/logs/
+backend/uploads/
+backend/data/
+
+# Miscellaneous
+*.bak
+*.backup
+*.old
+image_link.json
+download-*.js
+verify-*.sh
+start-*.bat

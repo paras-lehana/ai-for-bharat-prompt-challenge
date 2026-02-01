@@ -1,0 +1,366 @@
+openapi: 3.0.3
+info:
+  title: Multilingual Mandi API
+  description: |
+    RESTful API for the Multilingual Mandi platform - making agricultural trading accessible to 146 million Indian farmers through voice-based interactions in local languages, AI-driven negotiation support, and transparent pricing mechanisms.
+    
+    ## Key Features
+    - **Voice-First Interface**: Speech-to-text and text-to-speech in 6+ local languages
+    - **AI-Powered Negotiations**: Smart counter-offer suggestions based on market data
+    - **Transparent Pricing**: Quality-based pricing with clear formula breakdown
+    - **Trust System**: Objective ratings and AI-powered dispute resolution
+    - **eNAM Integration**: Live market prices and government platform connectivity
+    - **Peer Discovery**: Find nearby vendors for micro-aggregation opportunities
+    
+    ## Authentication
+    All protected endpoints require a JWT token in the Authorization header:
+    ```
+    Authorization: Bearer <token>
+    ```
+    
+    Obtain a token by:
+    1. Send OTP to phone number: `POST /api/auth/send-otp`
+    2. Verify OTP: `POST /api/auth/verify-otp` (returns JWT token)
+    
+  version: 1.0.0
+  contact:
+    name: Multilingual Mandi Team
+    email: support@multilingualmandi.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:5000/api
+    description: Local development server
+  - url: https://api.multilingualmandi.com/api
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User authentication and profile management
+  - name: Listings
+    description: Product listing management and search
+  - name: Negotiations
+    description: Price negotiation and offer management
+  - name: Transactions
+    description: Transaction lifecycle management
+  - name: Voice Interface
+    description: Voice query processing and translation
+  - name: Messaging
+    description: Direct messaging between buyers and vendors
+  - name: Trust & Ratings
+    description: Trust scores, ratings, and reputation management
+  - name: Disputes
+    description: Dispute creation and resolution
+  - name: Discovery
+    description: Vendor discovery and micro-aggregation
+  - name: Vendors
+    description: Vendor profiles and listings
+  - name: Analytics
+    description: Sales analytics and business insights
+  - name: Advisory
+    description: Market intelligence and crop advisory
+  - name: Pricing
+    description: Price calculations and eNAM data
+  - name: Integration
+    description: eNAM, ODOP, and GeM integration
+  - name: Favorites
+    description: Bookmark and save listings
+  - name: Saved Searches
+    description: Save and execute search criteria
+  - name: Sharing
+    description: QR codes and social sharing
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from /api/auth/verify-otp
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        code:
+          type: string
+          description: Error code
+      required:
+        - error
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        phoneNumber:
+          type: string
+          pattern: '^\+91[0-9]{10}$'
+          example: '+919876543210'
+        role:
+          type: string
+          enum: [vendor, buyer]
+        languagePreference:
+          type: string
+          enum: [en, hi, mr, ta, te, kn, pa]
+          description: ISO 639-1 language code
+        name:
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Location:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        address:
+          type: string
+        district:
+          type: string
+        state:
+          type: string
+
+    Listing:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        vendorId:
+          type: string
+          format: uuid
+        cropType:
+          type: string
+          example: 'tomato'
+        quantity:
+          type: number
+          example: 100
+        unit:
+          type: string
+          enum: [kg, quintal, ton, piece]
+        basePrice:
+          type: number
+          format: double
+          example: 25.50
+        qualityTier:
+          type: string
+          enum: [premium, standard, basic]
+        qualityMultiplier:
+          type: number
+          format: double
+          example: 1.2
+        demandAdjuster:
+          type: number
+          format: double
+          example: 1.1
+        finalPrice:
+          type: number
+          format: double
+          example: 33.66
+        description:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+            format: uri
+        locationLat:
+          type: number
+          format: double
+        locationLng:
+          type: number
+          format: double
+        locationAddress:
+          type: string
+        locationDistrict:
+          type: string
+        status:
+          type: string
+          enum: [active, sold, unavailable]
+        odpBadge:
+          type: object
+          nullable: true
+          properties:
+            district:
+              type: string
+            state:
+              type: string
+            description:
+              type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    PriceBreakdown:
+      type: object
+      properties:
+        basePrice:
+          type: number
+          format: double
+        qualityMultiplier:
+          type: number
+          format: double
+        demandAdjuster:
+          type: number
+          format: double
+        finalPrice:
+          type: number
+          format: double
+        breakdown:
+          type: string
+          description: Human-readable explanation
+        formula:
+          type: string
+          example: 'Final Price = Base Price × Quality Multiplier × Demand Adjuster'
+
+    Negotiation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        listingId:
+          type: string
+          format: uuid
+        buyerId:
+          type: string
+          format: uuid
+        vendorId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [active, accepted, rejected, expired, withdrawn]
+        expiresAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        listing:
+          $ref: '#/components/schemas/Listing'
+        offers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Offer'
+
+    Offer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        negotiationId:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          format: double
+        reasoning:
+          type: string
+        offerType:
+          type: string
+          enum: [buyer_offer, vendor_counter, ai_suggestion]
+        createdAt:
+          type: string
+          format: date-time
+
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        negotiationId:
+          type: string
+          format: uuid
+        listingId:
+          type: string
+          format: uuid
+        buyerId:
+          type: string
+          format: uuid
+        vendorId:
+          type: string
+          format: uuid
+        agreedPrice:
+          type: number
+          format: double
+        quantity:
+          type: number
+        status:
+          type: string
+          enum: [pending, confirmed, in_transit, delivered, disputed]
+        confirmedAt:
+          type: string
+          format: date-time
+          nullable: true
+        shippedAt:
+          type: string
+          format: date-time
+          nullable: true
+        deliveredAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        senderId:
+          type: string
+          format: uuid
+        recipientId:
+          type: string
+          format: uuid
+        threadId:
+          type: string
+        listingId:
+          type: string
+          format: uuid
+          nullable: true
+        textContent:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+            format: uri
+        originalLanguage:
+          type: string
+        readAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time

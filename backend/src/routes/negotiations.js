@@ -207,4 +207,74 @@ router.get('/:id/suggestion', authenticateToken, asyncHandler(async (req, res) =
   });
 }));
 
+// DEBUG ENDPOINT: Get all negotiations with details
+router.get('/debug/all', asyncHandler(async (req, res) => {
+  const negotiations = await Negotiation.findAll({
+    include: [
+      { 
+        model: Listing, 
+        as: 'listing',
+        attributes: ['id', 'cropType', 'finalPrice', 'basePrice', 'status']
+      },
+      { 
+        model: User, 
+        as: 'buyer',
+        attributes: ['id', 'name', 'phoneNumber']
+      },
+      { 
+        model: User, 
+        as: 'vendor',
+        attributes: ['id', 'name', 'phoneNumber']
+      }
+    ],
+    order: [['createdAt', 'DESC']],
+    limit: 50
+  });
+
+  // Get offers for each negotiation
+  const negotiationsWithOffers = await Promise.all(
+    negotiations.map(async (neg) => {
+      const offers = await Offer.findAll({
+        where: { negotiationId: neg.id },
+        order: [['createdAt', 'ASC']],
+        attributes: ['id', 'amount', 'offerType', 'createdAt']
+      });
+
+      return {
+        id: neg.id,
+        status: neg.status,
+        buyer: neg.buyer?.name || 'Unknown',
+        buyerPhone: neg.buyer?.phoneNumber,
+        vendor: neg.vendor?.name || 'Unknown',
+        vendorPhone: neg.vendor?.phoneNumber,
+        listing: {
+          id: neg.listing?.id,
+          cropType: neg.listing?.cropType,
+          finalPrice: neg.listing?.finalPrice,
+          status: neg.listing?.status
+        },
+        offers: offers.map(o => ({
+          amount: o.amount,
+          type: o.offerType,
+          createdAt: o.createdAt
+        })),
+        offerCount: offers.length,
+        createdAt: neg.createdAt,
+        expiresAt: neg.expiresAt
+      };
+    })
+  );
+
+  res.json({
+    totalNegotiations: negotiations.length,
+    negotiations: negotiationsWithOffers,
+    summary: {
+      active: negotiations.filter(n => n.status === 'active').length,
+      accepted: negotiations.filter(n => n.status === 'accepted').length,
+      rejected: negotiations.filter(n => n.status === 'rejected').length,
+      expired: negotiations.filter(n => n.status === 'expired').length
+    }
+  });
+}));
+
 module.exports = router;

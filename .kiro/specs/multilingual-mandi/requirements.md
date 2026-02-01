@@ -6,10 +6,12 @@ The Multilingual Mandi is a real-time linguistic bridge for local trade in India
 
 ## Project Context
 
-**Repository**: ai-for-bharat-prompt-challenge
-**Tech Stack**: Node.js/Express (Backend), React/Tailwind (Frontend), SQLite/PostgreSQL (Database)
-**External APIs**: SARVAM AI (Speech), OpenRouter AI (Intent), Google Translate (Translation)
-**Deployment**: Docker, Vercel (Frontend), Render/Railway (Backend)
+**Repository**: ai-for-bharat-prompt-challenge  
+**Tech Stack**: Node.js/Express (Backend), React/Tailwind (Frontend), SQLite/PostgreSQL (Database)  
+**External APIs**: SARVAM AI (Speech), OpenRouter AI (Intent), Google Translate (Translation)  
+**Deployment**: Docker, Vercel (Frontend), Render/Railway (Backend)  
+**Target Users**: 146 million Indian farmers, particularly the 85% not using digital trading platforms  
+**Primary Challenge**: Language barriers preventing digital platform adoption
 
 ## Key Documentation References
 
@@ -18,11 +20,13 @@ The Multilingual Mandi is a real-time linguistic bridge for local trade in India
 - **Testing Strategy**: `docs/TESTING_STRATEGY.md`
 - **API Modification Guide**: `docs/API_MODIFICATION_GUIDE.md`
 - **Where to Find What**: `docs/WHERE_TO_FIND_WHAT.md`
+- **Assets Configuration**: `data/assets-config.json`
+- **Features Guide**: `docs/FEATURES_GUIDE.md`
 
 ## Glossary
 
 - **Mandi_System**: The complete multilingual trading platform
-- **Voice_Interface**: The voice-based query and response system using BHASHINI APIs
+- **Voice_Interface**: The voice-based query and response system using SARVAM/BHASHINI APIs
 - **Negotiation_Engine**: The AI-powered negotiation assistance system
 - **Pricing_Calculator**: The transparent quality-based pricing formula system
 - **Discovery_Service**: The peer vendor discovery and micro-aggregation system
@@ -33,9 +37,12 @@ The Multilingual Mandi is a real-time linguistic bridge for local trade in India
 - **Buyer**: A trader or purchaser looking for products
 - **Listing**: A product offering with price, quality, and quantity information
 - **Negotiation_Session**: A time-bound (24-hour) back-and-forth price negotiation
-- **Quality_Tier**: A grade assigned to products (e.g., Premium, Standard, Basic)
+- **Quality_Tier**: A grade assigned to products (Premium, Standard, Basic)
 - **Trust_Score**: A composite rating based on delivery, quality, response, and pricing fairness
-- **Local_Language**: Regional languages including Marathi, Tamil, Telugu, and others
+- **Local_Language**: Regional languages including Hindi, Marathi, Tamil, Telugu, Kannada, Punjabi
+- **eNAM**: Electronic National Agriculture Market - government platform for crop trading
+- **ODOP**: One District One Product - government initiative for regional specialization
+- **GeM**: Government e-Marketplace for procurement
 
 ## Requirements
 
@@ -58,12 +65,12 @@ The Multilingual Mandi is a real-time linguistic bridge for local trade in India
 
 #### Acceptance Criteria
 
-1. WHEN a vendor speaks a price query in a supported local language, THE Voice_Interface SHALL transcribe the audio to text using BHASHINI APIs
+1. WHEN a vendor speaks a price query in a supported local language, THE Voice_Interface SHALL transcribe the audio to text using SARVAM/BHASHINI APIs
 2. WHEN the Voice_Interface receives transcribed text, THE Mandi_System SHALL extract the crop name and location from the query
 3. WHEN a valid crop and location are identified, THE Mandi_System SHALL retrieve current market prices from the database and eNAM integration
 4. WHEN market prices are retrieved, THE Voice_Interface SHALL generate a response in the same local language as the query
 5. WHEN the response is generated, THE Voice_Interface SHALL convert the text to speech and return audio to the user
-6. THE Mandi_System SHALL support at minimum Marathi, Tamil, and Telugu languages
+6. THE Mandi_System SHALL support at minimum Hindi, Marathi, Tamil, Telugu, Kannada, and Punjabi languages
 7. IF the Voice_Interface cannot understand the query, THEN THE Mandi_System SHALL request clarification in the user's language
 
 ### Requirement 3: Product Listing Management

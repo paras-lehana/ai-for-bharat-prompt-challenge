@@ -1,0 +1,61 @@
+{
+  "passed": 9,
+  "failed": 2,
+  "tests": [
+    {
+      "name": "Backend Health Check",
+      "passed": true,
+      "details": "Status: ok"
+    },
+    {
+      "name": "Auth - Send OTP",
+      "passed": true,
+      "details": "OTP sent: true"
+    },
+    {
+      "name": "Listings - Search",
+      "passed": true,
+      "details": "Found 13 listings"
+    },
+    {
+      "name": "Prices - Get Current",
+      "passed": true,
+      "details": "Price data available: Yes"
+    },
+    {
+      "name": "Voice - Parse Intent",
+      "passed": true,
+      "details": "Intent detected: price_query"
+    },
+    {
+      "name": "Discovery - Nearby Vendors",
+      "passed": true,
+      "details": "Found 0 nearby vendors"
+    },
+    {
+      "name": "Integration - eNAM Prices",
+      "passed": false,
+      "details": "Request failed with status code 404"
+    },
+    {
+      "name": "Frontend - Homepage Loads",
+      "passed": true,
+      "details": "Status: 200"
+    },
+    {
+      "name": "Favorites - Endpoint Exists",
+      "passed": true,
+      "details": "Status: 401"
+    },
+    {
+      "name": "Saved Searches - Endpoint Exists",
+      "passed": true,
+      "details": "Status: 401"
+    },
+    {
+      "name": "Weather - Endpoint Exists",
+      "passed": false,
+      "details": "Not implemented (Phase 1 feature)"
+    }
+  ]
+}

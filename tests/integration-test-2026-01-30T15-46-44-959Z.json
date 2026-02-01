@@ -1,0 +1,259 @@
+{
+  "timestamp": "2026-01-30T15:46:38.106Z",
+  "categories": {
+    "authentication": {
+      "total": 3,
+      "passed": 2,
+      "failed": 1,
+      "tests": [
+        {
+          "name": "Send OTP - Valid Phone",
+          "passed": true,
+          "message": "OTP sent successfully",
+          "details": {
+            "success": true,
+            "expiresAt": "2026-01-30T15:51:38.154Z",
+            "otp": "655844"
+          }
+        },
+        {
+          "name": "Send OTP - Invalid Phone",
+          "passed": true,
+          "message": "Correctly rejected invalid phone number",
+          "details": {
+            "error": "Phone number must be in format +91XXXXXXXXXX"
+          }
+        },
+        {
+          "name": "Verify OTP - Valid",
+          "passed": false,
+          "error": "Request failed with status code 400"
+        }
+      ]
+    },
+    "listings": {
+      "total": 3,
+      "passed": 1,
+      "failed": 2,
+      "tests": [
+        {
+          "name": "Search - By Crop Type",
+          "passed": false,
+          "message": "Found 0 wheat listings",
+          "details": {
+            "count": 0
+          }
+        },
+        {
+          "name": "Search - No Results",
+          "passed": true,
+          "message": "Correctly returned empty results",
+          "details": {
+            "count": 0
+          }
+        },
+        {
+          "name": "Get By ID - Valid",
+          "passed": false,
+          "message": "No listings to test with"
+        }
+      ]
+    },
+    "negotiations": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "tests": []
+    },
+    "transactions": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "tests": []
+    },
+    "voice": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "Parse Intent - Price Query",
+          "passed": true,
+          "message": "Parsed intent: price_query",
+          "details": {
+            "intent": "price_query",
+            "cropType": "wheat",
+            "quantity": null,
+            "price": null,
+            "location": null,
+            "qualityTier": null,
+            "confidence": "medium"
+          }
+        },
+        {
+          "name": "Parse Intent - Create Listing",
+          "passed": true,
+          "message": "Parsed create listing intent",
+          "details": {
+            "intent": "create_listing",
+            "cropType": "tomato",
+            "quantity": "100 kg",
+            "price": 100,
+            "location": null,
+            "qualityTier": null,
+            "confidence": "medium"
+          }
+        }
+      ]
+    },
+    "prices": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "Get Current Price - Valid Crop",
+          "passed": true,
+          "message": "Got price for wheat",
+          "details": {
+            "cropType": "wheat",
+            "location": "Delhi",
+            "modalPrice": 2500,
+            "minPrice": 2400,
+            "maxPrice": 2600,
+            "source": "enam_api",
+            "timestamp": "2026-01-30T15:46:42.363Z"
+          }
+        },
+        {
+          "name": "Get Prices - Multiple Crops",
+          "passed": true,
+          "message": "Retrieved prices for 5 crops",
+          "details": [
+            {
+              "crop": "wheat",
+              "price": 2500,
+              "source": "enam_cached"
+            },
+            {
+              "crop": "rice",
+              "price": 3000,
+              "source": "enam_api"
+            },
+            {
+              "crop": "maize",
+              "price": 100,
+              "source": "enam_api"
+            },
+            {
+              "crop": "cotton",
+              "price": 100,
+              "source": "enam_api"
+            },
+            {
+              "crop": "onion",
+              "price": 40,
+              "source": "enam_api"
+            }
+          ]
+        }
+      ]
+    },
+    "ratings": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "tests": []
+    },
+    "errorHandling": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "404 - Invalid Endpoint",
+          "passed": true,
+          "message": "Correctly returned 404",
+          "details": {
+            "error": "Not Found",
+            "message": "Route GET /api/nonexistent not found"
+          }
+        },
+        {
+          "name": "Missing Required Parameters",
+          "passed": true,
+          "message": "Correctly rejected missing parameters",
+          "details": {
+            "error": "Phone number is required"
+          }
+        },
+        {
+          "name": "Invalid Data Types",
+          "passed": true,
+          "message": "Correctly rejected invalid data type",
+          "details": {
+            "error": "\"value\" must be a string"
+          }
+        }
+      ]
+    },
+    "edgeCases": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "tests": [
+        {
+          "name": "Large Query String",
+          "passed": true,
+          "message": "Handled large query string",
+          "details": {
+            "length": 1000
+          }
+        },
+        {
+          "name": "Special Characters in Input",
+          "passed": true,
+          "message": "Handled special characters",
+          "details": {
+            "intent": "price_query",
+            "cropType": "wheat",
+            "quantity": null,
+            "price": null,
+            "location": null,
+            "qualityTier": null,
+            "confidence": "medium"
+          }
+        },
+        {
+          "name": "Concurrent Requests",
+          "passed": true,
+          "message": "Handled 10 concurrent requests",
+          "details": {
+            "count": 10
+          }
+        }
+      ]
+    },
+    "database": {
+      "total": 2,
+      "passed": 1,
+      "failed": 1,
+      "tests": [
+        {
+          "name": "Data Consistency",
+          "passed": true,
+          "message": "All data consistent",
+          "details": {
+            "listings": 0,
+            "issues": []
+          }
+        },
+        {
+          "name": "Foreign Key Relationships",
+          "passed": false,
+          "message": "No listings to test"
+        }
+      ]
+    }
+  }
+}

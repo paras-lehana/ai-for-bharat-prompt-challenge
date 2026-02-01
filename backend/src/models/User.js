@@ -64,6 +64,12 @@ const User = sequelize.define('User', {
   locationState: {
     type: DataTypes.STRING(100),
     allowNull: true
+  },
+  enamDataSync: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+    comment: 'Opt-in for eNAM data synchronization'
   }
 }, {
   tableName: 'users',
