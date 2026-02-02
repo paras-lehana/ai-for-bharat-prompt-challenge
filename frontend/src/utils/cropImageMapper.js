@@ -1,4 +1,4 @@
-import { APP_VERSION } from '../version';
+import { APP_VERSION } from '../../../config/version';
 
 /**
  * Utility to map crop types to their corresponding image assets

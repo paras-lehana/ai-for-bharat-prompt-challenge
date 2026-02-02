@@ -1,4 +1,4 @@
-import { APP_VERSION } from '../version';
+import { APP_VERSION } from '../../../config/version';
 
 /**
  * Appends the application version to a URL as a query parameter

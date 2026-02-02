@@ -8,6 +8,12 @@ backend/node_modules/
 .env.local
 .env.production
 
+# Ignore all .env files in any directory (universal patterns)
+*/.env
+**/.env.production
+**/.env.development
+**/.env.local
+
 # Database
 *.db
 *.sqlite

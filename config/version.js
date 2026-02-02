@@ -10,6 +10,10 @@
  */
 const APP_VERSION = '4.7';
 
+// ES6 export for frontend
+export { APP_VERSION };
+
+// CommonJS export for backend (if needed)
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { APP_VERSION };
 }
