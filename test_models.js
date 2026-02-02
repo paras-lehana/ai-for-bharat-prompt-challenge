@@ -1,4 +1,5 @@
 const axios = require('axios');
+require('dotenv').config(); // Load environment variables
 
 const models = [
     "google/gemma-2-9b-it:free",
@@ -9,7 +10,15 @@ const models = [
     "google/gemma-3-27b-it:free"
 ];
 
-const apiKey = "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";
+// ✅ CORRECT - Load API key from environment variables
+const apiKey = process.env.OPENROUTER_API_KEY;
+
+if (!apiKey) {
+    console.error('❌ ERROR: OPENROUTER_API_KEY environment variable not set');
+    console.error('Please set it in your .env file or export it:');
+    console.error('  export OPENROUTER_API_KEY=your-key-here');
+    process.exit(1);
+}
 
 async function checkModel(model) {
     try {

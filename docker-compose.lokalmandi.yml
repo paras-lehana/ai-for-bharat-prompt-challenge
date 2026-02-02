@@ -32,7 +32,7 @@ services:
       - ./.env:/app/.env
       - /app/node_modules
       - lokalmandi-backend-data:/app/data
-    command: npm run dev
+    command: npm start
     restart: unless-stopped
     networks:
       root_default:
