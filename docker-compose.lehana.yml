@@ -1,0 +1,213 @@
+# ==================================================================================
+# LOKAL MANDI - Lehana.in Docker Deployment
+# ==================================================================================
+# Integrated with Lehana.in infrastructure for production deployment
+# 
+# ROUTING:
+# - Frontend: lokalmandi.lehana.in || lokalmandi.aidhunik.com
+# - Backend: api.lehana.in/lokalmandi || api.aidhunik.com/lokalmandi
+#
+# USAGE:
+#   docker compose -f docker-compose.lehana.yml up -d
+#   docker compose -f docker-compose.lehana.yml logs -f
+#   docker compose -f docker-compose.lehana.yml down
+#
+# REFERENCE: /root/.github/instructions/dockerization.instructions.md
+# ==================================================================================
+
+# ==================================================================================
+# NETWORK CONFIGURATION
+# ==================================================================================
+# Join root_default for Traefik discovery and dual-domain routing
+networks:
+  default:
+    name: root_default
+    external: true
+
+# ==================================================================================
+# SERVICES
+# ==================================================================================
+services:
+  # ==============================================================================
+  # LOKAL MANDI BACKEND - Node.js/Express API
+  # ==============================================================================
+  # Routes: https://api.lehana.in/lokalmandi/*
+  #         https://api.aidhunik.com/lokalmandi/*
+  # Purpose: RESTful API for agricultural trading platform
+  # ==============================================================================
+  lokalmandi-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: lokalmandi-backend
+    restart: unless-stopped
+    
+    # --------------------------------------------------------------------------
+    # NETWORK CONFIGURATION - Static IP for stability
+    # --------------------------------------------------------------------------
+    networks:
+      default:
+        ipv4_address: 172.18.0.50  # Backend static IP
+    
+    # --------------------------------------------------------------------------
+    # PORT EXPOSURE - Internal only, accessed via Traefik
+    # --------------------------------------------------------------------------
+    expose:
+      - 5000
+    
+    # Debugging port (optional, comment out for production)
+    # ports:
+    #   - "127.0.0.1:5000:5000"
+    
+    # --------------------------------------------------------------------------
+    # ENVIRONMENT VARIABLES
+    # --------------------------------------------------------------------------
+    environment:
+      # Application Configuration
+      - NODE_ENV=production
+      - PORT=5000
+      
+      # Database Configuration (SQLite for simplicity, upgrade to Postgres if needed)
+      - DATABASE_URL=sqlite:/app/data/mandi.db
+      
+      # JWT Configuration
+      - JWT_SECRET=${JWT_SECRET:-change-this-in-production-use-env-file}
+      - JWT_EXPIRES_IN=7d
+      
+      # API Keys (load from /root/.env or .env file)
+      - BHASHINI_API_KEY=${BHASHINI_API_KEY}
+      - SARVAM_API_KEY=${SARVAM_API_KEY}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      
+      # Frontend URL for CORS
+      - FRONTEND_URL=https://lokalmandi.lehana.in
+      - CORS_ORIGIN=https://lokalmandi.lehana.in,https://lokalmandi.aidhunik.com
+      
+      # Linguistic Provider
+      - LINGUISTIC_PROVIDER=sarvam
+    
+    # --------------------------------------------------------------------------
+    # VOLUMES - Persistent data and logs
+    # --------------------------------------------------------------------------
+    volumes:
+      # Persistent data storage
+      - lokalmandi-backend-data:/app/data
+      - lokalmandi-backend-logs:/app/logs
+      - lokalmandi-backend-uploads:/app/uploads
+      # Shared reference data (read-only)
+      - ./data:/app/shared-data:ro
+    
+    # --------------------------------------------------------------------------
+    # TRAEFIK LABELS - Dual-domain routing with path prefix
+    # --------------------------------------------------------------------------
+    labels:
+      - "traefik.enable=true"
+      
+      # Router configuration for path-based routing
+      - "traefik.http.routers.lokalmandi-backend.rule=(Host(`api.lehana.in`) || Host(`api.aidhunik.com`)) && PathPrefix(`/lokalmandi`)"
+      - "traefik.http.routers.lokalmandi-backend.entrypoints=web,websecure"
+      - "traefik.http.routers.lokalmandi-backend.tls=true"
+      - "traefik.http.routers.lokalmandi-backend.priority=100"
+      
+      # Middleware to strip /lokalmandi prefix
+      - "traefik.http.middlewares.lokalmandi-strip.stripprefix.prefixes=/lokalmandi"
+      - "traefik.http.routers.lokalmandi-backend.middlewares=lokalmandi-strip"
+      
+      # Service configuration
+      - "traefik.http.services.lokalmandi-backend.loadbalancer.server.port=5000"
+    
+    # --------------------------------------------------------------------------
+    # HEALTH CHECK - Docker native health monitoring
+    # --------------------------------------------------------------------------
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ==============================================================================
+  # LOKAL MANDI FRONTEND - React/Vite SPA with Nginx
+  # ==============================================================================
+  # Routes: https://lokalmandi.lehana.in
+  #         https://lokalmandi.aidhunik.com
+  # Purpose: Web interface for farmers and traders
+  # ==============================================================================
+  lokalmandi-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        # API URL points to Traefik-routed backend
+        - VITE_API_URL=https://api.lehana.in/lokalmandi
+    container_name: lokalmandi-frontend
+    restart: unless-stopped
+    
+    # --------------------------------------------------------------------------
+    # NETWORK CONFIGURATION - Static IP for stability
+    # --------------------------------------------------------------------------
+    networks:
+      default:
+        ipv4_address: 172.18.0.51  # Frontend static IP
+    
+    # --------------------------------------------------------------------------
+    # PORT EXPOSURE - Internal only, accessed via Traefik
+    # --------------------------------------------------------------------------
+    expose:
+      - 80
+    
+    # Debugging port (optional, comment out for production)
+    # ports:
+    #   - "127.0.0.1:3001:80"
+    
+    # --------------------------------------------------------------------------
+    # ENVIRONMENT VARIABLES
+    # --------------------------------------------------------------------------
+    environment:
+      - VITE_API_URL=https://api.lehana.in/lokalmandi
+    
+    # --------------------------------------------------------------------------
+    # TRAEFIK LABELS - Dual-domain subdomain routing
+    # --------------------------------------------------------------------------
+    labels:
+      - "traefik.enable=true"
+      
+      # Router configuration for subdomain routing
+      - "traefik.http.routers.lokalmandi-frontend.rule=Host(`lokalmandi.lehana.in`) || Host(`lokalmandi.aidhunik.com`)"
+      - "traefik.http.routers.lokalmandi-frontend.entrypoints=web,websecure"
+      - "traefik.http.routers.lokalmandi-frontend.tls=true"
+      - "traefik.http.routers.lokalmandi-frontend.priority=110"
+      
+      # Service configuration
+      - "traefik.http.services.lokalmandi-frontend.loadbalancer.server.port=80"
+    
+    # --------------------------------------------------------------------------
+    # HEALTH CHECK - Nginx availability (using curl, more reliable than wget)
+    # --------------------------------------------------------------------------
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    
+    # --------------------------------------------------------------------------
+    # DEPENDENCIES - Ensure backend is healthy before starting
+    # --------------------------------------------------------------------------
+    depends_on:
+      lokalmandi-backend:
+        condition: service_healthy
+
+# ==================================================================================
+# NAMED VOLUMES - Persistent data storage
+# ==================================================================================
+volumes:
+  lokalmandi-backend-data:
+    driver: local
+    name: lokalmandi-backend-data
+  lokalmandi-backend-logs:
+    driver: local
+    name: lokalmandi-backend-logs
+  lokalmandi-backend-uploads:
+    driver: local
+    name: lokalmandi-backend-uploads

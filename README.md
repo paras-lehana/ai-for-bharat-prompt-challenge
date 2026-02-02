@@ -248,6 +248,56 @@ Market intelligence in your local language - price alerts, seasonal guidance.
 
 ## 🚀 Quick Start (5 Minutes)
 
+> **🐳 For Production Deployment on Lehana.in Infrastructure**: See [DOCKER_LEHANA_DEPLOYMENT.md](./DOCKER_LEHANA_DEPLOYMENT.md) for comprehensive Docker deployment guide with Traefik integration.
+
+### Deployment Options
+
+| Method | Use Case | Documentation |
+|--------|----------|---------------|
+| **🐳 Docker + Traefik** | Production (Lehana.in) | [DOCKER_LEHANA_DEPLOYMENT.md](./DOCKER_LEHANA_DEPLOYMENT.md) |
+| **🚀 Quick Dev Setup** | Local Development | [QUICK_START.md](./QUICK_START.md) |
+| **🐳 Docker Standalone** | Isolated Testing | See below |
+
+---
+
+## 🐳 Docker Deployment
+
+### Production (Lehana.in Infrastructure)
+
+**Full deployment guide with Traefik integration, dual domains, health monitoring**: [DOCKER_LEHANA_DEPLOYMENT.md](./DOCKER_LEHANA_DEPLOYMENT.md)
+
+**Quick Deploy:**
+```bash
+cd /root/repo/ai-for-bharat-prompt-challenge
+docker compose -f docker-compose.lehana.yml up -d --build
+```
+
+**Access:**
+- Frontend: https://lokalmandi.lehana.in (also .aidhunik.com)
+- Backend API: https://api.lehana.in/lokalmandi/* (also .aidhunik.com)
+
+### Standalone Docker (Local Testing)
+
+**Use the original docker-compose.yml for isolated testing:**
+
+```bash
+# Build and start
+docker compose up -d --build
+
+# Access
+Frontend: http://localhost:3001
+Backend API: http://localhost:5000
+```
+
+**Services:**
+- Frontend: React + Vite development server (port 3001)
+- Backend: Node.js/Express API (port 5000)
+- Database: SQLite (default) or PostgreSQL
+
+---
+
+## 🚀 Quick Start (5 Minutes) - Development
+
 ### Prerequisites
 
 - **Node.js** 18+ ([Download](https://nodejs.org))
