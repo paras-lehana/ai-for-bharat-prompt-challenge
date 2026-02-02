@@ -60,7 +60,35 @@ npm run docker:up:prod
 ## 📝 Configuration Checklist
 - Ensure `.env` is present in the root directory.
 - Verify `VITE_API_URL` in `frontend/.env` points to your backend (default is `/api`).
-- Check `backend.log` for any startup errors.
+- Check `backend.log` or `app.log` for any startup errors.
+
+---
+
+## 🆘 Common Issues & Fixes
+
+### 1. Port Already in Use (EADDRINUSE)
+If you see an error like `Error: listen EADDRINUSE: address already in use :::5000`, it means a previous process is still running.
+
+**Fix (Linux/Mac):**
+```bash
+# Kill processes on app ports
+fuser -k 5000/tcp
+fuser -k 3001/tcp
+# Then restart
+npm run dev
+```
+
+**Fix (Windows):**
+```powershell
+# Find and stop the process
+Stop-Process -Id (Get-NetTCPConnection -LocalPort 5000).OwningProcess -Force
+```
+
+### 2. Frontend not connecting to Backend
+Ensure that the backend is running first. If you are using Docker, check if the services are healthy:
+```bash
+npm run docker:ps
+```
 
 ---
 
