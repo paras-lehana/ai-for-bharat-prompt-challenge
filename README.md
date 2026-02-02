@@ -13,7 +13,25 @@ A comprehensive web platform that makes agricultural trading accessible to **146
 
 ---
 
-## 📖 Quick Navigation
+## � Quick Start (Docker - Recommended)
+
+**Get started in < 2 minutes:**
+
+```bash
+# Clone and start
+cd /root/repo/ai-for-bharat-prompt-challenge
+docker compose -f docker-compose.production.yml up -d
+
+# Access application
+# Production: https://lokalmandi.lehana.in
+# Backend API: https://api.lehana.in/lokalmandi/health
+```
+
+**See [QUICK_START.md](./QUICK_START.md) for detailed commands and troubleshooting.**
+
+---
+
+## �📖 Quick Navigation
 
 | Documentation | Description |
 |--------------|-------------|

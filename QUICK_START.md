@@ -1,96 +1,63 @@
-# 🚀 Quick Start Guide - Lokal Mandi
+# Lokal Mandi - Quick Start Guide
 
-This guide provides the essential commands to boot up the application, manage the development environment, and deploy using Docker.
+> **Production Deployment**: This project is Docker-based and deployed on lehana.in infrastructure.
 
-## 🛠️ Bootup Commands
+## 🚀 Fast Start (Docker - Recommended)
 
-### Option 1: Standard Development Mode (Local)
-Use this for active development with hot-reloading enabled for both frontend and backend.
+### Prerequisites
+- Docker & Docker Compose installed
+- Access to lehana.in infrastructure (or standalone deployment)
 
-```bash
-# 1. Install all dependencies (if not already done)
-npm run install-all
-
-# 2. Start both Frontend and Backend concurrently
-npm run dev
-```
-- **Frontend**: [http://localhost:3001](http://localhost:3001)
-- **Backend**: [http://localhost:5000](http://localhost:5000)
-
-### Option 2: Docker Development (Recommended)
-Use this to run the app in a containerized environment similar to production but with dev overrides.
+### 1. Start Application
 
 ```bash
-# Start with development overrides (Hot reload enabled)
-npm run docker:up:dev
+cd /root/repo/ai-for-bharat-prompt-challenge
+
+# Start both frontend and backend
+docker compose -f docker-compose.production.yml up -d
+
+# View logs
+docker compose -f docker-compose.production.yml logs -f
+
+# Check status
+docker compose -f docker-compose.production.yml ps
 ```
 
-### Option 3: Production Deployment
-Use this for the final deployment on a server.
+### 2. Access Application
+
+**Production URLs (Lehana.in Integration):**
+- **Frontend**: https://lokalmandi.lehana.in | https://lokalmandi.aidhunik.com
+- **Backend API**: https://api.lehana.in/lokalmandi/health
+- **Health Check**: `curl https://lokalmandi.lehana.in` (should return 200)
+
+**Local Testing:**
+- Frontend: http://localhost:3001 (if port exposed)
+- Backend: http://localhost:5000 (if port exposed)
+
+### 3. Common Commands
 
 ```bash
-# Build and start production containers in detached mode
-npm run docker:up:prod
+# Stop services
+docker compose -f docker-compose.production.yml down
+
+# Restart services
+docker compose -f docker-compose.production.yml restart
+
+# Rebuild images (after code changes)
+docker compose -f docker-compose.production.yml build
+docker compose -f docker-compose.production.yml up -d
+
+# View specific service logs
+docker compose -f docker-compose.production.yml logs -f lokalmandi-backend
+docker compose -f docker-compose.production.yml logs -f lokalmandi-frontend
 ```
 
----
+## 📚 Documentation
 
-## 🔧 Useful Management Commands
+- **Full Documentation**: `docs/deployment/DOCKER.md`
+- **API Reference**: `docs/API_DOCUMENTATION.md`
+- **Feature Guides**: `docs/features/`
 
-| Command | Description |
-|---------|-------------|
-| `npm run docker:down` | Stop and remove all containers |
-| `npm run docker:restart` | Restart all running containers |
-| `npm run docker:logs` | View real-time logs from all services |
-| `npm run docker:clean` | Deep clean: removes volumes and unused images |
-| `npm run docker:ps` | List running containers and their status |
-
----
-
-## 🧪 Testing & Utilities
-
-| Command | Description |
-|---------|-------------|
-| `npm run test:integration` | Run full integration tests |
-| `node test/test-all-apis.js` | Test all backend API endpoints |
-| `npm run build` | Generate production builds for both services |
-
----
-
-## 📝 Configuration Checklist
-- Ensure `.env` is present in the root directory.
-- Verify `VITE_API_URL` in `frontend/.env` points to your backend (default is `/api`).
-- Check `backend.log` or `app.log` for any startup errors.
-
----
-
-## 🆘 Common Issues & Fixes
-
-### 1. Port Already in Use (EADDRINUSE)
-If you see an error like `Error: listen EADDRINUSE: address already in use :::5000`, it means a previous process is still running.
-
-**Fix (Linux/Mac):**
-```bash
-# Kill processes on app ports
-fuser -k 5000/tcp
-fuser -k 3001/tcp
-# Then restart
-npm run dev
-```
-
-**Fix (Windows):**
-```powershell
-# Find and stop the process
-Stop-Process -Id (Get-NetTCPConnection -LocalPort 5000).OwningProcess -Force
-```
-
-### 2. Frontend not connecting to Backend
-Ensure that the backend is running first. If you are using Docker, check if the services are healthy:
-```bash
-npm run docker:ps
-```
-
----
-
-**Current Version**: 4.7  
-**Last Updated**: 2026-02-02
+**Version**: 1.0.0  
+**Last Updated**: 2026-02-02  
+**Status**: Production Ready ✅
