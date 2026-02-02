@@ -14,7 +14,7 @@ npm run install-all
 # 2. Start both Frontend and Backend concurrently
 npm run dev
 ```
-- **Frontend**: [http://localhost:3000](http://localhost:3000)
+- **Frontend**: [http://localhost:3001](http://localhost:3001)
 - **Backend**: [http://localhost:5000](http://localhost:5000)
 
 ### Option 2: Docker Development (Recommended)
