@@ -1,6 +1,6 @@
 # 🌾 The Multilingual Mandi
 
-**Current Version**: 4.5  
+**Current Version**: 4.7  
 > **Real-time linguistic bridge for local trade in India**
 
 [![Status](https://img.shields.io/badge/Status-Production%20Ready-success)](https://github.com)
@@ -17,7 +17,7 @@ A comprehensive web platform that makes agricultural trading accessible to **146
 
 | Documentation | Description |
 |--------------|-------------|
-| [🚀 Quick Start](#-quick-start-5-minutes) | Get running in 5 minutes |
+| [🚀 Quick Start](./QUICK_START.md) | Essential commands & setup |
 | [✨ Features](#-7-core-initiatives) | Complete feature overview |
 | [🛠️ Tech Stack](#️-technology-stack) | Technologies used |
 | [📁 Project Structure](#-project-structure) | Codebase organization |
@@ -34,6 +34,7 @@ A comprehensive web platform that makes agricultural trading accessible to **146
 | File | Purpose | When to Read |
 |------|---------|--------------|
 | `README.md` | **START HERE** - Project overview | Essential first step |
+| `QUICK_START.md` | **Commands Checklist** | To boot up or manage the app |
 | `CHANGELOG.md` | Version history | Understand updates |
 | `PROJECT_STATUS.md` | Current feature status | Progress assessment |
 | `TASK_68_COMMUNITY_SUMMARY.md` | Latest feature summary | Deep dive into Task 68 |

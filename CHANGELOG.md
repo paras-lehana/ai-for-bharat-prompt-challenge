@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.7] - 2026-02-02
+
+### Added
+- **Product Demo Integration**: Integrated a new product demo link (`/demo`) across the application, with a redirection to YouTube.
+- **Login Demo Access**: Added a "Watch Product Demo" button to the login page for better onboarding.
+- **Navbar Demo Link**: Added a pulse-animated "🎥 Demo" link to the authenticated navigation bar.
+- **Quick Start Guide**: Created `QUICK_START.md` with essential commands for booting and managing the application.
+
+### Changed
+- **Linguistic Polish**: Replaced "Multilingual Mandi" with "Lokal Mandi" in the UI for consistent branding.
+- **API Robustness**: Updated the translation service to use a multi-layered fallback pipeline (Google -> MyMemory -> LibreTranslate).
+
+### Fixed
+- **Telugu Character Support**: Manually translated core UI labels for Telugu to prevent [TE] prefixes.
+- **Prefix Removal**: Abolished intrusive language prefixes ([HI], [TE], etc.) in favor of clean English fallbacks when translation fails.
+
+## [4.6] - 2026-02-02 (Internal)
+- Performance optimizations and initial demo link setup.
+
 ## [4.5] - 2026-02-01
 
 ### Added
